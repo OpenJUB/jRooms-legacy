@@ -1,3 +1,270 @@
-<div class="col-md-12">
-This is the admin view.
-</div>
+<div ng-include="'components/navbar/navbar.html'"></div>
+
+<div class="container well well-lg">
+    <h3>Import OpenJUB data</h3>
+    <div id="importWarning">
+      <p>We will use your auth token to retrieve a list of students from OpenJUB.</p> <p class="text-danger">Please, note, that this step is a prerequisite for everything else to work.</p>
+      <a class="btn btn-default btn-danger" href="#importUsers" onclick="importUsers();" role="button">Let's do it!</a>
+    </div>
+  </div>
+
+  <div class="container well well-lg">
+    <h3>Set phases</h3>
+    <p>Here you can describe the phases of room allocation process and their time slots. For each phase ...</p>
+
+    <div class="panel-group" id="phaseList" role="tablist" aria-multiselectable="true">
+      <div id="phase0" class="hidden">
+        <div class="panel panel-default">
+          <div class="panel-heading" role="tab" id="phaseHeading0">
+            <h4 class="panel-title">
+              <a class="collapsed" data-toggle="collapse" href="#phasePanel0" aria-expanded="true" aria-controls="phasePanel0">
+                New phase
+              </a>
+            </h4>
+          </div>
+          <div id="phasePanel0" class="panel-collapse collapse" role="tabpanel" aria-labelledby="phaseHeading0">
+            <div class="panel-body">
+              <form class="form-inline">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="phaseName0" placeholder="Name">
+                </div>
+                <div class="form-group">
+                  <input type="text" class="form-control" data-provide="datepicker" data-date-format="dd/mm/yy" id="phaseFrom0" placeholder="From">
+                </div>
+                <div class="form-group">
+                  <input type="text" class="form-control" data-provide="datepicker" data-date-format="dd/mm/yy" id="phaseTo0" placeholder="To">
+                </div>
+              </form>
+              </br>
+              <h4>Filters:</h4>
+              <div class="form-group"> 
+                <div class="checkbox">
+                  <label>
+                  <input type="checkbox" onclick="toggleCollegePhase(this.id, this.checked);" id="phaseCollegePhaseOn0">
+                    College selection phase
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group"> 
+                <div class="checkbox">
+                  <label>
+                  <input type="checkbox" onclick="togglePhaseFilterPoints(this.id, this.checked);" id="phaseFilterPointsOn0">
+                    Points
+                  </label>
+                </div>
+
+                <div class="hidden" id="phaseFilterPoints0">
+                  <form class="form-inline">
+                    <div class="form-group">
+                      <input type="text" class="form-control" id="phaseFilterPointsMin0" placeholder="Min">
+                    </div>
+                    <div class="form-group">
+                      <input type="text" class="form-control" id="phaseFilterPointsMax0" placeholder="Max">
+                    </div>
+                  </form>
+                </div>
+              </div>
+
+              <div class="form-group"> 
+                <div class="checkbox">
+                  <label>
+                  <input type="checkbox" onclick="togglePhaseFilterCollege(this.id, this.checked);" id="phaseFilterCollegeOn0">
+                    College
+                  </label>
+                </div>
+
+                <div class="hidden" id="phaseFilterCollege0">
+                  <div class="form-group">
+                    <div class="checkbox">
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <label>
+                      <input type="checkbox" id="phaseFilterCollegeKrupp0">
+                        Krupp
+                      </label>
+                    </div>
+                    <div class="checkbox">
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <label>
+                      <input type="checkbox" id="phaseFilterCollegeNordmetall0">
+                        Nordmetall
+                      </label>
+                    </div>
+                    <div class="checkbox">
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <label>
+                      <input type="checkbox" id="phaseFilterCollegeMercator0">
+                        Mercator
+                      </label>
+                    </div>
+                    <div class="checkbox">
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <label>
+                      <input type="checkbox" id="phaseFilterCollegeC30">
+                        College 3
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="form-group"> 
+                <div class="checkbox">
+                  <label>
+                  <input type="checkbox" onclick="togglePhaseFilterTall(this.id, this.checked);" id="phaseFilterTallOn0">
+                    Tall people
+                  </label>
+                </div>
+
+                <div class="hidden" id="phaseFilterTall0">
+
+                </div>
+              </div>
+
+              <div class="form-group"> 
+                <div class="checkbox">
+                  <label>
+                  <input type="checkbox" onclick="togglePhaseFilterExchange(this.id, this.checked);" id="phaseFilterExchangeOn0">
+                    Exchange students
+                  </label>
+                </div>
+
+                <div class="hidden" id="phaseFilterExchange0">
+
+                </div>
+              </div>
+              
+              <div class="form-group"> 
+                <div class="checkbox">
+                  <label>
+                  <input type="checkbox" onclick="togglePhaseFilterRoom(this.id, this.checked);" id="phaseFilterRoomOn0">
+                    Room type
+                  </label>
+                </div>
+
+                <div class="hidden" id="phaseFilterRoom0">
+                  <div class="form-group">
+                    <div class="checkbox">
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <label>
+                      <input type="checkbox" id="phaseFilterRoomSingle0">
+                        Single
+                      </label>
+                    </div>
+                    <div class="checkbox">
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <label>
+                      <input type="checkbox" id="phaseFilterCollegeRoomDouble0">
+                        Double
+                      </label>
+                    </div>
+                    <div class="checkbox">
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <label>
+                      <input type="checkbox" id="phaseFilterCollegeRoomTriple0">
+                        Triple
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <br/>
+              <a class="btn btn-default btn-success" href="#savePhase" id="phaseSave0" onclick="savePhase(this.id);" role="button">Save</a>
+              <a class="btn btn-default btn-danger" href="#removePhase" id="phaseSave0" onclick="removePhase(this.id);" role="button">Remove</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container well well-lg">
+    <h3>Tall people</h3>
+    <p>Modify list of people, who are eligible for a tall room. Please, enter CampusNet usernames separated by commas.</p>
+
+    <div class="form-group">
+      <textarea class="form-control" id="tallPeople" rows="4" placeholder="dcucleschi,fstankovsk,vungureanu"></textarea>
+    </div>
+  </div>
+
+  <div class="container well well-lg">
+    <h3>Modify user's information</h3>
+    <p>If for some reason CampusNet data imported from OpenJUB is not accurate, you can use this section to manually edit user's information.</p>
+
+    <div class="form-group">
+      <input type="text" class="form-control" id="modifyUsername" placeholder="CampusNet username">
+    </div>
+  </div>
+
+  <div class="container well well-lg">
+    <h3>Disabled rooms</h3>
+    <p>Modify list of rooms, which are excluded from the room allocation process. Please, enter room numbers separated by commas.</p>
+
+    <div class="form-group">
+      <textarea class="form-control" id="disabledRooms" rows="4" placeholder="KC302,MA108,CC326,NB220"></textarea>
+    </div>
+  </div>
+
+  <div class="container well well-lg">
+    <h3>Email options</h3>
+    <p>Don't spam the community too much!</p>
+    <div class="form-group">
+      <div class="checkbox">
+        <label>
+        <input type="checkbox" id="email1">
+          Case number 1
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+        <input type="checkbox" id="email2">
+          Case number 2
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+        <input type="checkbox" id="email3">
+          Case number 3
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="container well well-lg">
+    <h3>Import/export settings</h3>
+    <p>Here you can backup or restore your settings from a generated JSON file.</p> 
+
+    <form class="form-inline">
+      <br/>
+      <a class="btn btn-default btn-info" href="#exportSettings" onclick="" role="button">Export settings</a>
+      <br/></br>
+      <div class="form-group">
+        <input class="form-control" type="file" id="importFile">
+      </div>
+      <a class="btn btn-default btn-info" href="#importSettings" onclick="" role="button">Import settings</a>
+    </form>
+  </div>
+
+  <div class="container well well-lg">
+    <h3>Export results</h3>
+    <p>You can export results for a specific phase or for allocation process overall</p>
+    
+    <div class="form-group">
+      <select class="form-control" id="exportPhases">
+        <option>Final results (all allocated rooms)</option>
+        <option>[ Here goes the current phase list ]</option>
+      </select>
+    </div>
+
+    <a class="btn btn-default btn-info" href="#exportPhase" onclick="" role="button">Export</a>
+  </div>
+
+  <div class="container well well-lg">
+    <h3>Reset the system</h3>
+    <p class="text-danger">This will reset the system for the new allocation process. All the settings, user data and allocation results will be permanently deleted!</p>
+    <a class="btn btn-default btn-danger" href="#clear" onclick="" role="button">I understand and choose to delete everything</a>
+  </div>
+
+
+<div ng-include="'components/footer/footer.html'"></div>
