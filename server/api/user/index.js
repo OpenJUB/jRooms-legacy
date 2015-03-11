@@ -13,10 +13,10 @@ var router = express.Router();
 // router.delete('/:id', controller.destroy);
 
 router.get('/me', controller.me);
-router.post('/requestRoommate', controller.requestRoommate);
-router.post('/acceptRoommate', controller.acceptRoommate);
-router.post('/denyRoommate', controller.denyRoommate);
+router.post('/requestRoommate', controller.add_roommate);
+router.post('/acceptRoommate', controller.confirm_roommate);
+router.post('/denyRoommate', controller.deny_roommate);
 router.post('/updateColleges', controller.updateColleges);
-router.post('/updateRooms', controller.updateRooms);
+//router.post('/updateRooms', controller.updateRooms);
 
 module.exports = router;
