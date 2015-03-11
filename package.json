@@ -1,5 +1,5 @@
 {
-  "name": "jRooms",
+  "name": "j-rooms",
   "version": "0.0.0",
   "main": "server/app.js",
   "dependencies": {
