@@ -1,17 +1,15 @@
 'use strict';
 
 angular.module('jRoomsApp')
-  .service('State', function ($cookieStore, Communicator) {
-   var openJUB = 'https://api.jacobs-cs.club';
-
+  .service('State', function (ipCookie, Communicator) {
    var loggedIn = false;
    var isAdmin = false;
    var user = {};
    var currentPhase = {};
 
-   if ($cookieStore.get('token')) {
+   if (ipCookie('token')) {
     Communicator.getCurrentUser(function(err, data) {
-      if (err == null && data != null) {
+      if (!err && data) {
         loggedIn = true;
         isAdmin = data.isAdmin;
         user = data;
@@ -38,13 +36,13 @@ angular.module('jRoomsApp')
 
     login : function() {
       window.addEventListener('message', function(e) {
-        if (e.origin !== openJUB) return;
-        var data = JSON.parse(e.data);
+        if (e.origin !== Communicator.openJUB) return;
+        var edata = JSON.parse(e.data);
 
-        if (data && data.token) {
+        if (edata && edata.token) {
           Communicator.getCurrentUser(function(err, data) {
-            if (err == null && data != null) {
-              $cookieStore.put('token', data.token);
+            if (!err && data != null) {
+              ipCookie('token', edata.token, { expires: 2, path: '/' });
               
               loggedIn = true;
               isAdmin = data.isAdmin;
@@ -65,7 +63,7 @@ angular.module('jRoomsApp')
     isAdmin = false;
     user = {};
 
-    $cookieStore.remove('token');
+    ipCookie.remove('token');
    }
   };
 });

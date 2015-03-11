@@ -39,4 +39,9 @@ angular.module('jRoomsApp').service('Communicator', function ($http) {
   this.denyRoommate = function(cid, fn) {
     this.sendPOST('/api/user/denyRoommate', { username : cid }, fn);
   }
+
+  this.getProfileImage = function(cid) {
+    if (cid == null) return null;
+    return this.openJUB + '/user/image/' + cid + '/image.jpg';
+  }
 });

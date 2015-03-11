@@ -13,4 +13,8 @@ angular.module('jRoomsApp')
   		}
   	});
 
+  	$scope.login = function() {
+  		State.login();
+  	}
+
   });

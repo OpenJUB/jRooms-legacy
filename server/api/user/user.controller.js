@@ -7,6 +7,7 @@ exports.me = function(req, res) {
   // Filip, please use this kind of naming.
   return res.json(200, {
     name: 'Dmitrii Cucleschin',
+    username: 'dcucleschi',
     college: 'Krupp',
     country: 'Moldova',
     description: 'ug 15 CS',
@@ -21,6 +22,7 @@ exports.me = function(req, res) {
 exports.requestRoommate = function(req, res) {
   return res.json(200, {
     name: 'Dmitrii Cucleschin',
+    username: 'dcucleschi',
     college: 'Krupp',
     country: 'Moldova',
     description: 'ug 15 CS',
@@ -34,6 +36,7 @@ exports.requestRoommate = function(req, res) {
 exports.acceptRoommate = function(req, res) {
   return res.json(200, {
     name: 'Dmitrii Cucleschin',
+    username: 'dcucleschi',
     college: 'Krupp',
     country: 'Moldova',
     description: 'ug 15 CS',
@@ -48,6 +51,7 @@ exports.acceptRoommate = function(req, res) {
 exports.denyRoommate = function(req, res) {
   return res.json(200, {
     name: 'Dmitrii Cucleschin',
+    username: 'dcucleschi',
     college: 'Krupp',
     country: 'Moldova',
     description: 'ug 15 CS',

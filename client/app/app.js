@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('jRoomsApp', [
-  'ngCookies',
+  'ipCookie',
   'ngResource',
   'ngSanitize',
   'ui.router',

@@ -1,92 +1,95 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
-<div class="container col-md-9">
-<div id="notEligiblePhase">
-  <h2>Sorry!</h2>
-  <p>It doesn't seem like you eligible for this phase. To select your rooms, please, come back at April 1st, 2015.</p>
-</div>
+<div class="row">
+    <!-- //////////////// -->
+    <!-- Phase -->
+    <div class="col-md-9 well well-lg">
+      <div id="notEligiblePhase">
+        <h2>Sorry!</h2>
+        <p>It doesn't seem like you eligible for this phase. To select your rooms, please, come back at April 1st, 2015.</p>
+      </div>
 
-<div id="collegePhase">
-  <h2>College selection phase</h2>
-  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error, laborum eum reiciendis. Voluptates at, ipsa, harum consectetur sit error! Libero nulla repellat, dolore numquam. Sed ducimus, cumque veniam odio. Odio.</p>
+      <div id="collegePhase">
+        <h2>College selection phase</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error, laborum eum reiciendis. Voluptates at, ipsa, harum consectetur sit error! Libero nulla repellat, dolore numquam. Sed ducimus, cumque veniam odio. Odio.</p>
 
-  <div class="form-group container">
-    <select class="form-control" id="collegeFirst">
-      <option>Krupp</option>
-      <option>Nordmetall</option>
-      <option>Mercator</option>
-      <option>C3</option>
-    </select>
+        <div class="form-group container">
+          <select class="form-control" id="collegeFirst">
+            <option>Krupp</option>
+            <option>Nordmetall</option>
+            <option>Mercator</option>
+            <option>C3</option>
+          </select>
 
-    <select class="form-control" id="collegeSecond">
-    <option>Nordmetall</option>
-      <option>Krupp</option>
-      <option>Mercator</option>
-      <option>C3</option>
-    </select>
+          <select class="form-control" id="collegeSecond">
+          <option>Nordmetall</option>
+            <option>Krupp</option>
+            <option>Mercator</option>
+            <option>C3</option>
+          </select>
 
-      <select class="form-control" id="collegeThird">
-      <option>Mercator</option>
-      <option>Krupp</option>
-      <option>Nordmetall</option>
-      <option>C3</option>
-    </select>
+            <select class="form-control" id="collegeThird">
+            <option>Mercator</option>
+            <option>Krupp</option>
+            <option>Nordmetall</option>
+            <option>C3</option>
+          </select>
 
-    <select class="form-control" id="collegeFourth">
-      <option>C3</option>
-      <option>Krupp</option>
-      <option>Nordmetall</option>
-      <option>Mercator</option>
-    </select>
+          <select class="form-control" id="collegeFourth">
+            <option>C3</option>
+            <option>Krupp</option>
+            <option>Nordmetall</option>
+            <option>Mercator</option>
+          </select>
 
-    <br/>
-    <a class="btn btn-default" onclick="submitCollege();" id="submitCollege">Submit!</a>
+          <br/>
+          <a class="btn btn-default" onclick="submitCollege();" id="submitCollege">Submit!</a>
+        </div>
+      </div>
+
+      <div id="roomSelectionPhase">
+        <h2>Room selection phase</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iure, deleniti provident? Soluta, officiis. Molestias, eius doloremque, iure accusantium consectetur sit! Fugiat praesentium dolorem odio, maxime deserunt consectetur magnam, dignissimos rem!</p>
+
+        <div class="form-group container">
+          <input id="roomSelection" type="text" class="form-control" placeholder="Room #"></input>
+          <br/>
+          <a class="btn btn-default" onclick="submitRoom();" id="submitRoom">Submit!</a>
+        </div>      
+      </div>
+    </div>
+
+    <!-- //////////////// -->
+    <!-- Profile -->
+    <div class="col-md-3">
+      <div class="well well-lg text-center">
+        <img id="profileImage" class="img-rounded center-block" height="150" ng-src="{{ profileImg }}"/>
+
+        <h3>{{ user.name }}</h3>
+        <p>{{ user.country }}</p>
+        <p>{{ user.description }}</p>
+        <p class="text-info" ng-show="user.roommates.length > 0"><strong>Roommates:</strong> {{ JSON.stringify(user.roommates) }}</p>
+      </div>
+      <br/>
+
+      <div class="well well-lg" id="roommateRequests">
+        <h3>Roommate requests</h3>
+        <div id="roommateInbox">
+    <!--       <div id="profileRequest0" class="well hidden">
+              <h4 id="profileNameRequest0">Name</h4>
+              <a class="btn btn-default btn-success" onclick="acceptRoommate(this.id);" id="profileAcceptRequest0">Accept</a>
+              <a class="btn btn-default btn-danger" onclick="denyRoommate(this.id);" id="profileDenyRequest0">Deny</a>
+          </div>  -->
+        </div>
+        <br/>
+        <h4>Send a request</h4>
+        <div class="form-group">
+          <input id="profileRequestRoomie" type="text" class="form-control" placeholder="Full name or CampusNet username"></input>
+          <a class="btn btn-default" onclick="requestRoommate();" id="requestRoommate">Request!</a>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-
-<div id="roomSelectionPhase">
-  <h2>Room selection phase</h2>
-  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iure, deleniti provident? Soluta, officiis. Molestias, eius doloremque, iure accusantium consectetur sit! Fugiat praesentium dolorem odio, maxime deserunt consectetur magnam, dignissimos rem!</p>
-
-  <div class="form-group container">
-    <input id="roomSelection" type="text" class="form-control" placeholder="Room #"></input>
-    <br/>
-    <a class="btn btn-default" onclick="submitRoom();" id="submitRoom">Submit!</a>
-  </div>      
-
-  <!-- <canvas id="mapCanvas"></canvas> -->
-</div>
-</div>
-
-
-<div class="container col-md-3">
-<div class="well well-lg text-center">
-  <img id="profileImage" class="img-rounded center-block" height="150" src="http://placehold.it/100x150"/>
-
-  <h3 id="profileName">John Doe</h3>
-  <p id="profileCountry">Country</p>
-  <p id="profileInfo">Major, Year</p>
-
-  <div id="profileRoommates" class="hidden"></div>
-</div>
-<br/>
-
-<div class="well well-lg" id="roommateRequests">
-  <h3>Roommate requests</h3>
-  <div id="roommateInbox">
-    <div id="profileRequest0" class="well hidden">
-        <h4 id="profileNameRequest0">Name</h4>
-        <a class="btn btn-default btn-success" onclick="acceptRoommate(this.id);" id="profileAcceptRequest0">Accept</a>
-        <a class="btn btn-default btn-danger" onclick="denyRoommate(this.id);" id="profileDenyRequest0">Deny</a>
-    </div> 
-  </div>
-  <br/>
-  <h4>Send a request</h4>
-  <div class="form-group">
-    <input id="profileRequestRoomie" type="text" class="form-control" placeholder="Full name or CampusNet username"></input>
-    <a class="btn btn-default" onclick="requestRoommate();" id="requestRoommate">Request!</a>
-  </div>
-</div>
 </div>
 
 <div ng-include="'components/footer/footer.html'"></div>
