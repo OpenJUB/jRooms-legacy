@@ -1,6 +1,6 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
-<div class="row">
+<div class="container"><div class="row">
     <!-- //////////////// -->
     <!-- Phase -->
     <div class="col-md-9 well well-lg">
@@ -13,7 +13,7 @@
         <h2>College selection phase</h2>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error, laborum eum reiciendis. Voluptates at, ipsa, harum consectetur sit error! Libero nulla repellat, dolore numquam. Sed ducimus, cumque veniam odio. Odio.</p>
 
-        <div class="form-group container">
+        <div class="form-group">
           <select class="form-control" id="collegeFirst">
             <option>Krupp</option>
             <option>Nordmetall</option>
@@ -51,7 +51,7 @@
         <h2>Room selection phase</h2>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iure, deleniti provident? Soluta, officiis. Molestias, eius doloremque, iure accusantium consectetur sit! Fugiat praesentium dolorem odio, maxime deserunt consectetur magnam, dignissimos rem!</p>
 
-        <div class="form-group container">
+        <div class="form-group">
           <input id="roomSelection" type="text" class="form-control" placeholder="Room #"></input>
           <br/>
           <a class="btn btn-default" onclick="submitRoom();" id="submitRoom">Submit!</a>
@@ -62,34 +62,34 @@
     <!-- //////////////// -->
     <!-- Profile -->
     <div class="col-md-3">
-      <div class="well well-lg text-center">
+      <div class="well text-center">
         <img id="profileImage" class="img-rounded center-block" height="150" ng-src="{{ profileImg }}"/>
 
         <h3>{{ user.name }}</h3>
         <p>{{ user.country }}</p>
         <p>{{ user.description }}</p>
-        <p class="text-info" ng-show="user.roommates.length > 0"><strong>Roommates:</strong> {{ JSON.stringify(user.roommates) }}</p>
+        <p class="text-info" ng-show="user.roommates.length > 0"><strong>Roommates:</strong> {{ user.roommates }}</p>
       </div>
-      <br/>
 
-      <div class="well well-lg" id="roommateRequests">
-        <h3>Roommate requests</h3>
-        <div id="roommateInbox">
-    <!--       <div id="profileRequest0" class="well hidden">
-              <h4 id="profileNameRequest0">Name</h4>
-              <a class="btn btn-default btn-success" onclick="acceptRoommate(this.id);" id="profileAcceptRequest0">Accept</a>
-              <a class="btn btn-default btn-danger" onclick="denyRoommate(this.id);" id="profileDenyRequest0">Deny</a>
-          </div>  -->
+      <div class="well" id="roommateRequests">
+        <h3>Inbox</h3>
+        <p ng-show="user.inbox.length == 0" class="text-info">No new requests!</p>
+        <div ng-repeat="req in user.inbox" class="well">
+          <h4> {{ req }}</h4>
+          <a class="btn btn-default btn-success" ng-click="acceptRoommate(req);">Accept</a>
+          <a class="btn btn-default btn-danger" ng-click="denyRoommate(req);">Deny</a>
         </div>
+
         <br/>
+
         <h4>Send a request</h4>
         <div class="form-group">
-          <input id="profileRequestRoomie" type="text" class="form-control" placeholder="Full name or CampusNet username"></input>
-          <a class="btn btn-default" onclick="requestRoommate();" id="requestRoommate">Request!</a>
+          <input type="text" class="form-control" placeholder="CampusNet username" ng-model="requestUsername"></input>
+          <a class="btn btn-default" ng-click="requestRoommate();">Request!</a>
         </div>
       </div>
     </div>
   </div>
-</div>
+</div></div>
 
 <div ng-include="'components/footer/footer.html'"></div>

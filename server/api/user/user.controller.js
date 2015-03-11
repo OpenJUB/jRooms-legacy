@@ -12,8 +12,8 @@ exports.me = function(req, res) {
     country: 'Moldova',
     description: 'ug 15 CS',
     major: 'Computer Science',
-    roommates: [],
-    inbox: [],
+    roommates: ['johndoe'],
+    inbox: ['herpderp'],
     isAdmin: true,
     college_preferences: []
   });
@@ -27,8 +27,9 @@ exports.requestRoommate = function(req, res) {
     country: 'Moldova',
     description: 'ug 15 CS',
     major: 'Computer Science',
-    roommates: [],
-    inbox: ['johndoe'],
+    roommates: ['johndoe'],
+    inbox: ['herpderp'],
+    isAdmin: true,
     college_preferences: []
   });
 }
@@ -42,7 +43,7 @@ exports.acceptRoommate = function(req, res) {
     description: 'ug 15 CS',
     major: 'Computer Science',
     roommates: ['johndoe'],
-    inbox: [],
+    inbox: ['herpderp'],
     isAdmin: true,
     college_preferences: []
   });
@@ -56,8 +57,8 @@ exports.denyRoommate = function(req, res) {
     country: 'Moldova',
     description: 'ug 15 CS',
     major: 'Computer Science',
-    roommates: [],
-    inbox: [],
+    roommates: ['johndoe'],
+    inbox: ['herpderp'],
     isAdmin: true,
     college_preferences: []
   });

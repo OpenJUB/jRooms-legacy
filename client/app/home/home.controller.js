@@ -4,6 +4,7 @@ angular.module('jRoomsApp')
   .controller('HomeCtrl', function ($scope, $location, State, Communicator) {
     $scope.user = {};
     $scope.profileImg = 'http://placehold.it/100x150';
+    $scope.requestUsername = '';
 
   	// Redirect logged out users
   	$scope.$watch(State.loggedIn, function(val) {
@@ -21,4 +22,41 @@ angular.module('jRoomsApp')
           $scope.user = {};
         }
     }, true);
+
+    $scope.requestRoommate = function() {
+      //console.log("Sending request to " + $scope.requestUsername);
+      Communicator.requestRoommate($scope.requestUsername, function(err, data) {
+        if (!err && data) {
+          console.log("Success!");
+        }
+        else {
+          console.log("Error!");
+        }
+      })
+    }
+
+    $scope.acceptRoommate = function(cid) {
+      //console.log("Accepting request from " + cid);
+      Communicator.acceptRoommate(cid, function(err, data) {
+        if (!err && data) {
+          console.log("Success!");
+        }
+        else {
+          console.log("Error!");
+        }
+      })
+    }
+
+    $scope.denyRoommate = function(cid) {
+      //console.log("Denying request from " + cid);
+      Communicator.denyRoommate(cid, function(err, data) {
+        if (!err && data) {
+          console.log("Success!");
+        }
+        else {
+          console.log("Error!");
+        }
+      })
+    }
+
   });
