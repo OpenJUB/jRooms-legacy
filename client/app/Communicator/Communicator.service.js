@@ -40,6 +40,14 @@ angular.module('jRoomsApp').service('Communicator', function ($http) {
     this.sendPOST('/api/user/denyRoommate', { username : cid }, fn);
   }
 
+  this.updateColleges = function(arr, fn) {
+    this.sendPOST('/api/user/updateColleges' , { colleges : arr}, fn);
+  }
+
+  this.updateRooms = function(arr, fn) {
+    this.sendPOST('/api/user/updateColleges' , { colleges : arr}, fn);
+  }
+
   this.getProfileImage = function(cid) {
     if (cid == null) return null;
     return this.openJUB + '/user/image/' + cid + '/image.jpg';

@@ -64,6 +64,14 @@ exports.denyRoommate = function(req, res) {
   });
 }
 
+exports.updateColleges = function(req, res) {
+    return res.json(200, { status : "Great success! "});
+}
+
+exports.updateRooms = function(req, res) {
+    return res.json(200, { status : "Great success! "});
+}
+
 // Example of nice style:
 // exports.index = function(req, res) {
 //   User.find(function (err, users) {

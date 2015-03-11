@@ -14,28 +14,28 @@
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error, laborum eum reiciendis. Voluptates at, ipsa, harum consectetur sit error! Libero nulla repellat, dolore numquam. Sed ducimus, cumque veniam odio. Odio.</p>
 
         <div class="form-group">
-          <select class="form-control" id="collegeFirst">
+          <select class="form-control" ng-model="colleges[0]">
             <option>Krupp</option>
             <option>Nordmetall</option>
             <option>Mercator</option>
             <option>C3</option>
           </select>
 
-          <select class="form-control" id="collegeSecond">
+          <select class="form-control" ng-model="colleges[1]">
           <option>Nordmetall</option>
             <option>Krupp</option>
             <option>Mercator</option>
             <option>C3</option>
           </select>
 
-            <select class="form-control" id="collegeThird">
+            <select class="form-control" ng-model="colleges[2]">
             <option>Mercator</option>
             <option>Krupp</option>
             <option>Nordmetall</option>
             <option>C3</option>
           </select>
 
-          <select class="form-control" id="collegeFourth">
+          <select class="form-control" ng-model="colleges[3]">
             <option>C3</option>
             <option>Krupp</option>
             <option>Nordmetall</option>
@@ -43,7 +43,7 @@
           </select>
 
           <br/>
-          <a class="btn btn-default" onclick="submitCollege();" id="submitCollege">Submit!</a>
+          <a class="btn btn-default" ng-click="updateColleges();">Submit!</a>
         </div>
       </div>
 
@@ -52,9 +52,9 @@
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iure, deleniti provident? Soluta, officiis. Molestias, eius doloremque, iure accusantium consectetur sit! Fugiat praesentium dolorem odio, maxime deserunt consectetur magnam, dignissimos rem!</p>
 
         <div class="form-group">
-          <input id="roomSelection" type="text" class="form-control" placeholder="Room #"></input>
+          <input type="text" class="form-control" placeholder="Room #" ng-model="rooms[0]"></input>
           <br/>
-          <a class="btn btn-default" onclick="submitRoom();" id="submitRoom">Submit!</a>
+          <a class="btn btn-default" ng-click="updateRooms();">Submit!</a>
         </div>      
       </div>
     </div>

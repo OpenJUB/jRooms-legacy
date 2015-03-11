@@ -16,5 +16,7 @@ router.get('/me', controller.me);
 router.post('/requestRoommate', controller.requestRoommate);
 router.post('/acceptRoommate', controller.acceptRoommate);
 router.post('/denyRoommate', controller.denyRoommate);
+router.post('/updateColleges', controller.updateColleges);
+router.post('/updateRooms', controller.updateRooms);
 
 module.exports = router;

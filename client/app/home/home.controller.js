@@ -5,6 +5,8 @@ angular.module('jRoomsApp')
     $scope.user = {};
     $scope.profileImg = 'http://placehold.it/100x150';
     $scope.requestUsername = '';
+    $scope.colleges = ['Krupp', 'Nordmetall', 'Mercator', 'C3'];
+    $scope.rooms = [''];
 
   	// Redirect logged out users
   	$scope.$watch(State.loggedIn, function(val) {
@@ -32,7 +34,7 @@ angular.module('jRoomsApp')
         else {
           console.log("Error!");
         }
-      })
+      });
     }
 
     $scope.acceptRoommate = function(cid) {
@@ -44,7 +46,7 @@ angular.module('jRoomsApp')
         else {
           console.log("Error!");
         }
-      })
+      });
     }
 
     $scope.denyRoommate = function(cid) {
@@ -56,7 +58,32 @@ angular.module('jRoomsApp')
         else {
           console.log("Error!");
         }
-      })
+      });
+    }
+
+    $scope.updateColleges = function() {
+      //console.log($scope.colleges);
+       Communicator.updateColleges($scope.colleges, function(err, data) {
+        if (!err && data) {
+          console.log("Success!");
+        }
+        else {
+          console.log("Error!");
+        }
+      });
+
+    }
+
+    $scope.updateRooms = function() {
+      //console.log($scope.rooms);
+      Communicator.updateRooms($scope.rooms, function(err, data) {
+        if (!err && data) {
+          console.log("Success!");
+        }
+        else {
+          console.log("Error!");
+        }
+      });
     }
 
   });
