@@ -3,10 +3,9 @@
 angular.module('jRoomsApp').service('Communicator', function ($http) {
 
   this.openJUB = 'https://api.jacobs-cs.club';
-  this.server = 'http://localhost:3000';
 
   this.sendGET = function(route, body, fn) {
-    $http.get(this.server + route, body)
+    $http.get(route, body)
       .success(function(data, status, headers, config) {
         fn(null, data);
       })
@@ -16,7 +15,7 @@ angular.module('jRoomsApp').service('Communicator', function ($http) {
   }
 
   this.sendPOST = function(route, body, fn) {
-    $http.post(this.server + route, body)
+    $http.post(route, body)
       .success(function(data, status, headers, config) {
         fn(null, data);
       })
@@ -26,7 +25,18 @@ angular.module('jRoomsApp').service('Communicator', function ($http) {
   }
 
   this.getCurrentUser = function(fn) {
-    this.sendGET('/user/me', {}, fn);
+    this.sendGET('/api/user/me', {}, fn);
   }
 
+  this.requestRoommate = function(cid, fn) {
+    this.sendPOST('/api/user/requestRoommate', { username : cid }, fn);
+  }
+
+  this.acceptRoommate = function(cid, fn) {
+    this.sendPOST('/api/user/acceptRoommate', { username : cid }, fn);
+  }
+
+  this.denyRoommate = function(cid, fn) {
+    this.sendPOST('/api/user/denyRoommate', { username : cid }, fn);
+  }
 });

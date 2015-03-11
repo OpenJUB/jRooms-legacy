@@ -2,8 +2,15 @@
 
 angular.module('jRoomsApp')
   .controller('MainCtrl', function ($scope, $location, State) {
-    // Redirect logged in users
-    if (State.loggedIn) {
-      $location.path = '/home';
-    }
+  	$scope.loggedIn = false;
+
+  	// Redirect logged in users
+  	$scope.$watch(State.loggedIn, function(val) {
+  		$scope.loggedIn = val;
+
+  		if (val) {
+  			$location.path('/home');
+  		}
+  	});
+
   });

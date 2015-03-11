@@ -1,52 +1,71 @@
 'use strict';
 
 angular.module('jRoomsApp')
-  .service('State', function ($cookies, Communicator) {
-   this.openJUB = 'https://api.jacobs-cs.club';
+  .service('State', function ($cookieStore, Communicator) {
+   var openJUB = 'https://api.jacobs-cs.club';
 
-   this.loggedIn = false;
-   this.isAdmin = false;
-   this.user = null;
-   this.currentPhase = null;
+   var loggedIn = false;
+   var isAdmin = false;
+   var user = {};
+   var currentPhase = {};
 
-   if ($cookies.token) {
+   if ($cookieStore.get('token')) {
     Communicator.getCurrentUser(function(err, data) {
       if (err == null && data != null) {
-        this.user = data;
+        loggedIn = true;
+        isAdmin = data.isAdmin;
+        user = data;
       }
     });
    }
 
-   this.login = function() {
-    console.log($cookies);
+   return {
+    loggedIn : function() {
+      return loggedIn;
+    },
 
-   	window.addEventListener('message', function(e) {
-	    if (e.origin !== this.openJUB) return;
-			var data = JSON.parse(e.data);
+    user: function() {
+      return user;
+    },
 
-			if (data && data.token) {
-        this.loggedIn = true;
-        $cookies.token = data.token;
-      
-        Communicator.getCurrentUser(function(err, data) {
-          if (err == null && data != null) {
-            this.user = data;
-          }
-        });
-			}
-			else {
-				this.logout();
-			}
-		});
+    isAdmin : function() {
+      return isAdmin;
+    },
 
-    window.open('https://api.jacobs-cs.club/view/login', '_blank', 'width=500, height=500, resizeable=0, toolbar=0, scrollbar=0, location=0');
+    currentPhase : function() {
+      return currentPhase;
+    },
+
+    login : function() {
+      window.addEventListener('message', function(e) {
+        if (e.origin !== openJUB) return;
+        var data = JSON.parse(e.data);
+
+        if (data && data.token) {
+          Communicator.getCurrentUser(function(err, data) {
+            if (err == null && data != null) {
+              $cookieStore.put('token', data.token);
+              
+              loggedIn = true;
+              isAdmin = data.isAdmin;
+              user = data;
+            }
+          });
+        }
+        else {
+          logout();
+        }
+      });
+
+      window.open('https://api.jacobs-cs.club/view/login', '_blank', 'width=500, height=500, resizeable=0, toolbar=0, scrollbar=0, location=0');
+   },
+
+   logout : function() {
+    loggedIn = false;
+    isAdmin = false;
+    user = {};
+
+    $cookieStore.remove('token');
    }
-
-   this.logout = function() {
-   	this.loggedIn = false;
-   	this.isAdmin = false;
-   	this.user = null;
-
-   	$cookies.token = null;
-   }
+  };
 });

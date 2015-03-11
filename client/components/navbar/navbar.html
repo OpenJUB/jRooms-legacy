@@ -15,15 +15,15 @@
             <a ng-href="{{item.link}}">{{item.title}}</a>
         </li>
 
-        <li ng-show="state.isAdmin" ng-class="{active: isActive(admin.link)}">
+        <li ng-show="isAdmin" ng-class="{active: isActive(admin.link)}">
             <a ng-href="{{admin.link}}"><strong>{{admin.title}}</strong></a>
         </li>
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
-         <li><a class="text-info" ng-show="state.loggedIn">Signed in as {{ state.user.name }}</a></li>
-         <li><a ng-click="state.logout();" ng-show="state.loggedIn">Logout</a></li>
-         <li><a ng-click="state.login();" ng-show="!state.loggedIn">Login</a></li>
+         <li><a class="text-info" ng-show="loggedIn">Signed in as {{ user.name }}</a></li>
+         <li><a ng-click="logout();" ng-show="loggedIn">Logout</a></li>
+         <li><a ng-click="login();" ng-show="!loggedIn">Login</a></li>
       </ul>
     </div>
   </div>
