@@ -2,10 +2,109 @@
 
 angular.module('jRoomsApp')
   .controller('AdminCtrl', function ($scope, $location, State) {
+  	$scope.resultExport = '';
+  	$scope.nextPhaseId = 1;
+
+  	// Beware the bug! College phase needs to unset all the shit.
+  	$scope.settings = {
+  		isDatabaseReady : false,
+  		tallPeople: '',
+  		disabledRooms: '',
+  		email: {
+  			preference1: false,
+  			preference2: false,
+  			preference3: false,
+  			preference4: false
+  		},
+  		phases: []
+  	};
+
   	// Redirect logged out users
-  	$scope.$watch(State.loggedIn, function(val) {
-  		if (!val) {
-  			$location.path('/');
-  		}
-  	});
+  	// $scope.$watch(State.loggedIn, function(val) {
+  	// 	if (!val) {
+  	// 		$location.path('/');
+  	// 	}
+  	// });
+
+  	$scope.getSettings = function() {
+
+  	};
+
+  	$scope.setSettings = function() {
+
+  	}
+
+  	$scope.importUsers = function() {
+  		$scope.settings.isDatabaseReady = true;
+  	};
+
+  	$scope.addPhase = function() {
+  		$scope.settings.phases.push({
+  			id: $scope.nextPhaseId++,
+  			name: '',
+  			from: '',
+  			to: '',
+  			filters: {
+	  			enableCollegePhase: false,
+	  			enableFilterTall: false,
+          enableFilterColleges: false,
+	  			enableFilterExchange: false,
+          enableFilterPoints: false,
+          enableFilterRooms: false,
+
+          pointsMin: '',
+          pointsMax: '',
+
+          colleges: {
+            krupp: false,
+            mercator: false,
+            nordmetall: false,
+            c3: false
+          },
+
+          rooms: {
+            one: false,
+            two: false,
+            three: false
+          }
+	  		}
+  		});
+  	}
+
+    $scope.collegePhaseSelected = function(id) {
+      var phase = _.find($scope.settings.phases, function(val) {
+        if (val.id == id) return true;
+      });
+
+      if (phase.filters.enableCollegePhase) {
+        phase.filters.enableFilterTall = false;
+        phase.filters.enableFilterColleges = false;
+        phase.filters.enableFilterExchange = false;
+        phase.filters.enableFilterPoints = false;
+        phase.filters.enableFilterRooms = false;
+      }
+    }
+
+  	$scope.removePhase = function(id) {
+  		$scope.settings.phases = _.reject($scope.settings.phases, function(val) {
+  			if (val.id == id) return true;
+  			return false;
+  		})
+  	}
+
+  	$scope.exportSettings = function() {
+
+  	};
+
+    $scope.importSettings = function() {
+  		
+  	};
+
+  	$scope.exportResults = function() {
+  		//option: $scope.resultExport;
+  	}
+
+  	$scope.resetSystem = function() {
+
+  	}
   });
