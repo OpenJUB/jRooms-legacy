@@ -40,10 +40,10 @@ angular.module('jRoomsApp')
         var edata = JSON.parse(e.data);
 
         if (edata && edata.token) {
+          ipCookie('token', edata.token, { expires: 2, path: '/' });
+          
           Communicator.getCurrentUser(function(err, data) {
             if (!err && data != null) {
-              ipCookie('token', edata.token, { expires: 2, path: '/' });
-              
               loggedIn = true;
               isAdmin = data.isAdmin;
               user = data;
