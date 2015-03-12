@@ -1,271 +1,278 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
 <div class="container well well-lg">
-    <h3>Import OpenJUB data</h3>
+  <h3>Save settings</h3>
+  <p>Pushes the current settings to the server.</p>
 
-    <div ng-show="settings.isDatabaseReady">
-      <p class="text-success">Done! <i class="glyphicon glyphicon-ok"></i></p>
-    </div>
+  <a class="btn btn-default btn-info" role="button" ng-click="updateSettings();">Save!</a>
+</div>
 
-    <div ng-show="!settings.isDatabaseReady">
-      <p>We will use your auth token to retrieve a list of students from OpenJUB.</p> <p class="text-danger">Please, note, that this step is a prerequisite for everything else to work.</p>
-      <a class="btn btn-default btn-danger" role="button" ng-click="importUsers();">Let's do it!</a>
-    </div>
+<div class="container well well-lg">
+  <h3>Import OpenJUB data</h3>
+
+  <div ng-show="settings.isDatabaseReady">
+    <p class="text-success">Done! <i class="glyphicon glyphicon-ok"></i></p>
   </div>
 
-  <div class="container well well-lg">
-    <h3>Set phases</h3>
-    <p>Here you can describe the phases of room allocation process and their time slots. For each phase ...</p>
+  <div ng-show="!settings.isDatabaseReady">
+    <p>We will use your auth token to retrieve a list of students from OpenJUB.</p> <p class="text-danger">Please, note, that this step is a prerequisite for everything else to work.</p>
+    <a class="btn btn-default btn-danger" role="button" ng-click="importUsers();">Let's do it!</a>
+  </div>
+</div>
 
-    <accordion ng-repeat="item in settings.phases">
-      <accordion-group>
-        <accordion-heading>
-          <i class="pull-right glyphicon glyphicon-remove" ng-click="removePhase(item.id);"></i>
-          <h3 class="panel-title">{{ item.name }}</h3>
-        </accordion-heading>
+<div class="container well well-lg">
+  <h3>Set phases</h3>
+  <p>Here you can describe the phases of room allocation process and their time slots. For each phase ...</p>
 
-        <div class="container">
-            <!-- Name, From, To -->
-          <div class="form-inline">
-            <div class="form-group">
-              <input type="text" class="form-control" placeholder="Name" ng-model="item.name">
-            </div>
+  <accordion ng-repeat="item in settings.phases">
+    <accordion-group>
+      <accordion-heading>
+        <i class="pull-right glyphicon glyphicon-remove" ng-click="removePhase(item.id);"></i>
+        <h3 class="panel-title">{{ item.name }}</h3>
+      </accordion-heading>
 
-            <div class="form-group">
-              <input type="text" class="form-control" ng-model="item.from" placeholder="From (dd.MM.yy)"/>
-            </div>
-
-            <div class="form-group">
-              <input type="text" class="form-control" ng-model="item.to" placeholder="To (dd.MM.yy)"/>
-            </div>
+      <div class="container">
+          <!-- Name, From, To -->
+        <div class="form-inline">
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="Name" ng-model="item.name">
           </div>
 
-          <br/>
-
-          <h5>Filters:</h5>
-
-          <!-- College phase -->
-          <div class="form-group"> 
-            <div class="checkbox">
-              <label>
-              <input type="checkbox" ng-model="item.filters.enableCollegePhase" ng-change="collegePhaseSelected(item.id);">
-                College selection phase
-              </label>
-            </div>
+          <div class="form-group">
+            <input type="text" class="form-control" ng-model="item.from" placeholder="From (dd.MM.yy)"/>
           </div>
 
-          <!-- Filter by points -->
-          <div class="form-group"> 
-            <div class="checkbox">
-              <label>
-              <input type="checkbox" ng-disabled="item.filters.enableCollegePhase" ng-model="item.filters.enableFilterPoints">
-                Points
-              </label>
-            </div>
+          <div class="form-group">
+            <input type="text" class="form-control" ng-model="item.to" placeholder="To (dd.MM.yy)"/>
+          </div>
+        </div>
 
-            <div ng-show="item.filters.enableFilterPoints">
-              <form class="form-inline">
-                <div class="form-group">
-                  <input type="text" class="form-control" placeholder="Min" ng-model="item.filters.pointsMin">
-                </div>
-                <div class="form-group">
-                  <input type="text" class="form-control" placeholder="Max" ng-model="item.filters.pointsMax">
-                </div>
-              </form>
-            </div>
+        <br/>
+
+        <h5>Filters:</h5>
+
+        <!-- College phase -->
+        <div class="form-group"> 
+          <div class="checkbox">
+            <label>
+            <input type="checkbox" ng-model="item.filters.enableCollegePhase" ng-change="collegePhaseSelected(item.id);">
+              College selection phase
+            </label>
+          </div>
+        </div>
+
+        <!-- Filter by points -->
+        <div class="form-group"> 
+          <div class="checkbox">
+            <label>
+            <input type="checkbox" ng-disabled="item.filters.enableCollegePhase" ng-model="item.filters.enableFilterPoints">
+              Points
+            </label>
           </div>
 
-          <!-- Filter by college -->
-          <div class="form-group"> 
-            <div class="checkbox">
-              <label>
-              <input type="checkbox" ng-disabled="item.filters.enableCollegePhase" ng-model="item.filters.enableFilterColleges">
-                College
-              </label>
-            </div>
-
-            <div ng-show="item.filters.enableFilterColleges">
+          <div ng-show="item.filters.enableFilterPoints">
+            <form class="form-inline">
               <div class="form-group">
-                <div class="checkbox">
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  <label>
-                  <input type="checkbox" ng-model="item.filters.colleges.krupp">
-                    Krupp
-                  </label>
-                </div>
-                <div class="checkbox">
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  <label>
-                  <input type="checkbox" ng-model="item.filters.colleges.nordmetall">
-                    Nordmetall
-                  </label>
-                </div>
-                <div class="checkbox">
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  <label>
-                  <input type="checkbox" ng-model="item.filters.colleges.mercator">
-                    Mercator
-                  </label>
-                </div>
-                <div class="checkbox">
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  <label>
-                  <input type="checkbox" ng-model="item.filters.colleges.c3">
-                    College 3
-                  </label>
-                </div>
+                <input type="text" class="form-control" placeholder="Min" ng-model="item.filters.pointsMin">
               </div>
-            </div>
-          </div>
-
-          <!-- Filter by tall -->
-          <div class="form-group"> 
-            <div class="checkbox">
-              <label>
-              <input type="checkbox" ng-disabled="item.filters.enableCollegePhase" ng-model="item.filters.enableFilterTall">
-                Tall people
-              </label>
-            </div>
-          </div>
-
-          <!-- Filter by exchange -->
-          <div class="form-group"> 
-            <div class="checkbox">
-              <label>
-              <input type="checkbox" ng-disabled="item.filters.enableCollegePhase" ng-model="item.filters.enableFilterExchange">
-                Exchange students
-              </label>
-            </div>
-          </div>
-          
-          <!-- Filter by room time -->
-          <div class="form-group"> 
-            <div class="checkbox">
-              <label>
-              <input type="checkbox" ng-disabled="item.filters.enableCollegePhase" ng-model="item.filters.enableFilterRooms">
-                Room type
-              </label>
-            </div>
-
-            <div ng-show="item.filters.enableFilterRooms">
               <div class="form-group">
-                <div class="checkbox">
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  <label>
-                  <input type="checkbox" ng-model="item.filters.rooms.one">
-                    Single
-                  </label>
-                </div>
-                <div class="checkbox">
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  <label>
-                  <input type="checkbox" ng-model="item.filters.rooms.two">
-                    Double
-                  </label>
-                </div>
-                <div class="checkbox">
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  <label>
-                  <input type="checkbox" ng-model="item.filters.rooms.three">
-                    Triple
-                  </label>
-                </div>
+                <input type="text" class="form-control" placeholder="Max" ng-model="item.filters.pointsMax">
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Filter by college -->
+        <div class="form-group"> 
+          <div class="checkbox">
+            <label>
+            <input type="checkbox" ng-disabled="item.filters.enableCollegePhase" ng-model="item.filters.enableFilterColleges">
+              College
+            </label>
+          </div>
+
+          <div ng-show="item.filters.enableFilterColleges">
+            <div class="form-group">
+              <div class="checkbox">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <label>
+                <input type="checkbox" ng-model="item.filters.colleges.krupp">
+                  Krupp
+                </label>
+              </div>
+              <div class="checkbox">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <label>
+                <input type="checkbox" ng-model="item.filters.colleges.nordmetall">
+                  Nordmetall
+                </label>
+              </div>
+              <div class="checkbox">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <label>
+                <input type="checkbox" ng-model="item.filters.colleges.mercator">
+                  Mercator
+                </label>
+              </div>
+              <div class="checkbox">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <label>
+                <input type="checkbox" ng-model="item.filters.colleges.c3">
+                  College 3
+                </label>
               </div>
             </div>
           </div>
         </div>
-      </accordion-group>
-    </accordion>
 
-    <br/>
-    <a class="btn btn-default btn-success" ng-click="addPhase();">Add phase</a>
+        <!-- Filter by tall -->
+        <div class="form-group"> 
+          <div class="checkbox">
+            <label>
+            <input type="checkbox" ng-disabled="item.filters.enableCollegePhase" ng-model="item.filters.enableFilterTall">
+              Tall people
+            </label>
+          </div>
+        </div>
+
+        <!-- Filter by exchange -->
+        <div class="form-group"> 
+          <div class="checkbox">
+            <label>
+            <input type="checkbox" ng-disabled="item.filters.enableCollegePhase" ng-model="item.filters.enableFilterExchange">
+              Exchange students
+            </label>
+          </div>
+        </div>
+        
+        <!-- Filter by room time -->
+        <div class="form-group"> 
+          <div class="checkbox">
+            <label>
+            <input type="checkbox" ng-disabled="item.filters.enableCollegePhase" ng-model="item.filters.enableFilterRooms">
+              Room type
+            </label>
+          </div>
+
+          <div ng-show="item.filters.enableFilterRooms">
+            <div class="form-group">
+              <div class="checkbox">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <label>
+                <input type="checkbox" ng-model="item.filters.rooms.one">
+                  Single
+                </label>
+              </div>
+              <div class="checkbox">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <label>
+                <input type="checkbox" ng-model="item.filters.rooms.two">
+                  Double
+                </label>
+              </div>
+              <div class="checkbox">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <label>
+                <input type="checkbox" ng-model="item.filters.rooms.three">
+                  Triple
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </accordion-group>
+  </accordion>
+
+  <br/>
+  <a class="btn btn-default btn-success" ng-click="addPhase();">Add phase</a>
+</div>
+
+<div class="container well well-lg">
+  <h3>Tall people</h3>
+  <p>Modify list of people, who are eligible for a tall room. Please, enter CampusNet usernames separated by commas.</p>
+
+  <div class="form-group">
+    <textarea class="form-control" rows="4" placeholder="dcucleschi,fstankovsk,vungureanu" ng-model="settings.tallPeople"></textarea>
   </div>
+</div>
 
-  <div class="container well well-lg">
-    <h3>Tall people</h3>
-    <p>Modify list of people, who are eligible for a tall room. Please, enter CampusNet usernames separated by commas.</p>
+<div class="container well well-lg">
+  <h3>Modify user's information</h3>
+  <p>If for some reason CampusNet data imported from OpenJUB is not accurate, you can use this section to manually edit user's information.</p>
 
-    <div class="form-group">
-      <textarea class="form-control" rows="4" placeholder="dcucleschi,fstankovsk,vungureanu" ng-model="settings.tallPeople"></textarea>
+  <div class="form-group">
+    <input type="text" class="form-control" id="modifyUsername" placeholder="CampusNet username">
+  </div>
+</div>
+
+<div class="container well well-lg">
+  <h3>Disabled rooms</h3>
+  <p>Modify list of rooms, which are excluded from the room allocation process. Please, enter room numbers separated by commas.</p>
+
+  <div class="form-group">
+    <textarea class="form-control"rows="4" placeholder="KC302,MA108,CC326,NB220" ng-model="settings.disabledRooms"></textarea>
+  </div>
+</div>
+
+<div class="container well well-lg">
+  <h3>Email options</h3>
+  <p>Don't spam the community too much!</p>
+  <div class="form-group">
+    <div class="checkbox">
+      <label>
+      <input type="checkbox" ng-model="settings.email.preference1">
+        Case number 1
+      </label>
+    </div>
+    <div class="checkbox">
+      <label>
+      <input type="checkbox" ng-model="settings.email.preference2">
+        Case number 2
+      </label>
+    </div>
+    <div class="checkbox">
+      <label>
+      <input type="checkbox" ng-model="settings.email.preference3">
+        Case number 3
+      </label>
+    </div>
+    <div class="checkbox">
+      <label>
+      <input type="checkbox" ng-model="settings.email.preference4">
+        Case number 4
+      </label>
     </div>
   </div>
+</div>
 
-  <div class="container well well-lg">
-    <h3>Modify user's information</h3>
-    <p>If for some reason CampusNet data imported from OpenJUB is not accurate, you can use this section to manually edit user's information.</p>
+<div class="container well well-lg">
+  <h3>Import/export settings</h3>
+  <p>Here you can backup or restore your settings from a generated JSON file.</p> 
+  <br/>
 
-    <div class="form-group">
-      <input type="text" class="form-control" id="modifyUsername" placeholder="CampusNet username">
-    </div>
-  </div>
+  <a class="btn btn-default btn-info" role="button" ng-show="!showImportSettings" ng-click="importSettingsToggle();" >Import settings</a>
 
-  <div class="container well well-lg">
-    <h3>Disabled rooms</h3>
-    <p>Modify list of rooms, which are excluded from the room allocation process. Please, enter room numbers separated by commas.</p>
-
-    <div class="form-group">
-      <textarea class="form-control"rows="4" placeholder="KC302,MA108,CC326,NB220" ng-model="settings.disabledRooms"></textarea>
-    </div>
-  </div>
-
-  <div class="container well well-lg">
-    <h3>Email options</h3>
-    <p>Don't spam the community too much!</p>
-    <div class="form-group">
-      <div class="checkbox">
-        <label>
-        <input type="checkbox" ng-model="settings.email.preference1">
-          Case number 1
-        </label>
-      </div>
-      <div class="checkbox">
-        <label>
-        <input type="checkbox" ng-model="settings.email.preference2">
-          Case number 2
-        </label>
-      </div>
-      <div class="checkbox">
-        <label>
-        <input type="checkbox" ng-model="settings.email.preference3">
-          Case number 3
-        </label>
-      </div>
-      <div class="checkbox">
-        <label>
-        <input type="checkbox" ng-model="settings.email.preference4">
-          Case number 4
-        </label>
-      </div>
-    </div>
-  </div>
-
-  <div class="container well well-lg">
-    <h3>Import/export settings</h3>
-    <p>Here you can backup or restore your settings from a generated JSON file.</p> 
-    <br/>
-
-    <a class="btn btn-default btn-info" role="button" ng-show="!showImportSettings" ng-click="importSettingsToggle();" >Import settings</a>
-
-    <div ng-show="showImportSettings">
-        <div class="form-group">
-        <textarea class="form-control" rows="2" placeholder="Please, paste the contents of 'jrooms_settings.json' here." ng-model="importJSONString"></textarea>
-      </div>
-
-      <p class="text-danger">By clicking Import, you will overwrite all of the current settings with the one stored in the configuration file. Proceed with caution.</p>
-      <a class="btn btn-default btn-danger" role="button"  ng-click="importSettingsSubmit();" >Import!</a>
-      <a class="btn btn-default" role="button"  ng-click="importSettingsToggle();" >Cancel</a>
+  <div ng-show="showImportSettings">
+      <div class="form-group">
+      <textarea class="form-control" rows="2" placeholder="Please, paste the contents of 'jrooms_settings.json' here." ng-model="importJSONString"></textarea>
     </div>
 
-    <br/><br/>
-
-    <a class="btn btn-default btn-info" role="button" ng-href="{{ exportSettingsURL(); }}" download="jrooms_settings.json">Export settings</a> 
+    <p class="text-danger">By clicking Import, you will overwrite all of the current settings with the one stored in the configuration file. Proceed with caution.</p>
+    <a class="btn btn-default btn-danger" role="button"  ng-click="importSettingsSubmit();" >Import!</a>
+    <a class="btn btn-default" role="button"  ng-click="importSettingsToggle();" >Cancel</a>
   </div>
 
-  <div class="container well well-lg">
-    <h3>Reset the system</h3>
-    <p class="text-danger">This will reset the system for the new allocation process. All the settings, user data and allocation results will be permanently deleted!</p>
-    <a class="btn btn-default btn-danger" role="button" ng-click="resetSystem();">I understand and choose to delete everything</a>
-  </div>
+  <br/><br/>
+
+  <a class="btn btn-default btn-info" role="button" ng-href="{{ exportSettingsURL(); }}" download="jrooms_settings.json">Export settings</a> 
+</div>
+
+<div class="container well well-lg">
+  <h3>Reset the system</h3>
+  <p class="text-danger">This will reset the system for the new allocation process. All the settings, user data and allocation results will be permanently deleted!</p>
+  <a class="btn btn-default btn-danger" role="button" ng-click="resetSystem();">I understand and choose to delete everything</a>
+</div>
 
 
 <div ng-include="'components/footer/footer.html'"></div>

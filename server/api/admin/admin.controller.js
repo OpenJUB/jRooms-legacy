@@ -6,6 +6,37 @@ var User = require('./../user/user.model');
 var controller = require('./../user/user.controller');
 var request = require('request');
 
+var settings = {
+      isDatabaseReady : false,
+      tallPeople: '',
+      disabledRooms: '',
+      email: {
+        preference1: false,
+        preference2: false,
+        preference3: false,
+        preference4: false
+      },
+      phases: []
+    };
+
+exports.importUsers = function(req, res) {
+  // First user will execute this to pull the others.
+  // Please, modify from the stuff below.
+  settings.isDatabaseReady = true;
+  res.json(200, settings);
+}
+
+exports.currentSettings = function(req, res) {
+    res.json(200, settings);
+}
+
+exports.updateSettings = function(req, res) {
+  if (req.body.settings) {
+    settings = req.body.settings;
+  }
+
+  res.json(200, {});
+}
 
 exports.delete_users = function(req, res) {
   var token = req.cookies.token;
@@ -92,57 +123,3 @@ exports.reset_users = function(req, res) {
   });
   //database_is_empty = false;
 }
-/*// Get list of admins
-exports.index = function(req, res) {
-  Admin.find(function (err, admins) {
-    if(err) { return handleError(res, err); }
-    return res.json(200, admins);
-  });
-};
-
-// Get a single admin
-exports.show = function(req, res) {
-  Admin.findById(req.params.id, function (err, admin) {
-    if(err) { return handleError(res, err); }
-    if(!admin) { return res.send(404); }
-    return res.json(admin);
-  });
-};
-
-// Creates a new admin in the DB.
-exports.create = function(req, res) {
-  Admin.create(req.body, function(err, admin) {
-    if(err) { return handleError(res, err); }
-    return res.json(201, admin);
-  });
-};
-
-// Updates an existing admin in the DB.
-exports.update = function(req, res) {
-  if(req.body._id) { delete req.body._id; }
-  Admin.findById(req.params.id, function (err, admin) {
-    if (err) { return handleError(res, err); }
-    if(!admin) { return res.send(404); }
-    var updated = _.merge(admin, req.body);
-    updated.save(function (err) {
-      if (err) { return handleError(res, err); }
-      return res.json(200, admin);
-    });
-  });
-};
-
-// Deletes a admin from the DB.
-exports.destroy = function(req, res) {
-  Admin.findById(req.params.id, function (err, admin) {
-    if(err) { return handleError(res, err); }
-    if(!admin) { return res.send(404); }
-    admin.remove(function(err) {
-      if(err) { return handleError(res, err); }
-      return res.send(204);
-    });
-  });
-};
-
-function handleError(res, err) {
-  return res.send(500, err);
-}*/

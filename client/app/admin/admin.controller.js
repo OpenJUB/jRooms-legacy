@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('jRoomsApp')
-  .controller('AdminCtrl', function ($scope, $location, State) {
+  .controller('AdminCtrl', function ($scope, $location, State, Communicator) {
   	$scope.nextPhaseId = 1;
     $scope.showImportSettings = false;
     $scope.importJSONString = '';
@@ -20,17 +20,34 @@ angular.module('jRoomsApp')
   		phases: []
   	};
 
-  	$scope.getSettings = function() {
 
-  	};
+  	Communicator.currentSettings(function(err, settings) {
+      if (!err && settings) {
+        $scope.settings = settings;
+      }
+      else {
+        console.log("Error: Current settings");
+      }
+    });
 
-  	$scope.setSettings = function() {
-
+  	$scope.updateSettings = function() {
+      Communicator.updateSettings($scope.settings, function(err, smth) {
+        if (err) {
+          console.log("Error: Update settings.");
+        }
+      });
   	};
 
   	$scope.importUsers = function() {
-  		$scope.settings.isDatabaseReady = true;
-  	};
+  	 Communicator.importUsers(function(err, settings) {
+        if (!err && settings) {
+          $scope.settings = settings;
+        }
+        else {
+          console.log("Error: Importing users.");
+        }
+     });
+    };
 
   	$scope.addPhase = function() {
   		$scope.settings.phases.push({
@@ -107,15 +124,13 @@ angular.module('jRoomsApp')
         console.log(obj);
       }
       catch (syntaxError) {
-        // error
+        console.log("Error: Import settings JSON parsing.")
         return;
       }
 
-      // Validate a bit more?
       $scope.settings = obj;
+      $scope.updateSettings();
       $scope.importJSONString = '';
-
-      console.log($scope.settings.tallPeople);
     }
 
   	$scope.resetSystem = function() {

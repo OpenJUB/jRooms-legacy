@@ -24,6 +24,7 @@ angular.module('jRoomsApp').service('Communicator', function ($http) {
       });
   }
 
+  // /user
   this.getCurrentUser = function(fn) {
     this.sendGET('/api/user/me', {}, fn);
   }
@@ -41,15 +42,28 @@ angular.module('jRoomsApp').service('Communicator', function ($http) {
   }
 
   this.updateColleges = function(arr, fn) {
-    this.sendPOST('/api/user/updateColleges' , { colleges : arr}, fn);
+    this.sendPOST('/api/user/updateColleges' , { colleges : arr }, fn);
   }
 
   this.updateRooms = function(arr, fn) {
-    this.sendPOST('/api/user/updateColleges' , { colleges : arr}, fn);
+    this.sendPOST('/api/user/updateColleges' , { colleges : arr }, fn);
   }
 
   this.getProfileImage = function(cid) {
     if (cid == null) return null;
     return this.openJUB + '/user/image/' + cid + '/image.jpg';
+  }
+
+  // /admin
+  this.currentSettings = function(fn) {
+    this.sendGET('/api/admin/currentSettings', {}, fn);
+  }
+
+  this.updateSettings = function(dict, fn) {
+    this.sendPOST('/api/admin/updateSettings', { settings : dict }, fn);
+  }
+
+  this.importUsers = function(fn) {
+    this.sendGET('/api/admin/importUsers', {}, fn);
   }
 });
