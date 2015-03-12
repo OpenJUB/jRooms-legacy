@@ -30,6 +30,9 @@ Production: `grunt serve:dist`
 
 What now?
 ----
-- Add yourself to the admins in config file.
-- Login and navigate to /admin.
-- Import data and configure to your taste.
+- Add yourself to admins in the config file.
+- Login on the website to get token.
+- Call /api/admin/resetUsers.
+- Login to /admin and configure.
+
+With next commits first user will automatically be added to db, allowing direct import of users from the admin page.
