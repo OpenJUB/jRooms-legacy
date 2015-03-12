@@ -5,12 +5,15 @@ angular.module('jRoomsApp')
 
     $scope.footerStrings = [
       'This footer kind of sucks...',
-      'The average size of blue whale\'s penis is 2.4 to 3.0 meters.',
       'We weren\'t very creative with a footer.',
-      'Coffee and allnighters!'
+      'Coffee and allnighters!',
+      'Do you like ponies?',
+      'Assisted by a brave trained team of flamingos.',
+      'What is the meaning of life?',
+      'So, how\'s the weather?',
+      'Ja ja ja bitte genau.',
+      'Check <a href="https://youtu.be/BROWqjuTM0g">this</a> out!'
     ];
-  
-    $scope.getRandomString = function() {
-      return _.sample($scope.footerStrings);
-    }
+
+    $scope.randomString = _.sample($scope.footerStrings);
   });

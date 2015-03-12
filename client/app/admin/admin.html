@@ -242,17 +242,22 @@
   <div class="container well well-lg">
     <h3>Import/export settings</h3>
     <p>Here you can backup or restore your settings from a generated JSON file.</p> 
+    <br/>
 
-    <form class="form-inline">
-      <br/>
-      <a class="btn btn-default btn-info" role="button" ng-click="exportSettings();">Export settings</a>
-      <br/></br>
-      <div class="form-group">
-        <!-- THIS DOESN'T WORK! -->
-        <input class="form-control" type="file">
+    <a class="btn btn-default btn-info" role="button" ng-show="!showImportSettings" ng-click="importSettingsShow();" >Import settings</a>
+
+    <div ng-show="showImportSettings">
+        <div class="form-group">
+        <textarea class="form-control" rows="2" placeholder="Please, paste the contents of 'jrooms_settings.json' here." ng-model="importJSONString"></textarea>
       </div>
-      <a class="btn btn-default btn-info" role="button" ng-click="importSettings();" >Import settings</a>
-    </form>
+
+      <p class="text-danger">By clicking Submit, you will overwrite all of the current settings with the one stored in the configuration file. Proceed with caution.</p>
+      <a class="btn btn-default btn-danger" role="button"  ng-click="importSettingsSubmit();" >Submit!</a>
+    </div>
+
+    <br/><br/>
+
+    <a class="btn btn-default btn-info" role="button" ng-href="{{ exportSettingsURL(); }}" download="jrooms_settings.json">Export settings</a> 
   </div>
 
   <div class="container well well-lg">

@@ -2,25 +2,36 @@
 
 angular.module('jRoomsApp')
   .controller('NavbarCtrl', function ($scope, $location, State) {
-    
-    $scope.isCollapsed = true;
-    $scope.admin = { title: 'Admin', link: '/admin' };
     $scope.menu = [
     {
     	title: 'Home',
-    	link: '/'
+    	link: '/',
+        needsLogin: false,
+        needsAdmin: false
+    },
+    {
+        title: '<strong>Admin</strong>',
+        link: '/admin',
+        needsLogin: true,
+        needsAdmin: true
     },
     {
     	title: 'Issues?',
-    	link: '/faq'
+    	link: '/faq',
+        needsLogin: false,
+        needsAdmin: false
     },
     {
     	title: 'Results',
-    	link: '/results'
+    	link: '/results',
+        needsLogin: false,
+        needsAdmin: false
     },
     {
     	title: 'About',
-    	link: '/about'
+    	link: '/about',
+        needsLogin: false,
+        needsAdmin: false
     },
     ];
 
@@ -46,6 +57,12 @@ angular.module('jRoomsApp')
     $scope.$watch(State.user, function(val) {
         $scope.user = val;
     }, true);
+
+    $scope.shouldDisplay = function(item) {
+        if (item.needsLogin && !$scope.loggedIn) return false;
+        if (item.needsAdmin && !$scope.isAdmin) return false;
+        return true;
+    };
 
     $scope.isActive = function(route) {
       return route === $location.path();

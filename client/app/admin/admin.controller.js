@@ -3,6 +3,8 @@
 angular.module('jRoomsApp')
   .controller('AdminCtrl', function ($scope, $location, State) {
   	$scope.nextPhaseId = 1;
+    $scope.showImportSettings = false;
+    $scope.importJSONString = '';
 
   	// Beware the bug! College phase needs to unset all the shit.
   	$scope.settings = {
@@ -93,13 +95,35 @@ angular.module('jRoomsApp')
       //}
   	}
 
-  	$scope.exportSettings = function() {
+  	$scope.exportSettingsURL = function() {
+      // Works in Firefox, Chrome, Opera.
+      var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify($scope.settings));
+      return 'data:'+data;
+    }
 
-  	};
+    $scope.importSettingsShow = function() {
+  	  $scope.showImportSettings = true;
+  	}
 
-    $scope.importSettings = function() {
-  		
-  	};
+    $scope.importSettingsSubmit = function() {
+      $scope.showImportSettings = false;
+
+      var obj;
+      try {
+        obj = JSON.parse($scope.importJSONString);
+        console.log(obj);
+      }
+      catch (syntaxError) {
+        // error
+        return;
+      }
+
+      // Validate a bit more?
+      $scope.settings = obj;
+      $scope.importJSONString = '';
+
+      console.log($scope.settings.tallPeople);
+    }
 
   	$scope.resetSystem = function() {
 
