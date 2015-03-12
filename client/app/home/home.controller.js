@@ -8,13 +8,6 @@ angular.module('jRoomsApp')
     $scope.colleges = ['Krupp', 'Nordmetall', 'Mercator', 'C3'];
     $scope.rooms = [''];
 
-  	// Redirect logged out users
-  	// $scope.$watch(State.loggedIn, function(val) {
-  	// 	if (!val) {
-  	// 		$location.path('/');
-  	// 	}
-  	// });
-
   	$scope.$watch(State.user, function(val) {
         if (val && val.username) {
           $scope.user = val;

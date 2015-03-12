@@ -33,5 +33,21 @@ angular.module('jRoomsApp', [
           $location.path('/');
         }
       });
+
+      if ($state.current !== undefined) {
+        // Check for login
+        if ($state.current.data !== undefined
+          && $state.current.data.needsLogin
+          && !State.loggedIn()) {
+          $location.path('/');
+        }
+
+        // Check for admin
+        if ($state.current.data !== undefined
+          && $state.current.data.needsAdmin
+          && !State.isAdmin()) {
+          $location.path('/');
+        }
+      }
     });
   });
