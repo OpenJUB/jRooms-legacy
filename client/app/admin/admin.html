@@ -4,7 +4,7 @@
     <h3>Import OpenJUB data</h3>
 
     <div ng-show="settings.isDatabaseReady">
-      <p class="text-success">Done!</p>
+      <p class="text-success">Done! <i class="glyphicon glyphicon-ok"></i></p>
     </div>
 
     <div ng-show="!settings.isDatabaseReady">
@@ -17,161 +17,165 @@
     <h3>Set phases</h3>
     <p>Here you can describe the phases of room allocation process and their time slots. For each phase ...</p>
 
-    <div class="panel panel-default" ng-repeat="item in settings.phases">
-      <div class="panel-heading">
-        <h3 class="panel-title">{{ item.name }}</h3>
-      </div>
-      <div class="panel-body">
-        <!-- Name, From, To -->
-        <form class="form-inline">
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="Name" ng-model="item.name">
-          </div>
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="From" ng-model="item.from">
-          </div>
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="To" ng-model="item.to">
-          </div>
-        </form>
-        <br/>
+    <accordion ng-repeat="item in settings.phases">
+      <accordion-group>
+        <accordion-heading>
+          <i class="pull-right glyphicon glyphicon-remove" ng-click="removePhase(item.id);"></i>
+          <h3 class="panel-title">{{ item.name }}</h3>
+        </accordion-heading>
 
-        <h5>Filters:</h5>
-
-        <!-- College phase -->
-        <div class="form-group"> 
-          <div class="checkbox">
-            <label>
-            <input type="checkbox" ng-model="item.filters.enableCollegePhase" ng-change="collegePhaseSelected(item.id);">
-              College selection phase
-            </label>
-          </div>
-        </div>
-
-        <!-- Filter by points -->
-        <div class="form-group"> 
-          <div class="checkbox">
-            <label>
-            <input type="checkbox" ng-disabled="item.filters.enableCollegePhase" ng-model="item.filters.enableFilterPoints">
-              Points
-            </label>
-          </div>
-
-          <div ng-show="item.filters.enableFilterPoints">
-            <form class="form-inline">
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="Min" ng-model="item.filters.pointsMin">
-              </div>
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="Max" ng-model="item.filters.pointsMax">
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <!-- Filter by college -->
-        <div class="form-group"> 
-          <div class="checkbox">
-            <label>
-            <input type="checkbox" ng-disabled="item.filters.enableCollegePhase" ng-model="item.filters.enableFilterColleges">
-              College
-            </label>
-          </div>
-
-          <div ng-show="item.filters.enableFilterColleges">
+        <div class="container">
+            <!-- Name, From, To -->
+          <div class="form-inline">
             <div class="form-group">
-              <div class="checkbox">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <label>
-                <input type="checkbox" ng-model="item.filters.colleges.krupp">
-                  Krupp
-                </label>
+              <input type="text" class="form-control" placeholder="Name" ng-model="item.name">
+            </div>
+
+            <div class="form-group">
+              <input type="text" class="form-control" ng-model="item.from" placeholder="From (dd.MM.yy)"/>
+            </div>
+
+            <div class="form-group">
+              <input type="text" class="form-control" ng-model="item.to" placeholder="To (dd.MM.yy)"/>
+            </div>
+          </div>
+
+          <br/>
+
+          <h5>Filters:</h5>
+
+          <!-- College phase -->
+          <div class="form-group"> 
+            <div class="checkbox">
+              <label>
+              <input type="checkbox" ng-model="item.filters.enableCollegePhase" ng-change="collegePhaseSelected(item.id);">
+                College selection phase
+              </label>
+            </div>
+          </div>
+
+          <!-- Filter by points -->
+          <div class="form-group"> 
+            <div class="checkbox">
+              <label>
+              <input type="checkbox" ng-disabled="item.filters.enableCollegePhase" ng-model="item.filters.enableFilterPoints">
+                Points
+              </label>
+            </div>
+
+            <div ng-show="item.filters.enableFilterPoints">
+              <form class="form-inline">
+                <div class="form-group">
+                  <input type="text" class="form-control" placeholder="Min" ng-model="item.filters.pointsMin">
+                </div>
+                <div class="form-group">
+                  <input type="text" class="form-control" placeholder="Max" ng-model="item.filters.pointsMax">
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Filter by college -->
+          <div class="form-group"> 
+            <div class="checkbox">
+              <label>
+              <input type="checkbox" ng-disabled="item.filters.enableCollegePhase" ng-model="item.filters.enableFilterColleges">
+                College
+              </label>
+            </div>
+
+            <div ng-show="item.filters.enableFilterColleges">
+              <div class="form-group">
+                <div class="checkbox">
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <label>
+                  <input type="checkbox" ng-model="item.filters.colleges.krupp">
+                    Krupp
+                  </label>
+                </div>
+                <div class="checkbox">
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <label>
+                  <input type="checkbox" ng-model="item.filters.colleges.nordmetall">
+                    Nordmetall
+                  </label>
+                </div>
+                <div class="checkbox">
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <label>
+                  <input type="checkbox" ng-model="item.filters.colleges.mercator">
+                    Mercator
+                  </label>
+                </div>
+                <div class="checkbox">
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <label>
+                  <input type="checkbox" ng-model="item.filters.colleges.c3">
+                    College 3
+                  </label>
+                </div>
               </div>
-              <div class="checkbox">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <label>
-                <input type="checkbox" ng-model="item.filters.colleges.nordmetall">
-                  Nordmetall
-                </label>
-              </div>
-              <div class="checkbox">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <label>
-                <input type="checkbox" ng-model="item.filters.colleges.mercator">
-                  Mercator
-                </label>
-              </div>
-              <div class="checkbox">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <label>
-                <input type="checkbox" ng-model="item.filters.colleges.c3">
-                  College 3
-                </label>
+            </div>
+          </div>
+
+          <!-- Filter by tall -->
+          <div class="form-group"> 
+            <div class="checkbox">
+              <label>
+              <input type="checkbox" ng-disabled="item.filters.enableCollegePhase" ng-model="item.filters.enableFilterTall">
+                Tall people
+              </label>
+            </div>
+          </div>
+
+          <!-- Filter by exchange -->
+          <div class="form-group"> 
+            <div class="checkbox">
+              <label>
+              <input type="checkbox" ng-disabled="item.filters.enableCollegePhase" ng-model="item.filters.enableFilterExchange">
+                Exchange students
+              </label>
+            </div>
+          </div>
+          
+          <!-- Filter by room time -->
+          <div class="form-group"> 
+            <div class="checkbox">
+              <label>
+              <input type="checkbox" ng-disabled="item.filters.enableCollegePhase" ng-model="item.filters.enableFilterRooms">
+                Room type
+              </label>
+            </div>
+
+            <div ng-show="item.filters.enableFilterRooms">
+              <div class="form-group">
+                <div class="checkbox">
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <label>
+                  <input type="checkbox" ng-model="item.filters.rooms.one">
+                    Single
+                  </label>
+                </div>
+                <div class="checkbox">
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <label>
+                  <input type="checkbox" ng-model="item.filters.rooms.two">
+                    Double
+                  </label>
+                </div>
+                <div class="checkbox">
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <label>
+                  <input type="checkbox" ng-model="item.filters.rooms.three">
+                    Triple
+                  </label>
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-        <!-- Filter by tall -->
-        <div class="form-group"> 
-          <div class="checkbox">
-            <label>
-            <input type="checkbox" ng-disabled="item.filters.enableCollegePhase" ng-model="item.filters.enableFilterTall">
-              Tall people
-            </label>
-          </div>
-        </div>
-
-        <!-- Filter by exchange -->
-        <div class="form-group"> 
-          <div class="checkbox">
-            <label>
-            <input type="checkbox" ng-disabled="item.filters.enableCollegePhase" ng-model="item.filters.enableFilterExchange">
-              Exchange students
-            </label>
-          </div>
-        </div>
-        
-        <!-- Filter by room time -->
-        <div class="form-group"> 
-          <div class="checkbox">
-            <label>
-            <input type="checkbox" ng-disabled="item.filters.enableCollegePhase" ng-model="item.filters.enableFilterRooms">
-              Room type
-            </label>
-          </div>
-
-          <div ng-show="item.filters.enableFilterRooms">
-            <div class="form-group">
-              <div class="checkbox">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <label>
-                <input type="checkbox" ng-model="item.filters.rooms.one">
-                  Single
-                </label>
-              </div>
-              <div class="checkbox">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <label>
-                <input type="checkbox" ng-model="item.filters.rooms.two">
-                  Double
-                </label>
-              </div>
-              <div class="checkbox">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <label>
-                <input type="checkbox" ng-model="item.filters.rooms.three">
-                  Triple
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <br/>
-        <a class="btn btn-default btn-danger" ng-click="removePhase(item.id);">Remove</a>
-      </div>
-    </div>
+      </accordion-group>
+    </accordion>
 
     <br/>
     <a class="btn btn-default btn-success" ng-click="addPhase();">Add phase</a>
@@ -249,20 +253,6 @@
       </div>
       <a class="btn btn-default btn-info" role="button" ng-click="importSettings();" >Import settings</a>
     </form>
-  </div>
-
-  <div class="container well well-lg">
-    <h3>Export results</h3>
-    <p>You can export results for a specific phase or for allocation process overall</p>
-    
-    <div class="form-group">
-      <select class="form-control" ng-model="resultExport">
-        <option>Final results (all allocated rooms)</option>
-        <option>[ Here goes the current phase list ]</option>
-      </select>
-    </div>
-
-    <a class="btn btn-default btn-info" role="button" ng-click="exportResults();">Export</a>
   </div>
 
   <div class="container well well-lg">

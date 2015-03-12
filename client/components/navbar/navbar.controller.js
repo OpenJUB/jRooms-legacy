@@ -30,6 +30,13 @@ angular.module('jRoomsApp')
 
     $scope.$watch(State.loggedIn, function(val) {
         $scope.loggedIn = val;
+
+        if (val) {
+            $scope.menu[0].link = '/home';
+        }
+        else {
+            $scope.menu[0].link = '/';
+        }
     }, true);
 
     $scope.$watch(State.isAdmin, function(val) {

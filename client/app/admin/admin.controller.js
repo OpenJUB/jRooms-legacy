@@ -2,7 +2,6 @@
 
 angular.module('jRoomsApp')
   .controller('AdminCtrl', function ($scope, $location, State) {
-  	$scope.resultExport = '';
   	$scope.nextPhaseId = 1;
 
   	// Beware the bug! College phase needs to unset all the shit.
@@ -32,7 +31,7 @@ angular.module('jRoomsApp')
 
   	$scope.setSettings = function() {
 
-  	}
+  	};
 
   	$scope.importUsers = function() {
   		$scope.settings.isDatabaseReady = true;
@@ -41,7 +40,7 @@ angular.module('jRoomsApp')
   	$scope.addPhase = function() {
   		$scope.settings.phases.push({
   			id: $scope.nextPhaseId++,
-  			name: '',
+  			name: 'New phase',
   			from: '',
   			to: '',
   			filters: {
@@ -86,10 +85,12 @@ angular.module('jRoomsApp')
     }
 
   	$scope.removePhase = function(id) {
-  		$scope.settings.phases = _.reject($scope.settings.phases, function(val) {
-  			if (val.id == id) return true;
-  			return false;
-  		})
+      //if(window.confirm("Are you sure? You can't undo that...")) {
+        $scope.settings.phases = _.reject($scope.settings.phases, function(val) {
+          if (val.id == id) return true;
+          return false;
+        });
+      //}
   	}
 
   	$scope.exportSettings = function() {
@@ -99,10 +100,6 @@ angular.module('jRoomsApp')
     $scope.importSettings = function() {
   		
   	};
-
-  	$scope.exportResults = function() {
-  		//option: $scope.resultExport;
-  	}
 
   	$scope.resetSystem = function() {
 
