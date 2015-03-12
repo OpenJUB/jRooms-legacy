@@ -22,7 +22,7 @@ var userSchema = new Schema({
 	round_name: String,
 	room_preferences: Array,
 	room_final: String,
-	points: Object,
+	points: String,
 	major: String,
 	description: String,
 	isAdmin: Boolean,

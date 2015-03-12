@@ -30,7 +30,7 @@ exports.calculate = function(user) { // Returns item that contains how many poin
 
     // Get individual points
     var points = new Object();
-    points.magic_number = (new Date().getFullYear()) - user.graduation_year  + 3;
+    points.magic_number = (new Date().getFullYear() - 2000) - user.graduation_year  + 3;
     points.year_points = points.magic_number; // 2 points if graduating next year, 1 if in 2 years.
     points.college_spirit = 0.5 * (1 - (user.current_college === user.next_college)); // 0.5 points if same college, 0 if in different
 
