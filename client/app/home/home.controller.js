@@ -9,11 +9,11 @@ angular.module('jRoomsApp')
     $scope.rooms = [''];
 
   	// Redirect logged out users
-  	$scope.$watch(State.loggedIn, function(val) {
-  		if (!val) {
-  			$location.path('/');
-  		}
-  	});
+  	// $scope.$watch(State.loggedIn, function(val) {
+  	// 	if (!val) {
+  	// 		$location.path('/');
+  	// 	}
+  	// });
 
   	$scope.$watch(State.user, function(val) {
         if (val && val.username) {
