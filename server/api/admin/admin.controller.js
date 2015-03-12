@@ -45,7 +45,7 @@ exports.reset_users = function(req, res) {
     users.forEach(function(item){
       //var item = users[i];
       var this_year = new Date().getFullYear();
-      if(item.status !== "undergrad" || item.year <= (this_year - 2000)) {
+      if(item.status !== "undergrad" || item.year < (this_year - 2000)) {
         if(config.admins.indexOf(item.username) > -1)
         {
 
