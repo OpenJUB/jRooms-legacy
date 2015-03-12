@@ -1,21 +1,11 @@
 'use strict';
 
 angular.module('jRoomsApp')
-  .service('State', function (ipCookie, Communicator) {
+  .service('State', function ($state, $location, ipCookie, Communicator) {
    var loggedIn = false;
    var isAdmin = false;
    var user = {};
    var currentPhase = {};
-
-   if (ipCookie('token')) {
-    Communicator.getCurrentUser(function(err, data) {
-      if (!err && data) {
-        loggedIn = true;
-        isAdmin = data.isAdmin;
-        user = data;
-      }
-    });
-   }
 
    return {
     loggedIn : function() {
@@ -28,6 +18,23 @@ angular.module('jRoomsApp')
 
     isAdmin : function() {
       return isAdmin;
+    },
+
+    updateUser : function(fn) { 
+     if (ipCookie('token')) {
+      Communicator.getCurrentUser(function(err, data) {
+        if (!err && data) {
+          loggedIn = true;
+          isAdmin = data.isAdmin;
+          user = data;
+
+          fn ( true, user );
+        }
+      });
+     }
+     else {
+      fn( false , null )
+     }
     },
 
     currentPhase : function() {
@@ -47,11 +54,10 @@ angular.module('jRoomsApp')
               loggedIn = true;
               isAdmin = data.isAdmin;
               user = data;
+
+              $location.path('/home');
             }
           });
-        }
-        else {
-          logout();
         }
       });
 
@@ -59,11 +65,25 @@ angular.module('jRoomsApp')
    },
 
    logout : function() {
+    ipCookie.remove('token');
+
     loggedIn = false;
     isAdmin = false;
     user = {};
 
-    ipCookie.remove('token');
+    // Check for login
+    if ($state.current.data !== undefined
+      && $state.current.data.needsLogin
+      && !loggedIn) {
+      $location.path('/');
+    }
+
+    // Check for admin
+    if ($state.current.data !== undefined
+      && $state.current.data.needsAdmin
+      && !isAdmin) {
+      $location.path('/');
+    }
    }
   };
 });

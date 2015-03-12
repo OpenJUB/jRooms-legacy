@@ -244,15 +244,16 @@
     <p>Here you can backup or restore your settings from a generated JSON file.</p> 
     <br/>
 
-    <a class="btn btn-default btn-info" role="button" ng-show="!showImportSettings" ng-click="importSettingsShow();" >Import settings</a>
+    <a class="btn btn-default btn-info" role="button" ng-show="!showImportSettings" ng-click="importSettingsToggle();" >Import settings</a>
 
     <div ng-show="showImportSettings">
         <div class="form-group">
         <textarea class="form-control" rows="2" placeholder="Please, paste the contents of 'jrooms_settings.json' here." ng-model="importJSONString"></textarea>
       </div>
 
-      <p class="text-danger">By clicking Submit, you will overwrite all of the current settings with the one stored in the configuration file. Proceed with caution.</p>
-      <a class="btn btn-default btn-danger" role="button"  ng-click="importSettingsSubmit();" >Submit!</a>
+      <p class="text-danger">By clicking Import, you will overwrite all of the current settings with the one stored in the configuration file. Proceed with caution.</p>
+      <a class="btn btn-default btn-danger" role="button"  ng-click="importSettingsSubmit();" >Import!</a>
+      <a class="btn btn-default" role="button"  ng-click="importSettingsToggle();" >Cancel</a>
     </div>
 
     <br/><br/>

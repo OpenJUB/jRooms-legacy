@@ -101,8 +101,8 @@ angular.module('jRoomsApp')
       return 'data:'+data;
     }
 
-    $scope.importSettingsShow = function() {
-  	  $scope.showImportSettings = true;
+    $scope.importSettingsToggle = function() {
+  	  $scope.showImportSettings = !$scope.showImportSettings;
   	}
 
     $scope.importSettingsSubmit = function() {

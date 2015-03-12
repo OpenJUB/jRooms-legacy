@@ -6,6 +6,7 @@ angular.module('jRoomsApp')
       .state('results', {
         url: '/results',
         templateUrl: 'app/results/results.html',
-        controller: 'ResultsCtrl'
+        controller: 'ResultsCtrl',
+        data: { needsLogin: false, needsAdmin: false }
       });
   });

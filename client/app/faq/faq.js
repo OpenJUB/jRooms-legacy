@@ -6,6 +6,7 @@ angular.module('jRoomsApp')
       .state('faq', {
         url: '/faq',
         templateUrl: 'app/faq/faq.html',
-        controller: 'FaqCtrl'
+        controller: 'FaqCtrl',
+        data: { needsLogin: false, needsAdmin: false }
       });
   });

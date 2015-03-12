@@ -1,53 +1,47 @@
 'use strict';
 
 angular.module('jRoomsApp')
-  .controller('NavbarCtrl', function ($scope, $location, State) {
+  .controller('NavbarCtrl', function ($scope, $state, $location, State) {
     $scope.menu = [
     {
     	title: 'Home',
     	link: '/',
-        needsLogin: false,
-        needsAdmin: false
+        state: 'main'
+    },
+    {
+        title: 'Dashboard',
+        link: '/home',
+        state: 'home'
     },
     {
         title: '<strong>Admin</strong>',
         link: '/admin',
-        needsLogin: true,
-        needsAdmin: true
+        state: 'admin'
     },
     {
     	title: 'Issues?',
     	link: '/faq',
-        needsLogin: false,
-        needsAdmin: false
+        state: 'faq'
     },
     {
     	title: 'Results',
     	link: '/results',
-        needsLogin: false,
-        needsAdmin: false
+        state: 'results'
     },
     {
     	title: 'About',
     	link: '/about',
-        needsLogin: false,
-        needsAdmin: false
-    },
+        state: 'about'
+    }
     ];
 
+    $scope.isCollapsed = true;
     $scope.loggedIn = false;
     $scope.user = {};
     $scope.isAdmin = false;
 
     $scope.$watch(State.loggedIn, function(val) {
         $scope.loggedIn = val;
-
-        if (val) {
-            $scope.menu[0].link = '/home';
-        }
-        else {
-            $scope.menu[0].link = '/';
-        }
     }, true);
 
     $scope.$watch(State.isAdmin, function(val) {
@@ -59,8 +53,16 @@ angular.module('jRoomsApp')
     }, true);
 
     $scope.shouldDisplay = function(item) {
-        if (item.needsLogin && !$scope.loggedIn) return false;
-        if (item.needsAdmin && !$scope.isAdmin) return false;
+        if ($state.get(item.state).data !== undefined 
+        && $state.get(item.state).data.needsLogin
+        && !$scope.loggedIn) 
+            return false;
+
+        if ($state.get(item.state).data !== undefined 
+        && $state.get(item.state).data.needsAdmin
+        && !$scope.isAdmin) 
+            return false;
+
         return true;
     };
 
