@@ -3,6 +3,7 @@
 var _ = require('lodash');
 var config = require('../../config/environment');
 var User = require('./../user/user.model');
+var controller = require('./../user/user.controller');
 var request = require('request');
 
 
@@ -56,6 +57,22 @@ exports.reset_users = function(req, res) {
       }
       console.log(item.major);
       fin.push(item);
+      var thing = new User({
+        name: item.fullName,
+        surname: item.lastName,
+        username: item.username,
+        eid: item.eid,
+        major: item.major,
+        description: item.description,
+        country: item.country,
+        graduation_year: item.year,
+        college: item.college,
+        isAdmin: (config.admins.indexOf(item.username) > -1),
+        points: {}
+      });
+      thing.points = JSON.stringify(controller.calculate(thing));
+      //console.log(user.points);
+
       var user = new User({
         name: item.fullName,
         surname: item.lastName,
@@ -66,10 +83,11 @@ exports.reset_users = function(req, res) {
         country: item.country,
         graduation_year: item.year,
         college: item.college,
-        isAdmin: (config.admins.indexOf(item.username) > -1)
+        isAdmin: (config.admins.indexOf(item.username) > -1),
+        points: thing.points
       });
-
       user.save();
+      //console.log(user);
     });
   });
   //database_is_empty = false;
