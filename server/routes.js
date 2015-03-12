@@ -66,6 +66,7 @@ module.exports = function(app) {
   });
 
   // Insert routes below
+  app.use('/api/phase', require('./api/phase'));
   app.use('/api/admin', require('./api/admin'));
   app.use('/api/user', require('./api/user'));
   
