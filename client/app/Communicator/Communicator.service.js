@@ -66,4 +66,12 @@ angular.module('jRoomsApp').service('Communicator', function ($http) {
   this.importUsers = function(fn) {
     this.sendGET('/api/admin/importUsers', {}, fn);
   }
+
+  this.getUser = function(cid, fn) {
+    this.sendGET('/api/admin/getUser', { username : cid }, fn);
+  }
+
+  this.setUser = function(cid, user, fn) {
+    this.sendPOST('/api/admin/setUser', { username : cid, user : user }, fn)
+  }
 });

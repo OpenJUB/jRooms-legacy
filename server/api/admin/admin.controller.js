@@ -23,11 +23,11 @@ exports.importUsers = function(req, res) {
   // First user will execute this to pull the others.
   // Please, modify from the stuff below.
   settings.isDatabaseReady = true;
-  res.json(200, settings);
+  return res.json(200, settings);
 }
 
 exports.currentSettings = function(req, res) {
-    res.json(200, settings);
+    return res.json(200, settings);
 }
 
 exports.updateSettings = function(req, res) {
@@ -35,7 +35,31 @@ exports.updateSettings = function(req, res) {
     settings = req.body.settings;
   }
 
-  res.json(200, {});
+  return res.json(200, {});
+}
+
+exports.getUser = function(req, res) {
+  return res.json(200, {
+    name: 'Dmitrii Cucleschin',
+    username: 'dcucleschi',
+    college: 'Krupp',
+    country: 'Moldova',
+    description: 'ug 15 CS',
+    major: 'Computer Science',
+    roommates: [],
+    inbox: [],
+    isAdmin: true,
+    college_preferences: []
+  });
+}
+
+exports.setUser = function(req, res) {
+  if (req.body.username && req.body.user) {
+    return res.json(200, {});
+  }
+  else {
+    return res.json(500, {});
+  }
 }
 
 exports.delete_users = function(req, res) {

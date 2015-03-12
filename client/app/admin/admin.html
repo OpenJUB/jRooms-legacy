@@ -1,7 +1,5 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
-  <a class="btn btn-default btn-info" role="button" ng-click="updateSettings();">Save settings!</a>
-
 <div class="container well well-lg">
   <h3>Import OpenJUB data</h3>
 
@@ -11,7 +9,7 @@
 
   <div ng-show="!settings.isDatabaseReady">
     <p>We will use your auth token to retrieve a list of students from OpenJUB.</p> <p class="text-danger">Please, note, that this step is a prerequisite for everything else to work.</p>
-    <a class="btn btn-default btn-danger" role="button" ng-click="importUsers();">Let's do it!</a>
+    <a class="btn btn-default btn-danger"ng-click="importUsers();">Let's do it!</a>
   </div>
 </div>
 
@@ -181,6 +179,7 @@
 
   <br/>
   <a class="btn btn-default btn-success" ng-click="addPhase();">Add phase</a>
+  <a class="btn btn-default btn-info"ng-click="updateSettings();">Save</a>
 </div>
 
 <div class="container well well-lg">
@@ -190,15 +189,8 @@
   <div class="form-group">
     <textarea class="form-control" rows="4" placeholder="dcucleschi,fstankovsk,vungureanu" ng-model="settings.tallPeople"></textarea>
   </div>
-</div>
 
-<div class="container well well-lg">
-  <h3>Modify user's information</h3>
-  <p>If for some reason CampusNet data imported from OpenJUB is not accurate, you can use this section to manually edit user's information.</p>
-
-  <div class="form-group">
-    <input type="text" class="form-control" id="modifyUsername" placeholder="CampusNet username">
-  </div>
+  <a class="btn btn-default btn-info"ng-click="updateSettings();">Save</a>
 </div>
 
 <div class="container well well-lg">
@@ -208,6 +200,8 @@
   <div class="form-group">
     <textarea class="form-control"rows="4" placeholder="KC302,MA108,CC326,NB220" ng-model="settings.disabledRooms"></textarea>
   </div>
+
+  <a class="btn btn-default btn-info"ng-click="updateSettings();">Save</a>
 </div>
 
 <div class="container well well-lg">
@@ -239,6 +233,42 @@
       </label>
     </div>
   </div>
+
+  <a class="btn btn-default btn-info"ng-click="updateSettings();">Save</a>
+</div>
+
+<div class="container well well-lg">
+  <h3>Modify user's information</h3>
+  <p>If for some reason CampusNet data imported from OpenJUB is not accurate, you can use this section to manually edit user's information.</p>
+
+  <div class="form-inline" ng-show="!showEditUser">
+    <input type="text" class="form-control" placeholder="CampusNet username" ng-model="editUserString">
+    <a class="btn btn-default"ng-click="editUserToggle();">Edit</a>
+  </div>
+
+  <div ng-show="showEditUser" class="col-md-4">
+    <div class="form-group">
+      <input type="text" class="form-control" placeholder="CampusNet username" ng-model="editUser.username">
+    </div>
+    <div class="form-group">
+      <input type="text" class="form-control" placeholder="Full name" ng-model="editUser.name">
+    </div>
+    <div class="form-group">
+      <input type="text" class="form-control" placeholder="Country" ng-model="editUser.country">
+    </div>
+    <div class="form-group">
+      <input type="text" class="form-control" placeholder="Major" ng-model="editUser.major">
+    </div>
+    <div class="form-group">
+      <input type="text" class="form-control" placeholder="Roommates" ng-model="editUser.roommates">
+    </div>
+    <div class="form-group">
+      <input type="text" class="form-control" placeholder="Room requests" ng-model="editUser.rooms">
+    </div>
+
+    <a class="btn btn-default btn-info" ng-click="editUserSubmit();" >Save</a>
+    <a class="btn btn-default" ng-click="editUserToggle();" >Cancel</a>
+  </div>
 </div>
 
 <div class="container well well-lg">
@@ -246,7 +276,7 @@
   <p>Here you can backup or restore your settings from a generated JSON file.</p> 
   <br/>
 
-  <a class="btn btn-default btn-info" role="button" ng-show="!showImportSettings" ng-click="importSettingsToggle();" >Import settings</a>
+  <a class="btn btn-default btn-info"ng-show="!showImportSettings" ng-click="importSettingsToggle();" >Import settings</a>
 
   <div ng-show="showImportSettings">
       <div class="form-group">
@@ -254,19 +284,19 @@
     </div>
 
     <p class="text-danger">By clicking Import, you will overwrite all of the current settings with the one stored in the configuration file. Proceed with caution.</p>
-    <a class="btn btn-default btn-danger" role="button"  ng-click="importSettingsSubmit();" >Import!</a>
-    <a class="btn btn-default" role="button"  ng-click="importSettingsToggle();" >Cancel</a>
+    <a class="btn btn-default btn-danger" ng-click="importSettingsSubmit();" >Import!</a>
+    <a class="btn btn-default" ng-click="importSettingsToggle();" >Cancel</a>
   </div>
 
   <br/><br/>
 
-  <a class="btn btn-default btn-info" role="button" ng-href="{{ exportSettingsURL(); }}" download="jrooms_settings.json">Export settings</a> 
+  <a class="btn btn-default btn-info"ng-href="{{ exportSettingsURL(); }}" download="jrooms_settings.json">Export settings</a> 
 </div>
 
 <div class="container well well-lg">
   <h3>Reset the system</h3>
   <p class="text-danger">This will reset the system for the new allocation process. All the settings, user data and allocation results will be permanently deleted!</p>
-  <a class="btn btn-default btn-danger" role="button" ng-click="resetSystem();">I understand and choose to delete everything</a>
+  <a class="btn btn-default btn-danger"ng-click="resetSystem();">I understand and choose to delete everything</a>
 </div>
 
 

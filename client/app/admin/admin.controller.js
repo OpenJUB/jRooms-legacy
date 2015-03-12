@@ -4,6 +4,9 @@ angular.module('jRoomsApp')
   .controller('AdminCtrl', function ($scope, $location, State, Communicator) {
   	$scope.nextPhaseId = 1;
     $scope.showImportSettings = false;
+    $scope.showEditUser = false;
+    $scope.editUserString = '';
+    $scope.editUser = {};
     $scope.importJSONString = '';
 
   	// Beware the bug! College phase needs to unset all the shit.
@@ -104,6 +107,34 @@ angular.module('jRoomsApp')
         });
       //}
   	}
+
+    $scope.editUserToggle = function() {
+      $scope.showEditUser = !$scope.showEditUser;
+
+      if ($scope.showEditUser) {
+        Communicator.getUser($scope.editUserString, function(err, user) {
+          if (!err) {
+            $scope.editUser = user;
+          }
+          else {
+            console.log("Error: Edit user toggle.");
+          }
+        });
+      }
+    }
+
+    $scope.editUserSubmit = function() {
+      $scope.showEditUser = false;
+
+      Communicator.setUser($scope.editUserString, $scope.editUser, function(err, smth) {
+        if (!err) {
+          console.log("Success!");
+        }
+        else {
+          console.log("Error: Edit user submit.")
+        }
+      });
+    }
 
   	$scope.exportSettingsURL = function() {
       // Works in Firefox, Chrome, Opera.
