@@ -5,7 +5,7 @@ angular.module('jRoomsApp').service('Communicator', function ($http) {
   this.openJUB = 'https://api.jacobs-cs.club';
 
   this.sendGET = function(route, body, fn) {
-    $http.get(route, body)
+    $http.get(route, { params: body })
       .success(function(data, status, headers, config) {
         fn(null, data);
       })
@@ -20,6 +20,7 @@ angular.module('jRoomsApp').service('Communicator', function ($http) {
         fn(null, data);
       })
       .error(function(data, status, headers, config) {
+
         fn({ status: status, error: data }, null);
       });
   }

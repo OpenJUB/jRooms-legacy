@@ -7,18 +7,18 @@ var controller = require('./../user/user.controller');
 var request = require('request');
 
 var settings = {
-      isDatabaseReady : false,
-      tallPeople: '',
-      disabledRooms: '',
-      maxRooms: 7,
-      email: {
-        preference1: false,
-        preference2: false,
-        preference3: false,
-        preference4: false
-      },
-      phases: []
-    };
+  isDatabaseReady : false,
+  tallPeople: '',
+  disabledRooms: '',
+  maxRooms: 7,
+  email: {
+    preference1: false,
+    preference2: false,
+    preference3: false,
+    preference4: false
+  },
+  phases: []
+};
 
 exports.importUsers = function(req, res) {
   // First user will execute this to pull the others.
@@ -28,7 +28,11 @@ exports.importUsers = function(req, res) {
 }
 
 exports.currentSettings = function(req, res) {
+  if (settings) {
     return res.json(200, settings);
+  }
+
+  return res.json(500, "No settings found!");
 }
 
 exports.updateSettings = function(req, res) {
@@ -39,28 +43,54 @@ exports.updateSettings = function(req, res) {
   return res.json(200, {});
 }
 
+/**
+ * @brief Get user
+ * @details Gets user details by CampusNet username
+ * 
+ * @param req request
+ * @param res response
+ * 
+ * @return 200 if success, 500 otherwise
+ */
 exports.getUser = function(req, res) {
-  return res.json(200, {
-    name: 'Dmitrii Cucleschin',
-    username: 'dcucleschi',
-    college: 'Krupp',
-    country: 'Moldova',
-    description: 'ug 15 CS',
-    major: 'Computer Science',
-    roommates: [],
-    inbox: [],
-    isAdmin: true,
-    college_preferences: []
+  if (!req.query.username) {
+    return res.json(500, 'Username field is not set');
+  }
+
+  User.findOne({ username : req.query.username }, function(err, data) {
+    if (err) {
+      return res.json(500, 'Couldn\'t find user (' + req.query.username + ')');
+    }
+
+    delete data.token;
+    delete data._v;
+    delete data._id;
+
+    return res.json(200, data);
   });
 }
 
+/**
+ * @brief Set user
+ * @details Modifies user's information by CampusNet username
+ * 
+ * @param req request
+ * @param res result
+ * 
+ * @return 200 if success, 500 otherwise
+ */
 exports.setUser = function(req, res) {
-  if (req.body.username && req.body.user) {
-    return res.json(200, {});
+  if (!req.body.username && req.body.user) {
+    return res.json(500, 'Username or user field is not set');
   }
-  else {
-    return res.json(500, {});
-  }
+
+  User.update({ username : req.body.username }, req.body.user, function(err, data) {
+      if (err) {
+        return res.json(500, err);
+      }
+
+      return res.json(200, {});
+  });
 }
 
 exports.delete_users = function(req, res) {
