@@ -8,6 +8,7 @@ angular.module('jRoomsApp')
   	$scope.nextPhaseId = 1;
     $scope.showImportSettings = false;
     $scope.showEditUser = false;
+    $scope.isImportingUsers = false;
     $scope.editUserString = '';
     $scope.editUser = {};
     $scope.importJSONString = '';
@@ -71,9 +72,15 @@ angular.module('jRoomsApp')
   	};
 
   	$scope.importUsers = function() {
-  	 Communicator.importUsers(function(err, settings) {
-        if (!err && settings) {
-          $scope.settings = settings;
+     $scope.isImportingUsers = true;
+  	 Communicator.importUsers(function(err, data) {
+        $scope.isImportingUsers = false;
+        if (!err) {
+          $scope.settings.isDatabaseReady = true;
+          $scope.alerts.push({
+            type: 'success',
+            msg: 'Successfully imported users from OpenJUB!'
+          });
         }
         else {
           $scope.alerts.push({
@@ -227,9 +234,20 @@ angular.module('jRoomsApp')
     }
 
   	$scope.resetSystem = function() {
-      $scope.alerts.push({
-        type: 'danger',
-        msg: 'I am not implemented yet!'
+      Communicator.resetSystem(function(err, settings) {
+        if (!err && settings) {
+          $scope.settings = settings;
+          $scope.alerts.push({
+            type: 'success',
+            msg: 'Successfully reset everything. Good luck next year, I suppose.'
+          });
+        }
+        else {
+           $scope.alerts.push({
+            type: 'danger',
+            msg: 'Oh oh! Server returned an error while trying to reset its state. Not good.'
+          });
+        }
       });
   	}
   });

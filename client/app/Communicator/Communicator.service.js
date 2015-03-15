@@ -80,4 +80,8 @@ angular.module('jRoomsApp').service('Communicator', function ($http) {
   this.setUser = function(cid, user, fn) {
     this.sendPOST('/api/admin/setUser', { username : cid, user : user }, fn)
   }
+
+  this.resetSystem = function(fn) {
+    this.sendGET('/api/admin/resetSystem', {}, fn);
+  }
 });

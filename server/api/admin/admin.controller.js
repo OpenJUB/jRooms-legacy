@@ -20,13 +20,6 @@ var settings = {
   phases: []
 };
 
-exports.importUsers = function(req, res) {
-  // First user will execute this to pull the others.
-  // Please, modify from the stuff below.
-  settings.isDatabaseReady = true;
-  return res.json(200, settings);
-}
-
 exports.currentSettings = function(req, res) {
   if (settings) {
     return res.json(200, settings);
@@ -93,71 +86,57 @@ exports.setUser = function(req, res) {
   });
 }
 
-exports.delete_users = function(req, res) {
-  var token = req.cookies.token;
+exports.resetSystem = function(req, res) {
   User.$where({}).remove().exec();
-  //database_is_empty = true;
+
+  settings = {
+    isDatabaseReady : false,
+    tallPeople: '',
+    disabledRooms: '',
+    maxRooms: 7,
+    email: {
+      preference1: false,
+      preference2: false,
+      preference3: false,
+      preference4: false
+    },
+    phases: []
+  };
+
+  return res.json(200, settings);
 }
 
-exports.reset_users = function(req, res) {
 
-  //console.log(req);
-  //exports.delete_users(req, res);
+exports.importUsers = function(req, res) {
+  settings.isDatabaseReady = true;
   User.$where({}).remove().exec();
+
   var url = "https://api.jacobs-cs.club/query/?limit=10000";
   var token = req.cookies.token;
   request.cookie('openjub_session=' + token);
-  //console.log(token);
+
   request({
     method: 'GET',
     uri: url,
     params: {'openjub_session' : token},
     headers: {'Cookie' : 'openjub_session=' + token}
   }, function(err, response, body) {
-    //console.log("HERE");
     if(err) {
-      res.status(500).send(err);
-      return;
+      return res.json(500, err);
     }
     else {
-      //console.log("AAAAAAAAA");
-      //console.log(response);
-      res
-      .status(200)
-      .send();
+      res.json(200, { status: 'success' });
     }
-    var users = JSON.parse(response.body).data;
-    var fin = [];
-    users.forEach(function(item){
-      //var item = users[i];
-      var this_year = new Date().getFullYear();
-      if(item.status !== "undergrad" || item.year < (this_year - 2000)) {
-        if(config.admins.indexOf(item.username) > -1)
-        {
 
-        }
-        else
-        {
+    var users = JSON.parse(response.body).data;
+
+    users.forEach(function(item){
+      var this_year = new Date().getFullYear();
+      if (item.status !== "undergrad") { //|| item.year < (this_year - 2000)) {
+        if (!config.admins.indexOf(item.username) > -1) {
           return;
         }
       }
-      console.log(item.major);
-      fin.push(item);
-      var thing = new User({
-        name: item.fullName,
-        surname: item.lastName,
-        username: item.username,
-        eid: item.eid,
-        major: item.major,
-        description: item.description,
-        country: item.country,
-        graduation_year: item.year,
-        college: item.college,
-        isAdmin: (config.admins.indexOf(item.username) > -1),
-        points: {}
-      });
-      thing.points = JSON.stringify(controller.calculate(thing));
-      //console.log(user.points);
 
       var user = new User({
         name: item.fullName,
@@ -170,11 +149,10 @@ exports.reset_users = function(req, res) {
         graduation_year: item.year,
         college: item.college,
         isAdmin: (config.admins.indexOf(item.username) > -1),
-        points: thing.points
       });
+
+      user.points = JSON.stringify(controller.calculate(user));
       user.save();
-      //console.log(user);
     });
   });
-  //database_is_empty = false;
 }
