@@ -142,6 +142,13 @@ angular.module('jRoomsApp')
       //}
   	}
 
+    $scope.forceSetPhase = function(id) {
+      $scope.alerts.push({
+        type: 'danger',
+        msg: 'I am not implemented yet!'
+      });
+    }
+
     $scope.editUserToggle = function() {
       $scope.showEditUser = !$scope.showEditUser;
 
