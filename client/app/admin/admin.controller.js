@@ -165,7 +165,7 @@ angular.module('jRoomsApp')
         }
 
         $scope.showEditUser = false;
-        $scope.editUserString = false;
+        $scope.editUserString = '';
       });
     }
 
