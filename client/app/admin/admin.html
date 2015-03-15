@@ -1,5 +1,6 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
+<div ng-show="pageReady">
 <div class="container well well-lg">
   <h3>Import OpenJUB data</h3>
 
@@ -297,6 +298,7 @@
   <h3>Reset the system</h3>
   <p class="text-danger">This will reset the system for the new allocation process. All the settings, user data and allocation results will be permanently deleted!</p>
   <a class="btn btn-default btn-danger"ng-click="resetSystem();">I understand and choose to delete everything</a>
+</div>
 </div>
 
 

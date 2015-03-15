@@ -3,6 +3,7 @@
 angular.module('jRoomsApp')
   .controller('AdminCtrl', function ($scope, $location, State, Communicator) {
     $scope.alerts = [];
+    $scope.pageReady = false;
 
   	$scope.nextPhaseId = 1;
     $scope.showImportSettings = false;
@@ -25,6 +26,16 @@ angular.module('jRoomsApp')
   		phases: []
   	};
 
+    $scope.$watch(State.user, function(val) {
+      if (val) {
+        if (val.isAdmin) {
+          $scope.pageReady = true;
+        }
+        else {
+          $scope.pageReady = false;
+        }
+      }
+    })
 
   	Communicator.currentSettings(function(err, settings) {
       if (!err && settings) {
