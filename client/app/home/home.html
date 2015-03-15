@@ -1,17 +1,27 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
-<div class="container"><div class="row">
+<div class="container full-height"><div class="row">
     <!-- //////////////// -->
     <!-- Phase -->
-    <div class="col-md-9 well well-lg">
-      <div id="notEligiblePhase">
-        <h2>Sorry!</h2>
-        <p>It doesn't seem like you eligible for this phase. To select your rooms, please, come back at April 1st, 2015.</p>
+    <div class="container col-md-9">
+      <div class="well well-lg" ng-show="showError">
+        <h2 class="text-danger">Oh oh!</h2>
+        <p>It seems like there was an error while receiving the current phase. <br/><br/>
+        Totally our fault, would you care to <a href="mailto:fi.stankovski@gmail.com">report it</a>?<br/>
+        Thanks!</p>
       </div>
 
-      <div id="collegePhase">
+      <div class="well well-lg" ng-show="showNotEligible">
+        <h2 class="text-danger">Sorry!</h2>
+        <p>It doesn't seem like you are eligible for this phase. <br/><br/>
+        To continue with allocation process, please, come back at {{ currentPhase.next }}.</p>
+      </div>
+
+      <div class="well well-lg" ng-show="showCollegeSelection">
         <h2>College selection phase</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error, laborum eum reiciendis. Voluptates at, ipsa, harum consectetur sit error! Libero nulla repellat, dolore numquam. Sed ducimus, cumque veniam odio. Odio.</p>
+        <p>Please, order the colleges by your housing preference. Your favorite college should be on top. <br/>
+        In an unfortunate case, where demand for a college doesn't allow more places, alternative option will be selected, following down the list.</p>
+        <br/>
 
         <div class="form-group">
           <select class="form-control" ng-model="colleges[0]">
@@ -43,19 +53,25 @@
           </select>
 
           <br/>
-          <a class="btn btn-default" ng-click="updateColleges();">Submit!</a>
+          <br/>
+          <a class="btn btn-default btn-info" ng-click="updateColleges();">Submit!</a>
         </div>
       </div>
 
-      <div id="roomSelectionPhase">
+      <div class="well well-lg" ng-show="showRoomSelection">
         <h2>Room selection phase</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iure, deleniti provident? Soluta, officiis. Molestias, eius doloremque, iure accusantium consectetur sit! Fugiat praesentium dolorem odio, maxime deserunt consectetur magnam, dignissimos rem!</p>
+        <p>Please, select up to {{ maxRooms.length }} rooms, from most to least favorable.<br/>
+        Here will be an inspirational snippet about how does the housing system works and points and blablabla. {{ rooms }}</p>
+        <br/>
 
-        <div class="form-group">
-          <input type="text" class="form-control" placeholder="Room #" ng-model="rooms[0]"></input>
-          <br/>
-          <a class="btn btn-default" ng-click="updateRooms();">Submit!</a>
-        </div>      
+        <div class="form-group container" ng-repeat="room in maxRooms">
+          <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="Room #" ng-model="rooms[room]" required></input>
+          </div>
+        </div>
+
+        <br/>
+        <a class="btn btn-default btn-info" ng-click="updateRooms();">Submit!</a>     
       </div>
     </div>
 

@@ -1,8 +1,7 @@
 'use strict';
 
 angular.module('jRoomsApp')
-  .controller('FooterCtrl', function ($scope) {
-
+  .controller('FooterCtrl', function ($scope, $timeout) {
     $scope.footerStrings = [
       'This footer kind of sucks...',
       'We weren\'t very creative with a footer.',

@@ -3,14 +3,17 @@
 var _ = require('lodash');
 var Phase = require('./phase.model');
 
-exports.currentPhase = function() {
+exports.currentPhase = function(req, res) {
   return res.json(200, {
     id: 1,
     name: 'Testphase',
     from: '11.11.2011',
     to: '12.11.2011',
+    isCollegePhase: true,
+    isEligible: true,
+    maxRooms: 7, // will consider only if need a room alloc phase
+    next: '13.11.2011', //'none' if done with phases
     filters: {
-      enableCollegePhase: true //,
       // enableFilterTall: false,
       // enableFilterColleges: false,
       // enableFilterExchange: false,

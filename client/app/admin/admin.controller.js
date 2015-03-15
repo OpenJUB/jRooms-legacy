@@ -2,6 +2,8 @@
 
 angular.module('jRoomsApp')
   .controller('AdminCtrl', function ($scope, $location, State, Communicator) {
+    $scope.alerts = [];
+
   	$scope.nextPhaseId = 1;
     $scope.showImportSettings = false;
     $scope.showEditUser = false;
@@ -9,11 +11,11 @@ angular.module('jRoomsApp')
     $scope.editUser = {};
     $scope.importJSONString = '';
 
-  	// Beware the bug! College phase needs to unset all the shit.
   	$scope.settings = {
   		isDatabaseReady : false,
   		tallPeople: '',
   		disabledRooms: '',
+      maxRooms: 7,
   		email: {
   			preference1: false,
   			preference2: false,
@@ -27,16 +29,32 @@ angular.module('jRoomsApp')
   	Communicator.currentSettings(function(err, settings) {
       if (!err && settings) {
         $scope.settings = settings;
+
+        if (settings.phases.length > 0) {
+          $scope.nextPhaseId = _.max(settings.phases, function(phase) { return phase.id; }).id + 1;
+        }
       }
       else {
-        console.log("Error: Current settings");
+        $scope.alerts.push({
+          type: 'danger',
+          msg: 'Oh oh! Server returned an error while requesting current settings!'
+        });
       }
     });
 
   	$scope.updateSettings = function() {
       Communicator.updateSettings($scope.settings, function(err, smth) {
-        if (err) {
-          console.log("Error: Update settings.");
+        if (!err) {
+          $scope.alerts.push({
+            type: 'success',
+            msg: 'Successfully saved!'
+          });
+        } 
+        else {
+          $scope.alerts.push({
+            type: 'danger',
+            msg: 'Oh oh! Server returned an error while saving the settings!'
+          });
         }
       });
   	};
@@ -47,19 +65,22 @@ angular.module('jRoomsApp')
           $scope.settings = settings;
         }
         else {
-          console.log("Error: Importing users.");
+          $scope.alerts.push({
+            type: 'danger',
+            msg: 'Oh oh! Server returned an error while importing users!'
+          });
         }
      });
     };
 
   	$scope.addPhase = function() {
   		$scope.settings.phases.push({
-  			id: $scope.nextPhaseId++,
+  			id: $scope.nextPhaseId,
   			name: 'New phase',
   			from: '',
   			to: '',
+        isCollegePhase: false,
   			filters: {
-	  			enableCollegePhase: false,
 	  			enableFilterTall: false,
           enableFilterColleges: false,
 	  			enableFilterExchange: false,
@@ -83,6 +104,8 @@ angular.module('jRoomsApp')
           }
 	  		}
   		});
+
+      ++$scope.nextPhaseId;
   	}
 
     $scope.collegePhaseSelected = function(id) {
@@ -90,7 +113,7 @@ angular.module('jRoomsApp')
         if (val.id == id) return true;
       });
 
-      if (phase.filters.enableCollegePhase) {
+      if (phase.isCollegePhase) {
         phase.filters.enableFilterTall = false;
         phase.filters.enableFilterColleges = false;
         phase.filters.enableFilterExchange = false;
@@ -117,22 +140,32 @@ angular.module('jRoomsApp')
             $scope.editUser = user;
           }
           else {
-            console.log("Error: Edit user toggle.");
+            $scope.alerts.push({
+              type: 'danger',
+              msg: 'Oh oh! Server returned an error while getting a user called "' + $scope.editUserString + '"!'
+            });
           }
         });
       }
     }
 
     $scope.editUserSubmit = function() {
-      $scope.showEditUser = false;
-
       Communicator.setUser($scope.editUserString, $scope.editUser, function(err, smth) {
         if (!err) {
-          console.log("Success!");
+          $scope.alerts.push({
+            type: 'success',
+            msg: 'Modifications to the user have been saved in the database!'
+          });
         }
         else {
-          console.log("Error: Edit user submit.")
+          $scope.alerts.push({
+            type: 'danger',
+            msg: 'Oh oh! Server returned an error while modifying the user "' + $scope.editUserString + '"!'
+          });
         }
+
+        $scope.showEditUser = false;
+        $scope.editUserString = false;
       });
     }
 
@@ -155,7 +188,10 @@ angular.module('jRoomsApp')
         console.log(obj);
       }
       catch (syntaxError) {
-        console.log("Error: Import settings JSON parsing.")
+        $scope.alerts.push({
+          type: 'danger',
+          msg: 'Oh oh! Got a syntax error, while trying to parse the JSON, that you provided! Please, be super careful with what you import here as it might corrupt the state of the entire server.'
+        });
         return;
       }
 
@@ -165,6 +201,9 @@ angular.module('jRoomsApp')
     }
 
   	$scope.resetSystem = function() {
-
+      $scope.alerts.push({
+        type: 'danger',
+        msg: 'I am not implemented yet!'
+      });
   	}
   });

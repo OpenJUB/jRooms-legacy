@@ -37,3 +37,11 @@
     color: #000;
     padding: 0.2em 0;
 }
+
+.alert-msg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+}

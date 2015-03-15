@@ -9,3 +9,5 @@
       </p>
   </div>
 </footer>
+
+<alert ng-repeat="alert in alerts" class="alert-msg" type="{{alert.type}}" close="alerts.splice(index, 1);">{{ alert.msg }}</alert>

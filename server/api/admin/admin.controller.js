@@ -10,6 +10,7 @@ var settings = {
       isDatabaseReady : false,
       tallPeople: '',
       disabledRooms: '',
+      maxRooms: 7,
       email: {
         preference1: false,
         preference2: false,

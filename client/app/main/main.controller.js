@@ -2,6 +2,7 @@
 
 angular.module('jRoomsApp')
   .controller('MainCtrl', function ($scope, $location, State) {
+    $scope.alerts = [];
     $scope.loggedIn = false;
 
     $scope.$watch(State.loggedIn, function(val) {

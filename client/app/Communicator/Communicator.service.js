@@ -54,6 +54,11 @@ angular.module('jRoomsApp').service('Communicator', function ($http) {
     return this.openJUB + '/user/image/' + cid + '/image.jpg';
   }
 
+  // phase
+  this.currentPhase = function(fn) {
+    this.sendGET('/api/phase/current', {}, fn);
+  }
+
   // /admin
   this.currentSettings = function(fn) {
     this.sendGET('/api/admin/currentSettings', {}, fn);
