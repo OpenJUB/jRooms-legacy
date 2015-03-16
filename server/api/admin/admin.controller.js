@@ -3,23 +3,36 @@
 var _ = require('lodash');
 var config = require('../../config/environment');
 var User = require('./../user/user.model');
+var Admin = require('./../admin/admin.model');
 var controller = require('./../user/user.controller');
 var request = require('request');
 
-var settings = {
-  isDatabaseReady : false,
-  tallPeople: '',
-  disabledRooms: '',
-  disabledUsers: '',
-  maxRooms: 7,
-  email: {
-    preference1: false,
-    preference2: false,
-    preference3: false,
-    preference4: false
-  },
-  phases: []
-};
+// Get settings from the database.. Or not?
+var settings; 
+Admin.findOne({}, function(err, data) {
+  if (!err && data) {
+    settings = data;
+  }
+  else {
+   settings = new Admin({
+      isDatabaseReady : false,
+      tallPeople: '',
+      disabledRooms: '',
+      disabledUsers: '',
+      maxRooms: 7,
+      email: {
+        preference1: false,
+        preference2: false,
+        preference3: false,
+        preference4: false
+      },
+      phases: []
+    });
+
+    settings.save();
+  }
+});
+
 
 exports.currentSettings = function(req, res) {
   if (settings) {
@@ -31,10 +44,13 @@ exports.currentSettings = function(req, res) {
 
 exports.updateSettings = function(req, res) {
   if (req.body.settings) {
-    settings = req.body.settings;
+    Admin.find({}).remove().exec();
+
+    settings = new Admin(req.body.settings);
+    settings.save();
   }
 
-  return res.json(200, {});
+  return res.json(200, { status : 'success' });
 }
 
 /**
@@ -53,12 +69,12 @@ exports.getUser = function(req, res) {
 
   User.findOne({ username : req.query.username }, function(err, data) {
     if (err) {
-      return res.json(500, 'Couldn\'t find user (' + req.query.username + ')');
+      return res.json(500, err);
     }
 
-    delete data.token;
-    delete data._v;
-    delete data._id;
+    if (data.token) delete data.token;
+    if (data._v) delete data._v;
+    if (data._id) delete data._id;
 
     return res.json(200, data);
   });
@@ -88,7 +104,7 @@ exports.setUser = function(req, res) {
 }
 
 exports.resetSystem = function(req, res) {
-  User.$where({}).remove().exec();
+  User.find({}).remove().exec();
 
   settings = {
     isDatabaseReady : false,
@@ -111,7 +127,7 @@ exports.resetSystem = function(req, res) {
 
 exports.importUsers = function(req, res) {
   settings.isDatabaseReady = true;
-  User.$where({}).remove().exec();
+  User.find({}).remove().exec();
 
   var url = "https://api.jacobs-cs.club/query/?limit=10000";
   var token = req.cookies.token;
@@ -133,13 +149,6 @@ exports.importUsers = function(req, res) {
     var users = JSON.parse(response.body).data;
 
     users.forEach(function(item){
-      var this_year = new Date().getFullYear();
-      if (item.status !== "undergrad") { //|| item.year < (this_year - 2000)) {
-        if (!config.admins.indexOf(item.username) > -1) {
-          return;
-        }
-      }
-
       var user = new User({
         name: item.fullName,
         surname: item.lastName,

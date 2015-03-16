@@ -4,9 +4,13 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var AdminSchema = new Schema({
-  name: String,
-  info: String,
-  active: Boolean
+	isDatabaseReady : Boolean,
+	tallPeople: String,
+	disabledRooms: String,
+	disabledUsers: String,
+	maxRooms: Number,
+	email: Object,
+	phases: Array
 });
 
 module.exports = mongoose.model('Admin', AdminSchema);

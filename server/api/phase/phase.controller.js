@@ -3,6 +3,10 @@
 var _ = require('lodash');
 var Phase = require('./phase.model');
 
+var isEligible = function() {
+  return true;
+}
+
 exports.currentPhase = function(req, res) {
   return res.json(200, {
     id: 1,
@@ -10,7 +14,7 @@ exports.currentPhase = function(req, res) {
     from: '11.11.2011',
     to: '12.11.2011',
     isCollegePhase: true,
-    isEligible: true,
+    isEligible: isEligible(),
     maxRooms: 7, // will consider only if need a room alloc phase
     next: '13.11.2011', //'none' if done with phases
     filters: {
@@ -40,7 +44,7 @@ exports.currentPhase = function(req, res) {
 }
 
 exports.result = function(req, res) {
-  var phaseId = req.body.phaseId; // ?
+  var phaseId = req.query.phaseId;
 
   return res.json(200, {
     phaseId: phaseId,
