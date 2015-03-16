@@ -203,6 +203,17 @@
 </div>
 
 <div class="container well well-lg">
+  <h3>Disabled users</h3>
+  <p>Modify list of users, which are excluded from the room allocation process. It is still possible to set roommates/rooms for these people manually, using the section below. Please, enter CampusNet usernames separated by commas.</p>
+
+  <div class="form-group">
+    <textarea class="form-control"rows="4" placeholder="mkohlhase,apopa" ng-model="settings.disabledUsers"></textarea>
+  </div>
+
+  <a class="btn btn-default btn-info"ng-click="updateSettings();">Save</a>
+</div>
+
+<div class="container well well-lg">
   <h3>Email options</h3>
   <p>Don't spam the community too much!</p>
   <div class="form-group">

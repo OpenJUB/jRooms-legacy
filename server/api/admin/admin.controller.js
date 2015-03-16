@@ -10,6 +10,7 @@ var settings = {
   isDatabaseReady : false,
   tallPeople: '',
   disabledRooms: '',
+  disabledUsers: '',
   maxRooms: 7,
   email: {
     preference1: false,
@@ -93,6 +94,7 @@ exports.resetSystem = function(req, res) {
     isDatabaseReady : false,
     tallPeople: '',
     disabledRooms: '',
+    disabledUsers: '',
     maxRooms: 7,
     email: {
       preference1: false,
