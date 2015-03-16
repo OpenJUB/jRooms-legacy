@@ -37,8 +37,6 @@
 
         <br/>
 
-        <h5>Filters:</h5>
-
         <!-- College phase -->
         <div class="form-group"> 
           <div class="checkbox">
@@ -49,6 +47,9 @@
           </div>
         </div>
 
+        <div ng-show="!item.isCollegePhase">
+        <br/>
+        <h5>Filters:</h5>
         <!-- Filter by points -->
         <div class="form-group"> 
           <div class="checkbox">
@@ -81,28 +82,28 @@
 
           <div ng-show="item.filters.enableFilterColleges">
             <div class="form-group">
-              <div class="checkbox">
+              <div class="checkbox col-md-offset-1">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <label>
                 <input type="checkbox" ng-model="item.filters.colleges.krupp">
                   Krupp
                 </label>
               </div>
-              <div class="checkbox">
+              <div class="checkbox col-md-offset-1">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <label>
                 <input type="checkbox" ng-model="item.filters.colleges.nordmetall">
                   Nordmetall
                 </label>
               </div>
-              <div class="checkbox">
+              <div class="checkbox col-md-offset-1">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <label>
                 <input type="checkbox" ng-model="item.filters.colleges.mercator">
                   Mercator
                 </label>
               </div>
-              <div class="checkbox">
+              <div class="checkbox col-md-offset-1">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <label>
                 <input type="checkbox" ng-model="item.filters.colleges.c3">
@@ -144,21 +145,21 @@
 
           <div ng-show="item.filters.enableFilterRooms">
             <div class="form-group">
-              <div class="checkbox">
+              <div class="checkbox col-md-offset-1">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <label>
                 <input type="checkbox" ng-model="item.filters.rooms.one">
                   Single
                 </label>
               </div>
-              <div class="checkbox">
+              <div class="checkbox col-md-offset-1">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <label>
                 <input type="checkbox" ng-model="item.filters.rooms.two">
                   Double
                 </label>
               </div>
-              <div class="checkbox">
+              <div class="checkbox col-md-offset-1">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <label>
                 <input type="checkbox" ng-model="item.filters.rooms.three">
@@ -167,6 +168,7 @@
               </div>
             </div>
           </div>
+        </div>
         </div>
       </div>
 
@@ -282,6 +284,9 @@
     </div>
     <div class="form-group">
       <input type="text" class="form-control" placeholder="Room preferences" ng-model="editUser.room_preferences">
+    </div>
+    <div class="form-group">
+      <input type="text" class="form-control" placeholder="Allocated room" ng-model="editUser.allocated_room">
     </div>
 
     <a class="btn btn-default btn-info" ng-click="editUserSubmit();" >Save</a>

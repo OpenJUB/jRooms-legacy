@@ -194,7 +194,7 @@ angular.module('jRoomsApp')
     }
 
   	$scope.exportSettingsURL = function() {
-      // Works in Firefox, Chrome, Opera.
+      // Works nicest in Firefox, Chrome, Opera.
       var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify($scope.settings));
       return 'data:'+data;
     }
