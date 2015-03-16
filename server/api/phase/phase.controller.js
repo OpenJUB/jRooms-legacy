@@ -15,7 +15,7 @@ exports.currentPhase = function(req, res) {
     to: '12.11.2011',
     isCollegePhase: true,
     isEligible: isEligible(),
-    maxRooms: 7, // will consider only if need a room alloc phase
+    maxRooms: 7,
     next: '13.11.2011', //'none' if done with phases
     filters: {
       // enableFilterTall: false,

@@ -73,7 +73,7 @@ exports.getUser = function(req, res) {
     }
 
     if (data.token) delete data.token;
-    if (data._v) delete data._v;
+    if (data.__v) delete data.__v;
     if (data._id) delete data._id;
 
     return res.json(200, data);
