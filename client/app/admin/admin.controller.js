@@ -28,19 +28,9 @@ angular.module('jRoomsApp')
   		phases: []
   	};
 
-    $scope.$watch(State.user, function(val) {
-      if (val) {
-        if (val.isAdmin) {
-          $scope.pageReady = true;
-        }
-        else {
-          $scope.pageReady = false;
-        }
-      }
-    })
-
   	Communicator.currentSettings(function(err, settings) {
       if (!err && settings) {
+        $scope.pageReady = true;
         $scope.settings = settings;
 
         if (settings.phases.length > 0) {

@@ -105,8 +105,9 @@ exports.setUser = function(req, res) {
 
 exports.resetSystem = function(req, res) {
   User.find({}).remove().exec();
+  Admin.find({}).remove().exec();
 
-  settings = {
+   settings = new Admin({
     isDatabaseReady : false,
     tallPeople: '',
     disabledRooms: '',
@@ -119,7 +120,9 @@ exports.resetSystem = function(req, res) {
       preference4: false
     },
     phases: []
-  };
+  });
+
+  settings.save();
 
   return res.json(200, settings);
 }
@@ -127,6 +130,8 @@ exports.resetSystem = function(req, res) {
 
 exports.importUsers = function(req, res) {
   settings.isDatabaseReady = true;
+  settings.save();
+
   User.find({}).remove().exec();
 
   var url = "https://api.jacobs-cs.club/query/?limit=10000";
