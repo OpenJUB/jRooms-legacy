@@ -6,6 +6,7 @@ var User = require('./../user/user.model');
 var Admin = require('./../admin/admin.model');
 var controller = require('./../user/user.controller');
 var request = require('request');
+var utils = require('../../utils');
 
 // Get settings from the database.. Or not?
 var settings; 
@@ -164,21 +165,7 @@ exports.importUsers = function(req, res) {
     var users = JSON.parse(response.body).data;
 
     users.forEach(function(item){
-      var user = new User({
-        name: item.fullName,
-        surname: item.lastName,
-        username: item.username,
-        eid: item.eid,
-        major: item.major,
-        description: item.description,
-        country: item.country,
-        graduation_year: item.year,
-        college: item.college,
-        isAdmin: (config.admins.indexOf(item.username) > -1),
-      });
-
-      //user.points = JSON.stringify(controller.calculate(user));
-      user.save();
+      utils.AddOpenJubUser(item, null);
     });
   });
 }

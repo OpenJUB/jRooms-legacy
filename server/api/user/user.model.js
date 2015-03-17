@@ -26,7 +26,7 @@ var userSchema = new Schema({
 	major: String,
 	description: String,
 	isAdmin: Boolean,
-
+	imageURL: String
 });
 
 module.exports = mongoose.model('User', userSchema);

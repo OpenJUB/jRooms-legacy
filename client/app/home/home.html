@@ -99,17 +99,18 @@
         <h3>Inbox</h3>
         <p ng-show="user.inbox.length == 0" class="text-info">No new requests!</p>
         <div ng-repeat="req in user.inbox" class="well">
-          <div class="row">
-            <div class="col-md-4">
+          <div class="row center-block">
+            <div class="col-xs-4">
               <img class="img-rounded" height="60" ng-src="{{ req.imageURL }}"/>
             </div>
-            <div class="col-md-8">
+            <div class="col-xs-8">
               <p class="text-success"> {{ req.name }}<br/>
                 wants to be your roommate!</p>
             </div>
           </div>
-          <a class="btn btn-default btn-success" ng-click="acceptRoommate(req);">Accept</a>
-          <a class="btn btn-default btn-danger" ng-click="denyRoommate(req);">Deny</a>
+          <br/>
+          <a class="btn btn-default btn-success" ng-click="acceptRoommate(req.username);">Accept</a>
+          <a class="btn btn-default btn-danger" ng-click="denyRoommate(req.username);">Deny</a>
         </div>
 
         <br/>

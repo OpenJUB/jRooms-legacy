@@ -14,9 +14,11 @@ var router = express.Router();
 
 router.get('/me', controller.me);
 router.post('/requestRoommate', controller.add_roommate);
+//router.post('/requestFreshmanRoommate', controller.freshman_roommate);
 router.post('/acceptRoommate', controller.confirm_roommate);
 router.post('/denyRoommate', controller.deny_roommate);
 router.post('/updateColleges', controller.updateColleges);
 //router.post('/points', controller.updateRooms);
+//router.post('/deleteRoommate', controller.delete_roommate);
 
 module.exports = router;

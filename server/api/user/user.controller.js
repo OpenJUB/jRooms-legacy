@@ -5,20 +5,16 @@ var User = require('./user.model');
 
 exports.me = function(req, res) {
     var tok = req.cookies.token;
-    exports.get_by_token(tok, function(user) {
-        if(user) {
-            res
-            .status(200)
-            .send(user);
-        } else {
-            res
-            .status(404)
-            .send("You don't exist");
+    User.findOne({token: tok}, function(err, user) {
+        if(err) {
+            return res.json(500, err);
         }
+        
+        return res.json(200, user);
     });
 }
 
-exports.points = function(req, res) {
+/*exports.points = function(req, res) {
     exports.get_by_token(req.cookies.token, function(user) {
         res
         .status(200)
@@ -132,139 +128,103 @@ exports.all = function(req, res) {
 
 exports.add_roommate = function(req, res) {
 
-    if(!active_round.filters.roommate_phase) {
-        res.status(400).send("Phase not active");
-    }
-    var roommate = req.body.roommate;
-    if(!roommate) { // Rooming with a freshman.
-        User.update({token: req.cookies.token}, {roommate: [{
-            username: "bpotato",
-            name: "Banana Potato",
-            surname: "Potato",
-            nationality: "Disney"
-        }]}, function(err, data) {
-            if(err) {
-                res
-                .status(500)
-                .send("Unknown error in add_roommate");
-            }
-            User.findOne({token: req.cookies.token}, function(err, data2) {
-                res
-                .status(200)
-                .send(data2);
-            });
-        })
-    }
-    exports.get_by_token(req.cookies.token, function(result) { // Get current user(will need the username later)
-        if(result.pending_outgoing_roommate_requests.indexOf(roommate) > -1) { // If the user is already listed as a roommate then return Not Modified
-            res
-            .status(304)
-            .send(result);
-            return;
+    var roommate = req.body.username;
+    var token = req.cookies.token;
+    console.log(token);
+    console.log(roommate);
+
+    User.findOne({token: token}).exec(function(err, fromUser) {
+        if(err || !fromUser) {
+            return res.json(500, err);
         }
-        // Else, update in both places.
-        User.update({token: req.cookies.token}, {
-                                                 $push: {pending_outgoing_roommate_requests: roommate}//,
-                                                 //$pull: {roommates: ["bpotato"]}
-                                                }, function(err, data) {
-            if(!data || data === 0) {
-                res
-                .status(500)
-                .send("Unexpected error.");
-                return;
+
+        if(_.findIndex(fromUser.outbox, {username: roommate}) > -1 || _.findIndex(fromUser.roommates, {username: roommate}) > -1) {
+            return res.json(304, fromUser);
+        }
+
+        User.findOne({username: roommate}).exec(function(err, toUser) {
+            if(err || !toUser) {
+                return res.json(500, err);
             }
 
-            User.update({username: roommate}, {$push: {pending_incoming_roommate_requests: result.username}}, function(error, updateResult) {
-                if(!updateResult || updateResult === 0) {
-                    res
-                    .status(500)
-                    .send("Unexpected error.");
-                    return;
-                }
-                exports.get_by_token(req.cookies.token, function(user) {
-                    res
-                    .status(200)
-                    .send(user);
-                })
-            });
+            fromUser.outbox.push({username: roommate, name: toUser.name, imageURL: toUser.imageURL});
+            toUser.inbox.push({username: fromUser.username, name: fromUser.name, imageURL: fromUser.imageURL});
+
+            fromUser.save();
+            toUser.save();
+
+            return res.json(200, {status: 'success'});
         });
     });
 }
 
 exports.confirm_roommate = function(req, res) {
-    if(!active_round.filters.roommate_phase) {
-        res.status(400).send("Phase not active");
-    }
-    var roommate = req.body.roommate;
-    exports.get_by_token(req.cookies.token, function(result) { // Get current user(will need the username later)
-        if(result.roommates.length >= active_round.filters.roommate_limit) {
-            res.status(400).send("Too many roommates");
+    var roommate = req.body.username;
+    var token = req.cookies.token;
+    console.log(token);
+    console.log(roommate);
+
+    User.findOne({token: token}).exec(function(err, fromUser) {
+        if(err || !fromUser) {
+            return res.json(500, err);
         }
-        if(result.pending_incoming_roommate_requests.indexOf(roommate) === -1) { // If the user is already listed as a roommate then return Not Modified
-            res
-            .status(404)
-            .send(result);
-            return;
+
+        var fromIndex = _.findIndex(fromUser.inbox, {username: roommate});
+        if(fromIndex < 0) {
+            return res.json(400, "Request does not exist");
         }
-        // Else, update in both places.
-        User.update({token: req.cookies.token}, {$pull: {pending_incoming_roommate_requests: roommate}, 
-                                                 $push: {roommates: roommate}}, function(err, data) {
-            if(!data || data === 0) {
-                res
-                .status(500)
-                .send("Unexpected error.");
-                return;
+
+        User.findOne({username: roommate}).exec(function(err, toUser) {
+            if(err || !toUser) {
+                return res.json(500, err);
             }
 
-            User.update({username: roommate}, {$pull: {pending_outgoing_roommate_requests: result.username},
-                                               $push: {roommates: result.username}}, function(error, updateResult) {
-                if(!updateResult || updateResult === 0) {
-                    res
-                    .status(500)
-                    .send("Unexpected error.");
-                    return;
-                }
-                exports.get_by_token(req.cookies.token, function(user) {
-                    res
-                    .status(200)
-                    .send(user);
-                })
-            });
+            var toIndex = _.findIndex(toUser.outbox, {username: fromUser.username});
+
+            fromUser.inbox.splice(fromIndex, 1);
+            toUser.outbox.splice(toIndex, 1);
+
+            fromUser.roommates.push({username: roommate, name: toUser.name, imageURL: toUser.imageURL});
+            toUser.roommates.push({username: fromUser.username, name: fromUser.name, imageURL: fromUser.imageURL});
+
+            fromUser.save();
+            toUser.save();
+
+            return res.json(200, {status: 'success'});
         });
-    });
+    });   
 }
 
 exports.deny_roommate = function(req, res) {
-    if(!active_round.filters.roommate_phase) {
-        res.status(400).send("Phase not active");
-    }
+    var roommate = req.body.username;
+    var token = req.cookies.token;
+    console.log(token);
+    console.log(roommate);
 
-    var roommate = req.body.roommate;
-    exports.get_by_token(req.cookies.token, function(result) {
-        if(result.pending_incoming_roommate_requests.indexOf(roommate) === -1) { // If the user is already listed as a roommate then return Not Modified
-            res
-            .status(404)
-            .send(result);
-            return;
+    User.findOne({token: token}).exec(function(err, fromUser) {
+        if(err || !fromUser) {
+            return res.json(500, err);
         }
 
-        User.update({token: req.cookies.token}, {$pull: {pending_incoming_roommate_requests: roommate}}, function(err, data) {
+        var fromIndex = _.findIndex(fromUser.inbox, {username: roommate});
+        if(fromIndex === -1) {
+            return res.json(400, "Request does not exist");
+        }
 
-            if(!data || data === 0) {
-                res
-                .status(500)
-                .send("Unexpected error.");
-                return;
+        User.findOne({username: roommate}).exec(function(err, toUser) {
+            if(err || !toUser) {
+                return res.json(500, err);
             }
 
-            User.update({username: roommate}, {$pull: {pending_outgoing_roommate_requests: result.username}}, function(error, updateResult){
+            var toIndex = _.findIndex(toUser.outbox, {username: fromUser.username});
 
-                exports.get_by_token(req.cookies.token, function(user) {
-                    res.status(200).send(user);
-                    return;
-                });
-            });
+            fromUser.inbox.splice(fromIndex, 1);
+            toUser.outbox.splice(toIndex, 1);
 
+            fromUser.save();
+            toUser.save();
+
+            return res.json(200, {status: 'success'});
         });
     });
 }
