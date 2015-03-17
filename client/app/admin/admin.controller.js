@@ -170,7 +170,6 @@ angular.module('jRoomsApp')
     }
 
     $scope.editUserSubmit = function() {
-      $scope.editUser.roommates = $scope.editUser.roommates.split(',');
       $scope.editUser.college_preference = $scope.editUser.college_preference.split(',');
       $scope.editUser.room_preferences = $scope.editUser.room_preferences.split(',');
 
@@ -209,7 +208,6 @@ angular.module('jRoomsApp')
       var obj;
       try {
         obj = JSON.parse($scope.importJSONString);
-        console.log(obj);
       }
       catch (syntaxError) {
         $scope.alerts.push({

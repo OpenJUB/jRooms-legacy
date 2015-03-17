@@ -177,7 +177,7 @@ exports.importUsers = function(req, res) {
         isAdmin: (config.admins.indexOf(item.username) > -1),
       });
 
-      user.points = JSON.stringify(controller.calculate(user));
+      //user.points = JSON.stringify(controller.calculate(user));
       user.save();
     });
   });

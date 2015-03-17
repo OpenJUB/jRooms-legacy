@@ -84,7 +84,15 @@
         <h3>{{ user.name }}</h3>
         <p>{{ user.country }}</p>
         <p>{{ user.description }}</p>
-        <p class="text-info" ng-show="user.roommates.length > 0"><strong>Roommates:</strong> {{ user.roommates }}</p>
+
+        <div class="well row" ng-repeat="item in user.roommates">
+            <div class="col-md-3">
+              <img class="img-rounded" height="50" ng-src="{{ item.imageURL }}"/>
+            </div>
+            <div class="col-md-9">
+              <p>{{ item.name }}</p>
+            </div>
+        </div>
       </div>
 
       <div class="well" id="roommateRequests">
@@ -93,7 +101,7 @@
         <div ng-repeat="req in user.inbox" class="well">
           <div class="row">
             <div class="col-md-4">
-              <img class="img-rounded" height="50" ng-src="{{ req.imageURL }}"/>
+              <img class="img-rounded" height="60" ng-src="{{ req.imageURL }}"/>
             </div>
             <div class="col-md-8">
               <p class="text-success"> {{ req.name }}<br/>
