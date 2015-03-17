@@ -9,7 +9,7 @@ var request = require('request');
 
 // Get settings from the database.. Or not?
 var settings; 
-Admin.findOne({}, function(err, data) {
+Admin.findOne({}).exec(function(err, data) {
   if (!err && data) {
     settings = data;
   }
@@ -36,7 +36,17 @@ Admin.findOne({}, function(err, data) {
 
 exports.currentSettings = function(req, res) {
   if (settings) {
-    return res.json(200, settings);
+    var clean_settings = {
+      isDatabaseReady: settings.isDatabaseReady, 
+      tallPeople: settings.tallPeople, 
+      disabledRooms: settings.disabledRooms, 
+      disabledUsers: settings.disabledUsers, 
+      maxRooms: settings.maxRooms, 
+      email: settings.email, 
+      phases: settings.phases
+    };
+
+    return res.json(200, clean_settings);
   }
 
   return res.json(500, "No settings found!");

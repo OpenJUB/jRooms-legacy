@@ -50,11 +50,6 @@ angular.module('jRoomsApp').service('Communicator', function ($http) {
     this.sendPOST('/api/user/updateColleges' , { colleges : arr }, fn);
   }
 
-  this.getProfileImage = function(cid) {
-    if (cid == null) return null;
-    return this.openJUB + '/user/image/' + cid + '/image.jpg';
-  }
-
   // phase
   this.currentPhase = function(fn) {
     this.sendGET('/api/phase/current', {}, fn);

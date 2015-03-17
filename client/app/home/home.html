@@ -79,7 +79,7 @@
     <!-- Profile -->
     <div class="col-md-3">
       <div class="well text-center">
-        <img id="profileImage" class="img-rounded center-block" height="150" ng-src="{{ profileImg }}"/>
+        <img class="img-rounded center-block" height="150" ng-src="{{ user.imageURL }}"/>
 
         <h3>{{ user.name }}</h3>
         <p>{{ user.country }}</p>
@@ -91,7 +91,15 @@
         <h3>Inbox</h3>
         <p ng-show="user.inbox.length == 0" class="text-info">No new requests!</p>
         <div ng-repeat="req in user.inbox" class="well">
-          <h4> {{ req }}</h4>
+          <div class="row">
+            <div class="col-md-4">
+              <img class="img-rounded" height="50" ng-src="{{ req.imageURL }}"/>
+            </div>
+            <div class="col-md-8">
+              <p class="text-success"> {{ req.name }}<br/>
+                wants to be your roommate!</p>
+            </div>
+          </div>
           <a class="btn btn-default btn-success" ng-click="acceptRoommate(req);">Accept</a>
           <a class="btn btn-default btn-danger" ng-click="denyRoommate(req);">Deny</a>
         </div>

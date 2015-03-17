@@ -5,7 +5,6 @@ angular.module('jRoomsApp')
     $scope.alerts = [];
 
     $scope.user = {};
-    $scope.profileImg = 'http://placehold.it/100x150';
     $scope.requestUsername = '';
     $scope.colleges = ['Krupp', 'Nordmetall', 'Mercator', 'C3'];
     $scope.rooms = [''];
@@ -21,7 +20,6 @@ angular.module('jRoomsApp')
   	$scope.$watch(State.user, function(val) {
         if (val && val.username) {
           $scope.user = val;
-          $scope.profileImg = Communicator.getProfileImage(val.username);
         }
         else {
           $scope.user = {};
