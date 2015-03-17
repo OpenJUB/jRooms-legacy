@@ -4,7 +4,7 @@ var _ = require('lodash');
 var User = require('./api/user/user.model');
 var config = require('./config/environment');
 
-exports.AddOpenJubUser = function(item, token) {
+exports.AddOpenJubUser = function(item, token, callback) {
 	var user = new User({
 	    name: item.fullName,
 	    surname: item.lastName,
@@ -20,5 +20,5 @@ exports.AddOpenJubUser = function(item, token) {
 	    token: token
     });
 
-    user.save();
+    user.save(callback);
 }

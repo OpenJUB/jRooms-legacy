@@ -46,14 +46,13 @@ module.exports = function(app) {
 
         User.update({username: username}, {token: token}, function(err2, num_affected) {
           if(err2) {
-            return res.status(500).send("Database failure");
+            return res.json(500, "Database failure");
           }
           console.log(num_affected);
 
           if(num_affected == 0 && config.admins.indexOf(username) > -1) {
             console.log("AA");
-            utils.AddOpenJubUser(JSON.parse(response.body), token);
-            return next();
+            return utils.AddOpenJubUser(JSON.parse(response.body), token, next);
           }
 
           if(req.originalUrl.indexOf("/admin") === 0) { //on an admin route, check the config

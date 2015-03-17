@@ -165,7 +165,7 @@ exports.importUsers = function(req, res) {
     var users = JSON.parse(response.body).data;
 
     users.forEach(function(item){
-      utils.AddOpenJubUser(item, null);
+      utils.AddOpenJubUser(item, null, function() {});
     });
   });
 }
