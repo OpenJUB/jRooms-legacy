@@ -207,7 +207,7 @@ exports.deny_roommate = function(req, res) {
         }
 
         var fromIndex = _.findIndex(fromUser.inbox, {username: roommate});
-        if(fromIndex === -1) {
+        if(fromIndex < 0) {
             return res.json(400, "Request does not exist");
         }
 
@@ -227,6 +227,38 @@ exports.deny_roommate = function(req, res) {
             return res.json(200, {status: 'success'});
         });
     });
+}
+
+exports.remove_roommate = function(req, res) {
+    var roommate = req.body.username;
+    var token = req.cookies.token;
+
+    User.findOne({token: token}.exec(function(err, fromUser) {
+        if(err || !fromUser) {
+            return res.json(500, err);
+        }
+
+        var fromIndex = _.findIndex(fromUser.roommates, {username: roommate});
+        if(fromIndex < 0) {
+            return res.json(400, roommate + " is not your roommate.");
+        }
+
+        User.findOne({username: roommate}).exec(function(err2, toUser) {
+            if(err2 || !toUser) {
+                return res.json(500, err);
+            }
+
+            var toIndex = _.findIndex(toUser.roommates, {username: fromUser.username});
+
+            fromUser.roommates.splice(fromIndex, 1);
+            toUser.roommates.splice(toIndex, 1);
+
+            fromUser.save();
+            toUser.save();
+
+            return res.json(200, {status: 'success'});
+        });
+    }));
 }
 
 exports.updateColleges = function(req, res) {

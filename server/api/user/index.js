@@ -19,6 +19,6 @@ router.post('/acceptRoommate', controller.confirm_roommate);
 router.post('/denyRoommate', controller.deny_roommate);
 router.post('/updateColleges', controller.updateColleges);
 //router.post('/points', controller.updateRooms);
-//router.post('/deleteRoommate', controller.delete_roommate);
+router.post('/removeRoommate', controller.remove_roommate);
 
 module.exports = router;
