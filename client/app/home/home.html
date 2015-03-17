@@ -84,14 +84,17 @@
         <h3>{{ user.name }}</h3>
         <p>{{ user.country }}</p>
         <p>{{ user.description }}</p>
+        <br/>
 
-        <div class="well row" ng-repeat="item in user.roommates">
-            <div class="col-md-3">
-              <img class="img-rounded" height="50" ng-src="{{ item.imageURL }}"/>
-            </div>
-            <div class="col-md-9">
-              <p>{{ item.name }}</p>
-            </div>
+        <h4 ng-show="user.roommates">Roommates:</h4>
+        <div class="row well text-center" ng-repeat="item in user.roommates">
+          <div class="col-md-3">
+            <img class="img-rounded center-block" height="64" ng-click="roommateSelected(item);" ng-src="{{ item.imageURL }}"/>
+          </div>
+          <div class="col-md-9">
+            <p class="text-info">{{ item.name }}</p>
+            <a class="btn btn-danger" ng-click="removeRoommate(item.username);">Remove</a>
+          </div>
         </div>
       </div>
 
@@ -99,13 +102,12 @@
         <h3>Inbox</h3>
         <p ng-show="user.inbox.length == 0" class="text-info">No new requests!</p>
         <div ng-repeat="req in user.inbox" class="well">
-          <div class="row center-block">
-            <div class="col-xs-4">
-              <img class="img-rounded" height="60" ng-src="{{ req.imageURL }}"/>
+          <div class="row text-center">
+            <div class="col-md-3">
+              <img class="img-rounded center-block" height="70" ng-src="{{ req.imageURL }}"/>
             </div>
-            <div class="col-xs-8">
-              <p class="text-success"> {{ req.name }}<br/>
-                wants to be your roommate!</p>
+            <div class="col-md-8 col-md-offset-1">
+              <p class="text-success"><strong>{{ req.name }}</strong> wants to be your roommate!</p>
             </div>
           </div>
           <br/>

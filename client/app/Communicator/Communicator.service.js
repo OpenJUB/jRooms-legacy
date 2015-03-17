@@ -42,12 +42,16 @@ angular.module('jRoomsApp').service('Communicator', function ($http) {
     this.sendPOST('/api/user/denyRoommate', { username : cid }, fn);
   }
 
+  this.removeRoommate = function(cid, fn) {
+    this.sendPOST('/api/user/removeRoommate', { username : cid }, fn);
+  }
+
   this.updateColleges = function(arr, fn) {
     this.sendPOST('/api/user/updateColleges' , { colleges : arr }, fn);
   }
 
   this.updateRooms = function(arr, fn) {
-    this.sendPOST('/api/user/updateColleges' , { colleges : arr }, fn);
+    this.sendPOST('/api/user/updateRooms' , { rooms : arr }, fn);
   }
 
   // phase

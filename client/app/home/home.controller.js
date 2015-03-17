@@ -79,8 +79,10 @@ angular.module('jRoomsApp')
         if (!err && data) {
           $rootScope.showAlert({
             type: 'success',
-            msg: 'Successfully accepted a roommate request!'
+            msg: 'Successfully accepted a roommate request from ' + cid + '!'
           });
+
+          $scope.user.inbox = _.filter($scope.user.inbox, function(val) { val.username !== cid });
         }
         else {
            $rootScope.showAlert({
@@ -97,8 +99,10 @@ angular.module('jRoomsApp')
         if (!err && data) {
           $rootScope.showAlert({
             type: 'success',
-            msg: 'Successfully denied the roommate request!'
+            msg: 'Successfully denied the roommate request from ' + cid + '!'
           });
+
+          $scope.user.inbox = _.filter($scope.user.inbox, function(val) { val.username !== cid });
         }
         else {
            $rootScope.showAlert({
@@ -107,6 +111,25 @@ angular.module('jRoomsApp')
           });
         }
       });
+    }
+
+    $scope.removeRoommate = function(cid) {
+      Communicator.removeRoommate(cid, function(err, data) {
+        if (!err) {
+          $rootScope.showAlert({
+            type: 'success',
+            msg: 'Successfully removed ' + cid + ' from roommates!'
+          });
+
+          $scope.user.roommates = _.filter($scope.user.roommates, function(val) { val.username !== cid });
+        }
+        else {
+          $rootScope.showAlert({
+            type: 'danger',
+            msg: 'Oh oh! Server returned an error while removing roommate!'
+          });
+        }
+      })
     }
 
     $scope.updateColleges = function() {
