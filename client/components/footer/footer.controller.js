@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('jRoomsApp')
-  .controller('FooterCtrl', function ($scope, $timeout) {
+  .controller('FooterCtrl', function ($rootScope, $scope, $timeout) {
     $scope.footerStrings = [
       'This footer kind of sucks...',
       'We weren\'t very creative with a footer.',
@@ -15,4 +15,9 @@ angular.module('jRoomsApp')
     ];
 
     $scope.randomString = _.sample($scope.footerStrings);
+
+    $scope.alerts = [];
+    $scope.$watch($rootScope.alerts, function(val) {
+      $scope.alerts = val;
+    })
   });

@@ -1,9 +1,7 @@
 'use strict';
 
 angular.module('jRoomsApp')
-  .controller('HomeCtrl', function ($scope, $location, State, Communicator) {
-    $scope.alerts = [];
-
+  .controller('HomeCtrl', function ($rootScope, $scope, $location, State, Communicator) {
     $scope.user = {};
     $scope.requestUsername = '';
     $scope.colleges = ['Krupp', 'Nordmetall', 'Mercator', 'C3'];
@@ -59,13 +57,13 @@ angular.module('jRoomsApp')
       //console.log("Sending request to " + $scope.requestUsername);
       Communicator.requestRoommate($scope.requestUsername, function(err, data) {
         if (!err && data) {
-          $scope.alerts.push({
+          $rootScope.showAlert({
             type: 'success',
             msg: 'Successfully sent the roommate request to ' + $scope.requestUsername + '!'
           });
         }
         else {
-          $scope.alerts.push({
+          $rootScope.showAlert({
             type: 'danger',
             msg: 'Oh oh! Server returned an error while sending a roommate request!'
           });
@@ -79,13 +77,13 @@ angular.module('jRoomsApp')
       //console.log("Accepting request from " + cid);
       Communicator.acceptRoommate(cid, function(err, data) {
         if (!err && data) {
-          $scope.alerts.push({
+          $rootScope.showAlert({
             type: 'success',
             msg: 'Successfully accepted a roommate request!'
           });
         }
         else {
-           $scope.alerts.push({
+           $rootScope.showAlert({
             type: 'danger',
             msg: 'Oh oh! Server returned an error while accepting a roommate request!'
           });
@@ -97,13 +95,13 @@ angular.module('jRoomsApp')
       //console.log("Denying request from " + cid);
       Communicator.denyRoommate(cid, function(err, data) {
         if (!err && data) {
-          $scope.alerts.push({
+          $rootScope.showAlert({
             type: 'success',
             msg: 'Successfully denied the roommate request!'
           });
         }
         else {
-           $scope.alerts.push({
+           $rootScope.showAlert({
             type: 'danger',
             msg: 'Oh oh! Server returned an error while denying the roommate request!'
           });
@@ -113,7 +111,7 @@ angular.module('jRoomsApp')
 
     $scope.updateColleges = function() {
       if ($scope.colleges.length != _.uniq($scope.colleges).length) {
-        $scope.alerts.push({
+        $rootScope.showAlert({
           type: 'danger',
           msg: 'Oh oh! Please, make sure that you didn\'t select the same college twice!'
         });
@@ -122,13 +120,13 @@ angular.module('jRoomsApp')
 
        Communicator.updateColleges($scope.colleges, function(err, data) {
         if (!err && data) {
-          $scope.alerts.push({
+          $rootScope.showAlert({
             type: 'success',
             msg: 'Successfully updated colleges!'
           });
         }
         else {
-         $scope.alerts.push({
+         $rootScope.showAlert({
             type: 'danger',
             msg: 'Oh oh! Server returned an error while updating college selections!'
           });
@@ -142,13 +140,13 @@ angular.module('jRoomsApp')
       //console.log($scope.rooms);
       Communicator.updateRooms($scope.rooms, function(err, data) {
         if (!err && data) {
-           $scope.alerts.push({
+           $rootScope.showAlert({
             type: 'success',
             msg: 'Successfully updated rooms!'
           });
         }
         else {
-           $scope.alerts.push({
+           $rootScope.showAlert({
             type: 'danger',
             msg: 'Oh oh! Server returned an error while updating room selections!'
           });

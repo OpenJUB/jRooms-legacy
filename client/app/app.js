@@ -15,7 +15,16 @@ angular.module('jRoomsApp', [
     $compileProvider.aHrefSanitizationWhitelist(/^s*(https?|ftp|blob|mailto|chrome-extension|data):/);
   })
 
-  .run(function($rootScope, $state, $location, State) {
+  .run(function($rootScope, $timeout, $state, $location, State) {
+    $rootScope.alerts = [];
+
+    $rootScope.showAlert = function(alert) {
+      $rootScope.alerts.push(alert);
+
+      // Potentially dangerous
+      $timeout(function() { $rootScope.alerts = _.without($rootScope.alerts, alert) }, 1500);
+    }
+
     // First get the actual user's status
     State.updateUser(function(loggedIn, user) {
       $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState) {

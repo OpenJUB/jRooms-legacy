@@ -2,6 +2,5 @@
 
 angular.module('jRoomsApp')
   .controller('AboutCtrl', function ($scope) {
-    $scope.alerts = [];
-
+  	
   });

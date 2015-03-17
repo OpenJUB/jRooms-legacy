@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('jRoomsApp')
-  .service('State', function ($state, $location, ipCookie, Communicator) {
+  .service('State', function ($rootScope, $state, $location, ipCookie, Communicator) {
    var loggedIn = false;
    var isAdmin = false;
    var user = {};
@@ -50,12 +50,15 @@ angular.module('jRoomsApp')
           ipCookie('token', edata.token, { expires: 2, path: '/' });
           
           Communicator.getCurrentUser(function(err, data) {
-            if (!err && data != null) {
+            if (!err && data) {
               loggedIn = true;
               isAdmin = data.isAdmin;
               user = data;
 
               $location.path('/home');
+            }
+            else {
+              $rootScope.showAlert({ type: 'danger', msg: 'Oh oh! ' + err });
             }
           });
         }

@@ -1,8 +1,7 @@
 'use strict';
 
 angular.module('jRoomsApp')
-  .controller('AdminCtrl', function ($scope, $location, State, Communicator) {
-    $scope.alerts = [];
+  .controller('AdminCtrl', function ($rootScope, $scope, $location, State, Communicator) {
     $scope.pageReady = false;
 
   	$scope.nextPhaseId = 1;
@@ -38,7 +37,7 @@ angular.module('jRoomsApp')
         }
       }
       else {
-        $scope.alerts.push({
+        $rootScope.showAlert({
           type: 'danger',
           msg: 'Oh oh! Server returned an error while requesting current settings!'
         });
@@ -48,13 +47,13 @@ angular.module('jRoomsApp')
   	$scope.updateSettings = function() {
       Communicator.updateSettings($scope.settings, function(err, smth) {
         if (!err) {
-          $scope.alerts.push({
+          $rootScope.showAlert({
             type: 'success',
             msg: 'Successfully saved!'
           });
         } 
         else {
-          $scope.alerts.push({
+          $rootScope.showAlert({
             type: 'danger',
             msg: 'Oh oh! Server returned an error while saving the settings!'
           });
@@ -68,13 +67,13 @@ angular.module('jRoomsApp')
         $scope.isImportingUsers = false;
         if (!err) {
           $scope.settings.isDatabaseReady = true;
-          $scope.alerts.push({
+          $rootScope.showAlert({
             type: 'success',
             msg: 'Successfully imported users from OpenJUB!'
           });
         }
         else {
-          $scope.alerts.push({
+          $rootScope.showAlert({
             type: 'danger',
             msg: 'Oh oh! Server returned an error while importing users!'
           });
@@ -141,7 +140,7 @@ angular.module('jRoomsApp')
   	}
 
     $scope.forceSetPhase = function(id) {
-      $scope.alerts.push({
+      $rootScope.showAlert({
         type: 'danger',
         msg: 'I am not implemented yet!'
       });
@@ -160,7 +159,7 @@ angular.module('jRoomsApp')
             $scope.editUser = user;
           }
           else {
-            $scope.alerts.push({
+            $rootScope.showAlert({
               type: 'danger',
               msg: 'Oh oh! Server returned an error while getting a user called "' + $scope.editUserString + '"!'
             });
@@ -175,13 +174,13 @@ angular.module('jRoomsApp')
 
       Communicator.setUser($scope.editUserString, $scope.editUser, function(err, smth) {
         if (!err) {
-          $scope.alerts.push({
+          $rootScope.showAlert({
             type: 'success',
             msg: 'Modifications to the user have been saved in the database!'
           });
         }
         else {
-          $scope.alerts.push({
+          $rootScope.showAlert({
             type: 'danger',
             msg: 'Oh oh! Server returned an error while modifying the user "' + $scope.editUserString + '"!'
           });
@@ -210,7 +209,7 @@ angular.module('jRoomsApp')
         obj = JSON.parse($scope.importJSONString);
       }
       catch (syntaxError) {
-        $scope.alerts.push({
+        $rootScope.showAlert({
           type: 'danger',
           msg: 'Oh oh! Got a syntax error, while trying to parse the JSON, that you provided! Please, be super careful with what you import here as it might corrupt the state of the entire server.'
         });
@@ -226,13 +225,13 @@ angular.module('jRoomsApp')
       Communicator.resetSystem(function(err, settings) {
         if (!err && settings) {
           $scope.settings = settings;
-          $scope.alerts.push({
+          $rootScope.showAlert({
             type: 'success',
             msg: 'Successfully reset everything. Good luck next year, I suppose.'
           });
         }
         else {
-           $scope.alerts.push({
+           $rootScope.showAlert({
             type: 'danger',
             msg: 'Oh oh! Server returned an error while trying to reset its state. Not good.'
           });
