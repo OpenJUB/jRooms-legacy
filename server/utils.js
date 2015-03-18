@@ -44,3 +44,20 @@ exports.SetPhases = function(phases, callback) {
 
 	callback();
 }
+
+setInterval(function() {
+
+	//Add if statement for limiting it to certain hours if necessary
+
+	Phase.find({}).exec(function(err, data) {
+		if(err || !data) {
+			console.log("PANIC");
+			console.log(err);
+		}
+
+		data.forEach(function(item) {
+			item.isCurrent = (item.from <= (new Date()) && item.to >= (new Date()));
+			item.save();
+		});
+	});
+}, 1000 * 7);
