@@ -173,7 +173,11 @@
       </div>
 
       <br/>
-      <a class="btn btn-default btn-warning" ng-click="forceSetPhase(item.id);">Force to be current</a>
+      <div class="col-md-6">
+        <p class="text-danger">Pressing this button will terminate and calculate results for the currently running phase. All the phases with the dates before the active phase will be ignored.<br/>
+        Use extreme caution if this is used not for testing purposes!</p>
+        <a class="btn btn-default btn-warning" ng-click="forcePhase(item.id);">Force to be current</a>
+      </div>
     </accordion-group>
   </accordion>
 

@@ -139,11 +139,22 @@ angular.module('jRoomsApp')
       //}
   	}
 
-    $scope.forceSetPhase = function(id) {
-      $rootScope.showAlert({
-        type: 'danger',
-        msg: 'I am not implemented yet!'
-      });
+    $scope.forcePhase = function(id) {
+      console.log(id);
+      Communicator.forcePhase(id, function(err, data) {
+        if (!err) {
+            $rootScope.showAlert({
+              type: 'success',
+              msg: 'Successfully set the active phase!'
+            });
+        }
+        else {
+          $rootScope.showAlert({
+            type: 'danger',
+            msg: 'Oh oh! Server returned an error while setting active phase!'
+          });
+        }
+      })
     }
 
     $scope.editUserToggle = function() {
