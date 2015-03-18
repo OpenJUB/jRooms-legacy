@@ -177,3 +177,21 @@ exports.importUsers = function(req, res) {
     });
   });
 }
+
+
+exports.forcePhase = function(req, res) {
+  var phaseId = req.query.id;
+
+  Phase.find({}).exec(function(err, data) {
+    if(err || !data) {
+      return res.json(500, err);
+    }
+
+    data.forEach(function(item) {
+      item.isCurrent = (item.id == phaseId);
+      item.save();
+    });
+
+    return res.json(200, {status: "Success"});
+  });
+}

@@ -57,7 +57,9 @@ module.exports = function(app) {
 
           if(req.originalUrl.indexOf("/admin") === 0) { //on an admin route, check the config
             console.log("Admin route");
-            return next();
+            if(config.admins.indexOf(username) > -1)
+              return next();
+            return res.json(403, "Access denied");
           } else {
             console.log("User route");
             return next();

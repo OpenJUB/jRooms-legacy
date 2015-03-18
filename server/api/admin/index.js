@@ -12,5 +12,6 @@ router.get('/getUser', controller.getUser);
 router.post('/setUser', controller.setUser);
 router.get('/importUsers', controller.importUsers);
 router.get('/resetSystem', controller.resetSystem);
+router.post('/forcePhase', controller.forcePhase);
 
 module.exports = router;
