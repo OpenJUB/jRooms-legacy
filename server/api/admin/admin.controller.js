@@ -180,7 +180,8 @@ exports.importUsers = function(req, res) {
 
 
 exports.forcePhase = function(req, res) {
-  var phaseId = req.query.id;
+  var phaseId = req.body.id;
+  console.log(phaseId);
 
   Phase.find({}).exec(function(err, data) {
     if(err || !data) {

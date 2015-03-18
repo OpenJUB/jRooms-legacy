@@ -12,7 +12,8 @@ var PhaseSchema = new Schema({
   maxRooms: Number,
   next: Date,
   filters: Object,
-  isCurrent: Boolean
+  isCurrent: Boolean,
+  isEligible: Boolean
 });
 
 module.exports = mongoose.model('Phase', PhaseSchema);

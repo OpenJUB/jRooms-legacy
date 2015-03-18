@@ -3,8 +3,8 @@
 var _ = require('lodash');
 var Phase = require('./phase.model');
 
-var isEligible = function() {
-  return false;
+var isEligible = function(item) {
+  return true;
 }
 
 exports.currentPhase = function(req, res) {
@@ -13,11 +13,12 @@ exports.currentPhase = function(req, res) {
       return res.json(500, err);
     }
 
-    data.forEach(function(item) {
-      if(item.isCurrent) {
-        return res.json(200, item);
+    for(var i=0;i<data.length;i++) {
+      if(data[i].isCurrent) {
+        data[i].isEligible = isEligible(req.cookies.token);
+        return res.json(200, data[i]);
       }
-    });
+    }
 
     return res.json(200, {isEligible: false, next: 'approximately the same time next year'});
   });
