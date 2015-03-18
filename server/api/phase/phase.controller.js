@@ -4,16 +4,30 @@ var _ = require('lodash');
 var Phase = require('./phase.model');
 
 var isEligible = function() {
-  return true;
+  return false;
 }
 
 exports.currentPhase = function(req, res) {
-  return res.json(200, {
+  Phase.find({}).exec(function(err, data) {
+    if(err || !data) {
+      return res.json(500, err);
+    }
+
+    data.forEach(function(item) {
+      if(item.isCurrent) {
+        return res.json(200, item);
+      }
+    });
+
+    return res.json(200, {isEligible: false, next: 'approximately the same time next year'});
+  });
+
+  /*return res.json(200, {
     id: 1,
     name: 'Testphase',
     from: '11.11.2011',
     to: '12.11.2011',
-    isCollegePhase: true,
+    isCollegePhase: false,
     isEligible: isEligible(),
     maxRooms: 7,
     next: '13.11.2011', //'none' if done with phases
@@ -40,7 +54,7 @@ exports.currentPhase = function(req, res) {
       //   three: false
       // }
     }
-  });
+  });*/
 }
 
 exports.result = function(req, res) {

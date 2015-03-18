@@ -241,7 +241,7 @@ exports.remove_roommate = function(req, res) {
     var roommate = req.body.username;
     var token = req.cookies.token;
 
-    User.findOne({token: token}.exec(function(err, fromUser) {
+    User.findOne({token: token}).exec(function(err, fromUser) {
         if(err || !fromUser) {
             return res.json(500, err);
         }
@@ -266,7 +266,7 @@ exports.remove_roommate = function(req, res) {
 
             return res.json(200, {status: 'success'});
         });
-    }));
+    });
 }
 
 exports.updateColleges = function(req, res) {

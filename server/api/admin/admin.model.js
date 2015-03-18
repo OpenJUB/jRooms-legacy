@@ -9,8 +9,7 @@ var AdminSchema = new Schema({
 	disabledRooms: String,
 	disabledUsers: String,
 	maxRooms: Number,
-	email: Object,
-	phases: Array
+	email: Object
 });
 
 module.exports = mongoose.model('Admin', AdminSchema);

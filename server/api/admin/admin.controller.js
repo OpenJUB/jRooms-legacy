@@ -4,6 +4,7 @@ var _ = require('lodash');
 var config = require('../../config/environment');
 var User = require('./../user/user.model');
 var Admin = require('./../admin/admin.model');
+var Phase = require('./../phase/phase.model');
 var controller = require('./../user/user.controller');
 var request = require('request');
 var utils = require('../../utils');
@@ -26,31 +27,34 @@ Admin.findOne({}).exec(function(err, data) {
         preference2: false,
         preference3: false,
         preference4: false
-      },
-      phases: []
+      }
     });
 
     settings.save();
   }
 });
 
-
 exports.currentSettings = function(req, res) {
   if (settings) {
-    var clean_settings = {
-      isDatabaseReady: settings.isDatabaseReady, 
-      tallPeople: settings.tallPeople, 
-      disabledRooms: settings.disabledRooms, 
-      disabledUsers: settings.disabledUsers, 
-      maxRooms: settings.maxRooms, 
-      email: settings.email, 
-      phases: settings.phases
-    };
+    Phase.find({}).exec(function(err, data) {
+      if(err) {
+        return res.json(500, err);
+      }
+      var clean_settings = {
+        isDatabaseReady: settings.isDatabaseReady, 
+        tallPeople: settings.tallPeople, 
+        disabledRooms: settings.disabledRooms, 
+        disabledUsers: settings.disabledUsers, 
+        maxRooms: settings.maxRooms, 
+        email: settings.email, 
+        phases: data
+      };
 
-    return res.json(200, clean_settings);
+      return res.json(200, clean_settings);
+    });
+  } else {
+    return res.json(500, "No settings found!");
   }
-
-  return res.json(500, "No settings found!");
 }
 
 exports.updateSettings = function(req, res) {
@@ -61,7 +65,11 @@ exports.updateSettings = function(req, res) {
     settings.save();
   }
 
-  return res.json(200, { status : 'success' });
+  utils.SetPhases(req.body.settings.phases, function() {
+    return res.json(200, { status : 'success' });
+  });
+
+  return res.json(500, "Error updating settings");
 }
 
 /**

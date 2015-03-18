@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var User = require('./api/user/user.model');
+var Phase = require('./api/phase/phase.model');
 var config = require('./config/environment');
 
 exports.AddOpenJubUser = function(item, token, callback) {
@@ -21,4 +22,25 @@ exports.AddOpenJubUser = function(item, token, callback) {
     });
 
     user.save(callback);
+}
+
+exports.SetPhases = function(phases, callback) {
+	Phase.find({}).remove().exec();
+
+	phases.forEach(function (item) {
+		var tmp = new Phase({
+			id: item.id,
+			name: item.name,
+			from: item.from,
+			to: item.to,
+			isCollegePhase: item.isCollegePhase,
+			maxRooms: item.maxRooms,
+			next: item.next,
+			filters: item.filters,
+			isCurrent: false
+		});
+		tmp.save();
+	});
+
+	callback();
 }
