@@ -5,6 +5,8 @@ var User = require('./api/user/user.model');
 var Phase = require('./api/phase/phase.model');
 var config = require('./config/environment');
 
+exports.round_force = null;
+
 exports.AddOpenJubUser = function(item, token, callback) {
 	var user = new User({
 	    name: item.fullName,
@@ -45,7 +47,7 @@ exports.SetPhases = function(phases, callback) {
 	callback();
 }
 
-setInterval(function() {
+exports.updatePhases = function() {
 
 	//Add if statement for limiting it to certain hours if necessary
 
@@ -56,8 +58,15 @@ setInterval(function() {
 		}
 
 		data.forEach(function(item) {
-			item.isCurrent = (item.from <= (new Date()) && item.to >= (new Date()));
-			item.save();
+			if(exports.round_force) {
+				item.isCurrent = (item.id === exports.round_force);
+				item.save();
+			} else {
+				item.isCurrent = (item.from <= (new Date()) && item.to >= (new Date()));
+				item.save();
+			}
 		});
 	});
-}, 1000 * 7);
+}
+
+setInterval(exports.updatePhases, 1000 * 7);
