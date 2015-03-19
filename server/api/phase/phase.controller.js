@@ -8,19 +8,14 @@ var isEligible = function(item) {
 }
 
 exports.currentPhase = function(req, res) {
-  Phase.find({}).exec(function(err, data) {
+
+  Phase.findOne({isCurrent: true}).exec(function(err, data) {
     if(err || !data) {
       return res.json(500, err);
     }
 
-    for(var i=0;i<data.length;i++) {
-      if(data[i].isCurrent) {
-        data[i].isEligible = isEligible(req.cookies.token);
-        return res.json(200, data[i]);
-      }
-    }
-
-    return res.json(200, {isEligible: false, next: 'approximately the same time next year'});
+    data.isEligible = isEligible(req.cookies.token);
+    return res.json(200, data);
   });
 
   /*return res.json(200, {
