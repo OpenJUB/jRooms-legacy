@@ -34,7 +34,7 @@ exports.SetPhases = function(phases, callback) {
 			from: item.from,
 			to: item.to,
 			isCollegePhase: item.isCollegePhase,
-			maxRooms: item.maxRooms,
+			maxRooms: 7,
 			next: item.next,
 			filters: item.filters,
 			isCurrent: false
