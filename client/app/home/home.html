@@ -164,9 +164,9 @@
         Here will be an inspirational snippet about how does the housing system works and points and blablabla.</p>
         <br/>
 
-        <div class="form-group container" ng-repeat="room in rooms">
+        <div class="form-group container" ng-repeat="index in maxRooms">
           <div class="col-md-4">
-            <input type="text" class="form-control" placeholder="Room #" ng-model="room" required></input>
+            <input type="text" class="form-control" placeholder="Room #" ng-model="rooms[index]" required></input>
           </div>
         </div>
 

@@ -6,6 +6,7 @@ angular.module('jRoomsApp')
     $scope.requestUsername = '';
     $scope.colleges = ['Krupp', 'Nordmetall', 'Mercator', 'C3'];
     $scope.rooms = [];
+    $scope.maxRooms = [];
 
     $scope.currentPhase = {};
     $scope.showNotEligible = false;
@@ -41,12 +42,8 @@ angular.module('jRoomsApp')
             $scope.showCollegeSelection = true;
           }
           else {
-            if ($scope.user.room_preferences.length > 0) {
-              $scope.rooms = $scope.user.room_preferences;
-            }
-            else {
-              $scope.rooms = new Array(phase.maxRooms);
-            }
+            $scope.rooms = $scope.user.room_preferences;
+            $scope.maxRooms = _.range(0, phase.maxRooms);
 
             $scope.showRoomSelection = true;
           }
