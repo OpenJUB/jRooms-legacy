@@ -5,8 +5,7 @@ angular.module('jRoomsApp')
     $scope.user = {};
     $scope.requestUsername = '';
     $scope.colleges = ['Krupp', 'Nordmetall', 'Mercator', 'C3'];
-    $scope.rooms = [''];
-    $scope.maxRooms = [];
+    $scope.rooms = [];
 
     $scope.currentPhase = {};
     $scope.showNotEligible = false;
@@ -18,9 +17,6 @@ angular.module('jRoomsApp')
   	$scope.$watch(State.user, function(val) {
         if (val && val.username) {
           $scope.user = val;
-
-          if (val.college_preference.length === 4) $scope.colleges = val.college_preference;
-          if (val.room_preferences.length > 0) $scope.rooms = val.room_preferences;
         }
         else {
           $scope.user = {};
@@ -41,11 +37,16 @@ angular.module('jRoomsApp')
         }
         else {
           if (phase.isCollegePhase) {
+            if ($scope.user.college_preference.length === 4) $scope.colleges = $scope.user.college_preference;
             $scope.showCollegeSelection = true;
           }
           else {
-            $scope.rooms = new Array(phase.maxRooms);
-            $scope.maxRooms = _.range(0, phase.maxRooms);
+            if ($scope.user.room_preferences.length > 0) {
+              $scope.rooms = $scope.user.room_preferences;
+            }
+            else {
+              $scope.rooms = new Array(phase.maxRooms);
+            }
 
             $scope.showRoomSelection = true;
           }

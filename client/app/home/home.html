@@ -137,12 +137,12 @@
       <div class="well well-lg" ng-show="showRoomSelection">
         <h2>Room selection phase</h2>
         <p>Please, select up to {{ maxRooms.length }} rooms, from most to least favorable.<br/>
-        Here will be an inspirational snippet about how does the housing system works and points and blablabla. {{ rooms }}</p>
+        Here will be an inspirational snippet about how does the housing system works and points and blablabla.</p>
         <br/>
 
-        <div class="form-group container" ng-repeat="room in maxRooms">
+        <div class="form-group container" ng-repeat="room in rooms">
           <div class="col-md-4">
-            <input type="text" class="form-control" placeholder="Room #" ng-model="rooms[room]" required></input>
+            <input type="text" class="form-control" placeholder="Room #" ng-model="room" required></input>
           </div>
         </div>
 
