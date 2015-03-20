@@ -136,13 +136,14 @@ angular.module('jRoomsApp')
       }
     }
 
-  	$scope.removePhase = function(id) {
-      //if(window.confirm("Are you sure? You can't undo that...")) {
-        $scope.settings.phases = _.reject($scope.settings.phases, function(val) {
-          if (val.id == id) return true;
-          return false;
-        });
-      //}
+  	$scope.removePhase = function(e, id) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      $scope.settings.phases = _.reject($scope.settings.phases, function(val) {
+        if (val.id == id) return true;
+        return false;
+      });
   	}
 
     $scope.forcePhase = function(id) {

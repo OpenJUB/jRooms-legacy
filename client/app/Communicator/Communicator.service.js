@@ -34,6 +34,10 @@ angular.module('jRoomsApp').service('Communicator', function ($http) {
     this.sendPOST('/api/user/requestRoommate', { username : cid }, fn);
   }
 
+  this.requestFreshman = function(fn) {
+    this.sendPOST('/api/user/requestFreshman', {}, fn);
+  }
+
   this.acceptRoommate = function(cid, fn) {
     this.sendPOST('/api/user/acceptRoommate', { username : cid }, fn);
   }
@@ -57,6 +61,14 @@ angular.module('jRoomsApp').service('Communicator', function ($http) {
   // phase
   this.currentPhase = function(fn) {
     this.sendGET('/api/phase/current', {}, fn);
+  }
+
+  this.phaseResult = function(pid, fn) {
+    this.sendGET('/api/phase/result', {}, fn);
+  }
+
+  this.allResults = function(fn) {
+    this.sendGET('/api/phase/allResults', {}, fn);
   }
 
   // /admin

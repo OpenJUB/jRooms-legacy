@@ -111,6 +111,7 @@ exports.result = function(req, res) {
 
   return res.json(200, {
     phaseId: phaseId,
+    name: 'A',
     results: [
       'bla',
       'herp',
@@ -123,6 +124,7 @@ exports.allResults = function(req, res) {
   return res.json(200, [
   {
     phaseId: 1,
+    name: 'A',
     results: [
       'bla',
       'herp',
@@ -131,6 +133,7 @@ exports.allResults = function(req, res) {
   },
   {
     phaseId: 2,
+    name: 'B',
     results: [
       'john',
       'doe',

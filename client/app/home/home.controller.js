@@ -73,6 +73,23 @@ angular.module('jRoomsApp')
       });
     }
 
+    $scope.requestFreshman = function() {
+      Communicator.requestFreshman(function (err, data) {
+        if (!err) {
+          $rootScope.showAlert({
+            type: 'success',
+            msg: 'Successfully requested a freshie as a roommate!'
+          });
+        }
+        else {
+          $rootScope.showAlert({
+            type: 'danger',
+            msg: 'Oh oh! Server returned an error while requesting a freshie roommate!'
+          });
+        }
+      });
+    }
+
     $scope.acceptRoommate = function(cid) {
       //console.log("Accepting request from " + cid);
       Communicator.acceptRoommate(cid, function(err, data) {
@@ -188,7 +205,7 @@ angular.module('jRoomsApp')
 
       }
       else if (college === 'Nordmetall') {
-        
+
       }
     }
 

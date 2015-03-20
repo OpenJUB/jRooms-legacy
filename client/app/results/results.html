@@ -1,55 +1,22 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
-<div class="container">
-<div class="well well-lg">
-  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae, aut eos quisquam dolore optio et expedita necessitatibus deleniti quibusdam rerum cum laboriosam magnam incidunt voluptas error in, iure inventore corporis.</p>
+<div class="container well well-lg">
+  <h3>Results</h3>
+  <p>Below you can find results of all completed phases. To view the results, please press the phase name; to save in Excel format, press Save icon on the right of the box.</p>
   <br/>
 
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h3 class="panel-title">Result 1</h3>
-    </div>
-    <div class="panel-body">
-      Panel content
-    </div>
-  </div>
+  <accordion ng-repeat="item in results">
+    <accordion-group>
+      <accordion-heading>
+        <i class="pull-right glyphicon glyphicon-save" ng-click="exportResult($event, item);"></i>
+        <h3 class="panel-title">{{ item.name }}</h3>
+      </accordion-heading>
 
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h3 class="panel-title">Result 2</h3>
-    </div>
-    <div class="panel-body">
-      Panel content
-    </div>
-  </div>
-
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h3 class="panel-title">Result 3</h3>
-    </div>
-    <div class="panel-body">
-      Panel content
-    </div>
-  </div>
-
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h3 class="panel-title">Result 4</h3>
-    </div>
-    <div class="panel-body">
-      Panel content
-    </div>
-  </div>
-
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h3 class="panel-title">Result 5</h3>
-    </div>
-    <div class="panel-body">
-      Panel content
-    </div>
-  </div>
-</div>
+      <div class="container" ng-repeat="result in item.results">
+        <p class="text-muted">{{ result }}</p>
+      </div>
+   </accordion-group>
+  </accordion>
 </div>
 
 <div ng-include="'components/footer/footer.html'"></div>
