@@ -49,3 +49,7 @@
 .valign {
     vertical-align: middle;
 }
+
+.bigicon {
+    font-size: 8em;
+}
