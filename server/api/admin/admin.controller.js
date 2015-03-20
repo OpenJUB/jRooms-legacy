@@ -18,6 +18,7 @@ Admin.findOne({}).exec(function(err, data) {
   else {
    settings = new Admin({
       isDatabaseReady : false,
+      isDebug : false,
       tallPeople: '',
       disabledRooms: '',
       disabledUsers: '',
@@ -128,6 +129,7 @@ exports.resetSystem = function(req, res) {
 
    settings = new Admin({
     isDatabaseReady : false,
+    isDebug : false,
     tallPeople: '',
     disabledRooms: '',
     disabledUsers: '',
@@ -193,7 +195,7 @@ exports.forcePhase = function(req, res) {
       item.save();
     });
 
-    return res.json(200, {status: "Success"});
+    return res.json(200, {status: "Success", isDebug: true});
   });
 }
 
@@ -201,5 +203,5 @@ exports.cancelForce = function(req, res) {
 
   utils.updatePhases();
 
-  return res.json(200, {status: "Success"});
+  return res.json(200, {status: "Success", isDebug: false});
 }
