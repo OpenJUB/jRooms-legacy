@@ -187,7 +187,7 @@ exports.forcePhase = function(req, res) {
     if(err || !data) {
       return res.json(500, err);
     }
-    utils.round_force = phaseId;
+//    utils.round_force = phaseId;
     data.forEach(function(item) {
       item.isCurrent = (item.id == phaseId);
       item.save();
@@ -198,7 +198,7 @@ exports.forcePhase = function(req, res) {
 }
 
 exports.cancelForce = function(req, res) {
-  utils.round_force = null;
+
   utils.updatePhases();
 
   return res.json(200, {status: "Success"});

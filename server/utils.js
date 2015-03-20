@@ -3,9 +3,8 @@
 var _ = require('lodash');
 var User = require('./api/user/user.model');
 var Phase = require('./api/phase/phase.model');
+var Admin = require('./api/admin/admin.model');
 var config = require('./config/environment');
-
-exports.round_force = null;
 
 exports.AddOpenJubUser = function(item, token, callback) {
 	var user = new User({
@@ -49,24 +48,28 @@ exports.SetPhases = function(phases, callback) {
 
 exports.updatePhases = function() {
 
-	//Add if statement for limiting it to certain hours if necessary
-
-	Phase.find({}).exec(function(err, data) {
-		if(err || !data) {
+	Admin.findOne({}).exec(function(err, settings) {
+		if(err || !settings){
 			console.log("PANIC");
 			console.log(err);
 		}
 
-		data.forEach(function(item) {
-			if(exports.round_force) {
-				item.isCurrent = (item.id === exports.round_force);
-				item.save();
-			} else {
+		if(settings.isDebug)
+			return;
+
+		Phase.find({}).exec(function(err2, data) {
+			if(err2 || !data) {
+				console.log("ANOTHER PANIC");
+				console.log(err);
+			}
+
+			data.forEach(function(item) {
 				item.isCurrent = (item.from <= (new Date()) && item.to >= (new Date()));
 				item.save();
-			}
-		});
+			});
+		})
 	});
+	//Add if statement for limiting it to certain hours if necessary
 }
 
 setInterval(exports.updatePhases, 1000 * 7);
