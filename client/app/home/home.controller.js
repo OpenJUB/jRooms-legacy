@@ -18,6 +18,9 @@ angular.module('jRoomsApp')
   	$scope.$watch(State.user, function(val) {
         if (val && val.username) {
           $scope.user = val;
+
+          if (val.college_preference.length === 4) $scope.colleges = val.college_preference;
+          if (val.room_preferences.length > 0) $scope.rooms = val.room_preferences;
         }
         else {
           $scope.user = {};

@@ -4,7 +4,7 @@
 <div class="container well well-lg" ng-show="!settings.isDatabaseReady">
   <h3>Import OpenJUB data</h3>
   <p>We will use your auth token to retrieve a list of students from OpenJUB.</p> <p class="text-danger">Please, note, that this step is a prerequisite for everything else to work.</p>
-  <a class="btn btn-default btn-danger"ng-click="importUsers();" ng-show="!isImportingUsers">Let's do it!</a>
+  <a class="btn btn-success"ng-click="importUsers();" ng-show="!isImportingUsers">Let's do it!</a>
   <a class="btn btn-default" disabled ng-show="isImportingUsers">Importing...</a>
 </div>
 

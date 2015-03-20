@@ -170,7 +170,6 @@ angular.module('jRoomsApp')
       if ($scope.showEditUser) {
         Communicator.getUser($scope.editUserString, function(err, user) {
           if (!err) {
-            user.roommates = user.roommates.join(',');
             user.college_preference = user.college_preference.join(',');
             user.room_preferences = user.room_preferences.join(',');
 
