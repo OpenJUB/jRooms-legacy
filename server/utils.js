@@ -28,8 +28,12 @@ exports.AddOpenJubUser = function(item, token, callback) {
 exports.SetPhases = function(phases, callback) {
 	Phase.find({}).remove().exec();
 
-	for(var item in phases) {
-		
+	console.log(phases);
+
+	for(var i = 0; i < phases.length; i++) {
+		var item = phases[i];
+
+		console.log(item);
 		var tmp = new Phase({
 			id: item.id,
 			name: item.name,
