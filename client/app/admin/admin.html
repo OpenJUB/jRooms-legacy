@@ -18,8 +18,8 @@
   </p>
   <br/>
 
-  <a class="btn btn-danger" ng-click="enableDebug();" ng-show="!settings.isDebug">Enable</a>
-  <a class="btn btn-success" ng-click="disableDebug();" ng-show="settings.isDebug">Disable</a>
+  <a class="btn btn-danger" ng-click="setDebug(true);" ng-show="!settings.isDebug">Enable</a>
+  <a class="btn btn-success" ng-click="setDebug(false);" ng-show="settings.isDebug">Disable</a>
 </div>
 
 <div class="container well well-lg">

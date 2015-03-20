@@ -45,13 +45,8 @@ angular.module('jRoomsApp')
       }
     });
 
-    $scope.enableDebug = function() {
-      $scope.settings.isDebug = true;
-      $scope.updateSettings();
-    }
-
-    $scope.disableDebug = function() {
-      $scope.settings.isDebug = false;
+    $scope.setDebug = function(val) {
+      $scope.settings.isDebug = val;
       $scope.updateSettings();
     }
 
