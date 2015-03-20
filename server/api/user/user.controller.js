@@ -351,31 +351,6 @@ exports.updateColleges = function(req, res) {
             });
         });
     });
-
-/*
-    if(!active_round.filters.college_phase) {
-        res
-        .status(403)
-        .send("The college phase is not active");
-        return;
-    }
-    var new_preference = req.body.colleges;
-    //console.log("AAAAAAAAAAAAAAAAA" + new_preference);
-    User.update({token: req.cookies.token}, {college_preference: new_preference}, function(err, numAffected) {
-        if(err) {
-            res
-            .status(404)
-            .send(err);
-            return;
-        }
-
-        User.findOne({token: req.cookies.token}, function(err, data) {
-            res
-            .status(200)
-            .send(data);
-            return;
-        })
-    });*/
 }
 
 exports.freshman_roommate = function(req, res) {
@@ -399,4 +374,21 @@ exports.freshman_roommate = function(req, res) {
 
 var random_freshman = function() {
     return freshieTemplate[Math.random() * (freshieTemplate.length - 1)];
+}
+
+exports.updateRooms = function(req, res) {
+    var rooms = req.body.rooms;
+    User.findOne({token: req.cookies.token}).exec(function(err, user) {
+        user.rooms = rooms;
+        user.save();
+
+        for(var i = 0; i < user.roommates; i++) {
+            User.findOne({username: user.roommates[i].username}).exec(function(err, user2) {
+                user2.rooms = rooms;
+                user2.save();
+            });
+        }
+
+        return res.json(200, {status: "success"});
+    });
 }

@@ -5,7 +5,6 @@ var config = require('../../config/environment');
 var User = require('./../user/user.model');
 var Admin = require('./../admin/admin.model');
 var Phase = require('./../phase/phase.model');
-var controller = require('./../user/user.controller');
 var request = require('request');
 var utils = require('../../utils');
 
