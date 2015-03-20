@@ -41,6 +41,9 @@ exports.currentSettings = function(req, res) {
       if(err) {
         return res.json(500, err);
       }
+      var tmp = data;
+      tmp.sort(function(a, b) {
+          return a.id - b.id});
       var clean_settings = {
         isDatabaseReady: settings.isDatabaseReady, 
         tallPeople: settings.tallPeople, 
@@ -48,7 +51,7 @@ exports.currentSettings = function(req, res) {
         disabledUsers: settings.disabledUsers, 
         maxRooms: settings.maxRooms, 
         email: settings.email, 
-        phases: data,
+        phases: tmp,
         isDebug: settings.isDebug
       };
 
