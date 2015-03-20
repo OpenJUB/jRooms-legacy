@@ -5,14 +5,12 @@ var mongoose = require('mongoose'),
 
 var userSchema = new Schema({
 	name : String,
-	surname : String,
 	country : String,
 	graduation_year : Number,
 	roommates : Array,
 	outbox : Array,
 	inbox : Array,
 	username : String,
-	eid: Number,
 	college : String,
 	college_preference : Array,
 	nextCollege : String,
@@ -24,7 +22,8 @@ var userSchema = new Schema({
 	major: String,
 	description: String,
 	isAdmin: Boolean,
-	imageURL: String
+	imageURL: String,
+	hasFreshman: Boolean
 });
 
 module.exports = mongoose.model('User', userSchema);

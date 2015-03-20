@@ -2,6 +2,15 @@
 
 var _ = require('lodash');
 var User = require('./user.model');
+var Phase = require('./../phase/phase.model');
+var Admin = require('./../admin/admin.model');
+
+var freshieTemplate = [
+    {
+        name: "Banana Potato",
+        username: "bpotato",
+        imageURL: "http://pbs.twimg.com/profile_images/378800000108340114/a586d7a8df39836a114651aef74cd2d0.jpeg"
+    }];
 
 exports.me = function(req, res) {
     var tok = req.cookies.token;
@@ -142,18 +151,28 @@ exports.add_roommate = function(req, res) {
             return res.json(304, fromUser);
         }
 
-        User.findOne({username: roommate}).exec(function(err, toUser) {
-            if(err || !toUser) {
+        Phase.find({isCurrent: true}).exec(function(err, phase) {
+            if(err || !phase) {
                 return res.json(500, err);
             }
 
-            fromUser.outbox.push({username: roommate, name: toUser.name, imageURL: toUser.imageURL});
-            toUser.inbox.push({username: fromUser.username, name: fromUser.name, imageURL: fromUser.imageURL});
+            if(fromUser.roommates.length >= phase.maxRoommates) {
+                return res.json(400, "There is a limit on the number of roommates you know...");
+            }
 
-            fromUser.save();
-            toUser.save();
+            User.findOne({username: roommate}).exec(function(err, toUser) {
+                if(err || !toUser) {
+                    return res.json(500, err);
+                }
 
-            return res.json(200, {status: 'success'});
+                fromUser.outbox.push({username: roommate, name: toUser.name, imageURL: toUser.imageURL});
+                toUser.inbox.push({username: fromUser.username, name: fromUser.name, imageURL: fromUser.imageURL});
+
+                fromUser.save();
+                toUser.save();
+
+                return res.json(200, {status: 'success'});
+            });
         });
     });
 }
@@ -179,18 +198,37 @@ exports.confirm_roommate = function(req, res) {
                 return res.json(500, err);
             }
 
-            var toIndex = _.findIndex(toUser.outbox, {username: fromUser.username});
+            for(var i = 0; i < fromUser.roommates.length; i++) {
+                if(freshieTemplate.indexOf(fromUser.roommates[i]) >= 0) {
+                    fromUser.roommates.splice(i, 1);
+                    i--;
+                }
+            }
 
-            fromUser.inbox.splice(fromIndex, 1);
-            toUser.outbox.splice(toIndex, 1);
+            for(var i = 0; i < toUser.roommates.length; i++) {
+                if(freshieTemplate.indexOf(toUser.roommates[i]) >= 0) {
+                    toUser.roommates.splice(i, 1);
+                    i--;
+                }
+            }
 
-            fromUser.roommates.push({username: roommate, name: toUser.name, imageURL: toUser.imageURL});
-            toUser.roommates.push({username: fromUser.username, name: fromUser.name, imageURL: fromUser.imageURL});
+            Phase.findOne({isCurrent: true}).exec(function(err, phase) {
+                if(fromUser.roommates.length >= phase.maxRoommates + 1 || toUser.roommates.length >= phase.maxRoommates + 1) {
+                    return res.json(400, "One user has more roommates than allowed.");
+                }
+                var toIndex = _.findIndex(toUser.outbox, {username: fromUser.username});
 
-            fromUser.save();
-            toUser.save();
+                fromUser.inbox.splice(fromIndex, 1);
+                toUser.outbox.splice(toIndex, 1);
 
-            return res.json(200, {status: 'success'});
+                fromUser.roommates.push({username: roommate, name: toUser.name, imageURL: toUser.imageURL});
+                toUser.roommates.push({username: fromUser.username, name: fromUser.name, imageURL: fromUser.imageURL});
+
+                fromUser.save();
+                toUser.save();
+
+                return res.json(200, {status: 'success'});
+            });
         });
     });   
 }
@@ -252,6 +290,15 @@ exports.remove_roommate = function(req, res) {
             return res.json(400, roommate + " is not your roommate.");
         }
 
+        var index = _.findIndex(freshieTemplate, {username: roommate});
+
+        if(index >= 0) {
+            fromUser.roommates = [];
+            fromUser.save(function() {
+                return res.json(200, {status: 'success'});
+            });
+        }
+
         User.findOne({username: roommate}).exec(function(err2, toUser) {
             if(err2 || !toUser) {
                 return res.json(500, err);
@@ -281,17 +328,27 @@ exports.updateColleges = function(req, res) {
             return res.json(400, "The college round is closed");
         }
 
-        var new_preference = req.body.colleges;
-        User.update({token: req.cookies.token}, {college_preference: new_preference}, function(err2, num) {
-            if(err2 || num == 0) {
+        User.findOne({token: req.cookies.token}).exec(function(err, user) {
+            if(err || !user) {
                 return res.json(500, err);
             }
+            var new_preference = req.body.colleges;
 
-            return res.json(200, {status: "success"});
+            var tmp = new_preference.slice();
+            tmp.sort();
+            
+            if(!_.isEqual(tmp, ['C3', 'Krupp', 'Mercator', 'Nordmetall'])) {
+                return res.json(400, "Hack much?");
+            }
+
+            user.college_preference = new_preference;
+            user.save(function() {
+                return res.json(200, {status: 'success'});
+            });
         });
     });
 
-
+/*
     if(!active_round.filters.college_phase) {
         res
         .status(403)
@@ -314,41 +371,28 @@ exports.updateColleges = function(req, res) {
             .send(data);
             return;
         })
+    });*/
+}
+
+exports.freshman_roommate = function(req, res) {
+    User.findOne({token: req.cookies.token}).exec(function(err, user) {
+        if(err || !user) {
+            return res.json(500, err);
+        }
+
+        if(user.roommates.length > 0) {
+            return res.json(400, "You already have a roommate");
+        }
+
+        user.hasFreshman = true;
+        user.roommates = [random_freshman()];
+
+        user.save(function() {
+            res.json(200, user);
+        })
     });
 }
 
-exports.is_eligible = function(user, round) {
-    if(!round) {
-        return true;
-    }
-
-    if(user.is_exchange && !round.filters.exchange_students) {
-        return false;
-    }
-
-    if(!user.is_tall && round.filters.tall_people) {
-        return false;
-    }
-    var points = exports.calculate(user).total;
-    if( points < round.filters.points) {
-        return false;
-    }
-
-    if(user.roommates.length !== 0 && round.filters.roomType === "Single") {
-        return false;
-    }
-
-    if(user.roommates.length !== 1 && round.filters.roomType === "Double") {
-        return false;
-    }
-
-    if(user.roommates.length !== 2 && round.filters.roomType === "Triple") {
-        return false;
-    }
-
-    if(round.filters.college.indexOf(user.next_college) === -1) {
-        return false;
-    }
-
-    return true;
+var random_freshman = function() {
+    return freshieTemplate[Math.random() * (freshieTemplate.length - 1)];
 }

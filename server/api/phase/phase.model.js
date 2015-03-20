@@ -13,7 +13,8 @@ var PhaseSchema = new Schema({
   next: Date,
   filters: Object,
   isCurrent: Boolean,
-  isEligible: Boolean
+  isEligible: Boolean,
+  maxRoommates: Number
 });
 
 module.exports = mongoose.model('Phase', PhaseSchema);
