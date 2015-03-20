@@ -270,7 +270,27 @@ exports.remove_roommate = function(req, res) {
 }
 
 exports.updateColleges = function(req, res) {
-    //console.log(req);
+    
+    Phase.findOne({isCurrent: true}).exec(function(err, item) {
+        if(err || !item) {
+            return res.json(500, err);
+        }
+
+        if(!item.isCollegePhase) {
+            return res.json(400, "The college round is closed");
+        }
+
+        var new_preference = req.body.colleges;
+        User.update({token: req.cookies.token}, {college_preference: new_preference}, function(err2, num) {
+            if(err2 || num == 0) {
+                return res.json(500, err);
+            }
+
+            return res.json(200, {status: "success"});
+        });
+    });
+
+
     if(!active_round.filters.college_phase) {
         res
         .status(403)

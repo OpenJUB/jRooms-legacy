@@ -2,9 +2,18 @@
 
 var _ = require('lodash');
 var Phase = require('./phase.model');
+var User = require('./../user/user.model');
 
-var isEligible = function(item) {
-  return true;
+var isEligible = function(item, round, callback) {
+  var status = true;
+  User.findOne({token: item}).exec(function(err, user) {
+    if(err || !user) {
+      status = false;
+    }
+
+    round.isEligible = status;
+    callback(round);
+  });
 }
 
 exports.currentPhase = function(req, res) {
@@ -14,8 +23,9 @@ exports.currentPhase = function(req, res) {
       return res.json(500, err);
     }
 
-    data.isEligible = isEligible(req.cookies.token);
-    return res.json(200, data);
+    data.isEligible = isEligible(req.cookies.token, data, function(new_data) {
+      res.json(200, new_data);
+    });
   });
 
   /*return res.json(200, {
