@@ -48,7 +48,8 @@ exports.currentSettings = function(req, res) {
         disabledUsers: settings.disabledUsers, 
         maxRooms: settings.maxRooms, 
         email: settings.email, 
-        phases: data
+        phases: data,
+        isDebug: settings.isDebug
       };
 
       return res.json(200, clean_settings);

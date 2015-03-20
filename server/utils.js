@@ -28,7 +28,8 @@ exports.AddOpenJubUser = function(item, token, callback) {
 exports.SetPhases = function(phases, callback) {
 	Phase.find({}).remove().exec();
 
-	phases.forEach(function (item) {
+	for(var item in phases) {
+		
 		var tmp = new Phase({
 			id: item.id,
 			name: item.name,
@@ -41,7 +42,7 @@ exports.SetPhases = function(phases, callback) {
 			isCurrent: false
 		});
 		tmp.save();
-	});
+	}
 
 	callback();
 }

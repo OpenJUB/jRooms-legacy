@@ -222,11 +222,12 @@ exports.deny_roommate = function(req, res) {
             toUser.outbox.splice(toIndex, 1);
 
             if(fromUser.username === toUser.username) {
-                toIndex = _.findIndex(toUser.inbox, {username: toUser.username});
+                return res.json(400, "I've heard of doppelgangers but this is ridiculous...");
+                /*toIndex = _.findIndex(toUser.inbox, {username: toUser.username});
                 toUser.inbox.splice(toIndex, 1);
 
                 fromIndex = _.findIndex(fromUser.outbox, {username: fromUser.username});
-                fromUser.outbox.splice(toIndex, 1);
+                fromUser.outbox.splice(toIndex, 1);*/
             }
 
             fromUser.save();

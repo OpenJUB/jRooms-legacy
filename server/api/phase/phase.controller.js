@@ -19,8 +19,12 @@ var isEligible = function(item, round, callback) {
 exports.currentPhase = function(req, res) {
 
   Phase.findOne({isCurrent: true}).exec(function(err, data) {
-    if(err || !data) {
+    if(err) {
       return res.json(500, err);
+    }
+
+    if(!data) {
+      return res.json(200, {next: 'your earliest convenience to check again'});
     }
 
     data.isEligible = isEligible(req.cookies.token, data, function(new_data) {
