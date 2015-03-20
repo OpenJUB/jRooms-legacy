@@ -27,6 +27,16 @@ var all = {
   // Admins for the room allocation
   admins: [ 'dcucleschi', 'fstankovsk', 'vungureanu' ],
 
+  collegeCapacity: {
+    c3: 100,
+    krupp: 100,
+    nordmetall: 100,
+    mercator: 100
+  },
+
+  collegeFillMinimum: 0,
+  collegeFillMaximum: 100,
+
   // MongoDB connection options
   mongo: {
     options: {
