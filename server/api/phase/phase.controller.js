@@ -15,7 +15,7 @@ var isEligible = function(item, round, callback) {
     Admin.findOne({}).exec(function(err2, settings) {
       if(round.filters.enableFilterTall) {
         var tall = settings.tallPeople.split(',');
-        status = (tall.indexOf(user.username) >= 0);
+        status = Math.min((tall.indexOf(user.username) >= 0), status);
       }
 
       if(round.filters.enableFilterColleges) {
@@ -33,22 +33,22 @@ var isEligible = function(item, round, callback) {
           tmp.push("Nordmetall");
         }
 
-        status = (tmp.indexOf(user.nextCollege) >= 0);
+        status = Math.min((tmp.indexOf(user.nextCollege) >= 0), status);
       }
 
       if(round.filters.enableFilterExchange) {
-        status = user.isExchange;
+        status = Math.min(user.isExchange, status);
       } else {
-        status = !user.isExchange;
+        status = Math.min(!user.isExchange, status);
       }
 
       if(round.filters.enableFilterPoints) {
-        status = (user.points.total >= round.filters.pointsMin && user.points.total <= round.filters.pointsMax) 
+        status = Math.min((user.points.total >= round.filters.pointsMin && user.points.total <= round.filters.pointsMax) ,status);
       }
 
       if(round.filters.enableFilterRooms) {
         var num = user.roommates.length + 1;
-        status = ((round.filters.rooms.one && num === 1) || (round.filters.rooms.two && num === 2) || (round.filters.rooms.three && num === 3));
+        status = Math.min(((round.filters.rooms.one && num === 1) || (round.filters.rooms.two && num === 2) || (round.filters.rooms.three && num === 3)), status);
       }
 
       round.isEligible = status;
