@@ -14,6 +14,7 @@ angular.module('jRoomsApp')
 
   	$scope.settings = {
   		isDatabaseReady : false,
+      isDebug: false,
   		tallPeople: '',
   		disabledRooms: '',
       disabledUsers: '',
@@ -43,6 +44,16 @@ angular.module('jRoomsApp')
         });
       }
     });
+
+    $scope.enableDebug = function() {
+      $scope.settings.isDebug = true;
+      $scope.updateSettings();
+    }
+
+    $scope.disableDebug = function() {
+      $scope.settings.isDebug = false;
+      $scope.updateSettings();
+    }
 
   	$scope.updateSettings = function() {
       Communicator.updateSettings($scope.settings, function(err, smth) {

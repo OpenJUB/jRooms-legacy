@@ -9,6 +9,20 @@
 </div>
 
 <div class="container well well-lg">
+  <h3>Debug mode</h3>
+  <p class="text-danger">This section is made mostly for testing the system setup, please, don't use this during the actual allocation as this might be a little bit risky.</p>
+  <p>When debug mode is active, the following changes will occur:
+    <ul>
+      <li>From and to dates can't be set for the phases. Instead, they can be switched manually on this page.
+    </ul>
+  </p>
+  <br/>
+
+  <a class="btn btn-danger" ng-click="enableDebug();" ng-show="!settings.isDebug">Enable</a>
+  <a class="btn btn-success" ng-click="disableDebug();" ng-show="settings.isDebug">Disable</a>
+</div>
+
+<div class="container well well-lg">
   <h3>Set phases</h3>
   <p>Here you can describe the phases of room allocation process and their time slots. For each phase ...</p>
 
@@ -26,12 +40,16 @@
             <input type="text" class="form-control" placeholder="Name" ng-model="item.name">
           </div>
 
-          <div class="form-group">
+          <div class="form-group" ng-show="!settings.isDebug">
             <input type="text" class="form-control" ng-model="item.from" placeholder="From (dd.MM.yy)"/>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" ng-show="!settings.isDebug">
             <input type="text" class="form-control" ng-model="item.to" placeholder="To (dd.MM.yy)"/>
+          </div>
+          
+          <div class="form-group" ng-show="settings.isDebug">
+            <a class="btn btn-warning" ng-click="forcePhase(item.id);">Set as current</a>
           </div>
         </div>
 
@@ -170,13 +188,6 @@
           </div>
         </div>
         </div>
-      </div>
-
-      <br/>
-      <div class="col-md-6">
-        <p class="text-danger">Pressing this button will terminate and calculate results for the currently running phase. All the phases with the dates before the active phase will be ignored.<br/>
-        Use extreme caution if this is used not for testing purposes!</p>
-        <a class="btn btn-default btn-warning" ng-click="forcePhase(item.id);">Force to be current</a>
       </div>
     </accordion-group>
   </accordion>
