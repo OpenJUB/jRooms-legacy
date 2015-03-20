@@ -192,8 +192,16 @@ exports.forcePhase = function(req, res) {
     }
 //    utils.round_force = phaseId;
     data.forEach(function(item) {
-      item.isCurrent = (item.id == phaseId);
-      item.save();
+      var status = (item.id === phaseId);
+      if(item.isCurrent && !status) {
+        generateResults(item.id, true, function() {
+          item.isCurrent = status;
+          item.save();
+        });
+      } else {
+        item.isCurrent = status;
+        item.save();
+      }
     });
 
     return res.json(200, {status: "Success", isDebug: true});
@@ -205,4 +213,220 @@ exports.cancelForce = function(req, res) {
   utils.updatePhases();
 
   return res.json(200, {status: "Success", isDebug: false});
+}
+
+var generateResults = function(phaseId, save, callback) {
+  Phase.findOne({id: phaseId}).exec(function(err, phase) {
+    if(phase.isCollegePhase) {
+      calculateColleges(phase, save, callback);
+    } else {
+      calculatePhase(phase, save, callback);
+    }
+  });
+}
+
+var calculatePhase = function(phase, save, callback) {
+  callback();
+}
+
+var shuffle = function (o){ //v1.0
+    for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+    return o;
+};
+
+var calculateColleges = function(phase, save, callback) {
+  User.find({$where: "this.college_preference.length > 0" }).exec(function(err, u) {
+      if(err || !u) {
+        return res.json(500, err);
+      }
+
+      var users = shuffle(u);
+
+      var c3 = [];
+      var krupp = [];
+      var nordmetall = [];
+      var mercator = [];
+
+      for(var i = 0; i < users.length; i++) {
+        var tmp = users[i];
+        switch(users[i].college_preference[0]) {
+          case 'C3':
+            c3.push(tmp);
+            break;
+          case 'Nordmetall':
+            nordmetall.push(tmp);
+            break;
+          case 'Mercator':
+            mercator.push(tmp);
+            break;
+          case 'Krupp':
+            krupp.push(tmp);
+            break;
+        }
+      }
+
+      var percentages = [];
+
+      percentages.push({
+        people: c3, 
+        college: 'C3', 
+        fill: collegeFill(c3.length, 'C3')
+      }); 
+
+      percentages.push({
+        people: mercator, 
+        college: 'Mercator', 
+        fill: collegeFill(mercator.length, 'Mercator')
+      }); 
+
+      percentages.push({
+        people: krupp, 
+        college: 'Krupp', 
+        fill: collegeFill(krupp.length, 'Krupp')
+      }); 
+
+      percentages.push({
+        people: nordmetall, 
+        college: 'Nordmetall', 
+        fill: collegeFill(nordmetall.length, 'Nordmetall')
+      }); 
+
+      percentages.sort(function(a, b) {
+        return a.fill - b.fill;
+      });
+
+      console.log(percentages);
+      var counter = 0;
+
+      while(percentages[0].fill < config.collegeFillMinimum) {
+        var second_choice = [];
+        for(var i = 0; i < percentages[3].people; ++i) {
+          if(percentages[3].college_preference[1] === percentages[0].name) {
+            second_choice.push(i);
+          }
+        }
+
+        if(second_choice.length === 0) {
+          for(var i = 0; i < percentages[3].people; ++i) {
+            if(percentages[3].college_preference[2] === percentages[0].name) {
+              second_choice.push(i);
+            }
+          }
+        }
+
+        var ind = Math.random() * (second_choice.length - 1);
+        var tmp = percentages[3].people[second_choice[ind]];
+
+        percentages[3].people.splice(ind, 1);
+        percentages[0].push(tmp);
+
+        percentages[3].fill = collegeFill(percentages[3].people.length, percentages[3].college);
+        percentages[0].fill = collegeFill(percentages[0].people.length, percentages[0].college);
+
+        percentages.sort(function(a, b) {
+          return a.fill - b.fill;
+        });
+
+        counter++;
+        if(1000 == counter) {
+          break;
+        }
+      }
+      if(save) {
+        console.log("SAAVE");
+        for(var i = 0; i < percentages.length; i++) {
+          for(var j = 0; j < percentages[i].people.length; j++) {
+              percentages[i].people[j].nextCollege = percentages[i].college;
+              percentages[i].people[j].save();
+          }
+        }
+
+        phaseResult(phase, callback);
+      } else {
+        callback();
+      }
+  });
+}
+
+var phaseResult = function(item, callback) {
+
+  if(item.isCollegePhase) {
+    User.find({$where: 'this.nextCollege != null'}).exec(function(err, users) {
+      console.log(users);
+      var results = {krupp: [], c3: [], nordmetall: [], mercator: []};
+      if(err || !users) {
+        console.log(err);
+        return {};
+      }
+      console.log(users);
+      for(var i = 0; i < users.length; i++) {
+        switch(users[i].nextCollege) {
+          case 'Krupp':
+            results.krupp.push({name: users[i].name});
+            break;
+          case 'Mercator':
+            results.mercator.push({name: users[i].name});
+            break;
+          case 'Nordmetall':
+            results.nordmetall.push({name: users[i].name});
+            break;
+          case 'C3':
+            results.c3.push({name: users[i].name});
+            break;
+        }
+      }
+      console.log(results);
+      item.results = results;
+      item.save(function() {
+        callback(item);
+      });
+    });
+  } else {
+    User.find({phase: item.id}).exec(function(err, users) {
+      var results = {krupp: [], c3: [], nordmetall: [], mercator: []};
+      if(err || !users) {
+        return {};
+      }
+      for(var i = 0; i < users.length; i++) {
+        switch(users[i].nextCollege) {
+          case 'Krupp':
+            results.krupp.push({name: users[i].name, room: users[i].room});
+            break;
+          case 'Mercator':
+            results.mercator.push({name: users[i].name, room: users[i].room});
+            break;
+          case 'C3':
+            results.c3.push({name: users[i].name, room: users[i].room});
+            break;
+          case 'Nordmetall':
+            results.nordmetall.push({name: users[i].name, room: users[i].room});
+            break;
+        }
+      }
+
+      return {
+        id: item.id,
+        name: item.name, 
+        results: results
+      };
+    });
+  }
+  
+}
+
+var collegeFill = function(number, name) {
+  switch(name) {
+    case 'C3':
+      return 100.0 * number /config.collegeCapacity.c3;
+      break;
+    case 'Mercator':
+      return 100.0 * number /config.collegeCapacity.mercator;
+      break;
+    case 'Nordmetall':
+      return 100.0 * number /config.collegeCapacity.nordmetall;
+      break;
+    case 'Krupp':
+      return 100.0 * number /config.collegeCapacity.krupp;
+      break;
+  }
 }

@@ -29,6 +29,8 @@ exports.SetPhases = function(phases, callback) {
 	Phase.find({}).remove().exec();
 
 	console.log(phases);
+	if(!phases)
+		callback();
 
 	for(var i = 0; i < phases.length; i++) {
 		var item = phases[i];
@@ -43,7 +45,8 @@ exports.SetPhases = function(phases, callback) {
 			maxRooms: 7,
 			next: item.next,
 			filters: item.filters,
-			isCurrent: false
+			isCurrent: false,
+			results: item.results
 		});
 		tmp.save();
 	}
@@ -70,6 +73,7 @@ exports.updatePhases = function() {
 
 			data.forEach(function(item) {
 				item.isCurrent = (item.from <= (new Date()) && item.to >= (new Date()));
+				item.isDone = (item.to < new Date());
 				item.save();
 			});
 		})

@@ -14,6 +14,7 @@ var PhaseSchema = new Schema({
   filters: Object,
   isCurrent: Boolean,
   isEligible: Boolean,
+  results: Object,
   maxRoommates: Number
 });
 
