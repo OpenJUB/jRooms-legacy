@@ -3,6 +3,7 @@
 var _ = require('lodash');
 var Phase = require('./phase.model');
 var User = require('./../user/user.model');
+var Admin = require('./../admin/admin.model');
 
 var isEligible = function(item, round, callback) {
   var status = true;
@@ -10,9 +11,47 @@ var isEligible = function(item, round, callback) {
     if(err || !user) {
       status = false;
     }
+    Admin.findOne({}).exec(function(err2, settings) {
+      if(round.filters.enableFilterTall) {
+        status = (settings.tallPeople.indexOf(user.username) >= 0);
+      }
 
-    round.isEligible = status;
-    callback(round);
+      if(round.filters.enableFilterColleges) {
+        var tmp = [];
+        if(round.filters.colleges.krupp) {
+          tmp.append("Krupp");
+        }
+        if(round.filters.colleges.mercator) {
+          tmp.append("Mercator");
+        }
+        if(round.filters.colleges.c3) {
+          tmp.append("C3");
+        }
+        if(round.filters.colleges.nordmetall) {
+          tmp.append("Nordmetall");
+        }
+
+        status = (tmp.indexOf(user.nextCollege) >= 0);
+      }
+
+      if(round.filters.enableFilterExchange) {
+        status = user.isExchange;
+      } else {
+        status = !user.isExchange;
+      }
+
+      if(round.filters.enableFilterPoints) {
+        status = (user.points.total >= round.filters.pointsMin && user.points.total <= round.filters.pointsMax) 
+      }
+
+      if(round.filters.enableFilterRooms) {
+        var num = user.roommates.length + 1;
+        status = ((round.filters.rooms.one && num === 1) || (round.filters.rooms.two && num === 2) || (round.filters.rooms.three && num === 3));
+      }
+
+      round.isEligible = status;
+      callback(round);
+    })
   });
 }
 
