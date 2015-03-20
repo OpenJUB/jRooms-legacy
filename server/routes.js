@@ -9,6 +9,7 @@ var cookieParser = require('cookie-parser');
 var request = require('request');
 var bodyParser = require('body-parser');
 var User = require('./api/user/user.model');
+var Admin =  require('./api/admin/admin.model');
 var utils = require('./utils');
 var config = require('./config/environment');
 
@@ -44,27 +45,38 @@ module.exports = function(app) {
           return res.json(401, "Unauthorized. Invalid user returned by OpenJUB");
         }
 
-        User.update({username: username}, {token: token}, function(err2, num_affected) {
-          if(err2) {
-            return res.json(500, "Database failure");
-          }
-          console.log(num_affected);
-
-          if(num_affected == 0 && config.admins.indexOf(username) > -1) {
-            console.log("AA");
-            return utils.AddOpenJubUser(JSON.parse(response.body), token, next);
+        Admin.findOne({}).exec(function(errF, settings) {
+          if(errF || !settings) {
+            return res.json(500, err);
           }
 
-          if(req.originalUrl.indexOf("/admin") === 0) { //on an admin route, check the config
-            console.log("Admin route");
-            if(config.admins.indexOf(username) > -1)
+          if(settings.disabledUsers.indexOf(username) >= 0) {
+            return res.json(403, "You are on the list of disabled users.");
+          }
+
+          User.update({username: username}, {token: token}, function(err2, num_affected) {
+            if(err2) {
+              return res.json(500, "Database failure");
+            }
+            console.log(num_affected);
+
+            if(num_affected == 0 && config.admins.indexOf(username) > -1) {
+              console.log("AA");
+              return utils.AddOpenJubUser(JSON.parse(response.body), token, next);
+            }
+
+            if(req.originalUrl.indexOf("/admin") === 0) { //on an admin route, check the config
+              console.log("Admin route");
+              if(config.admins.indexOf(username) > -1)
+                return next();
+              return res.json(403, "Access denied");
+            } else {
+              console.log("User route");
               return next();
-            return res.json(403, "Access denied");
-          } else {
-            console.log("User route");
-            return next();
-          }
-      });
+            }
+        });
+
+        });
     });
   });
 
