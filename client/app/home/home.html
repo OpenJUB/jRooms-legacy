@@ -1,6 +1,57 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
-<div class="container full-height"><div class="row">
+<div class="container full-height">
+  <div class="row">
+    <!-- //////////////// -->
+    <!-- Profile -->
+    <div class="col-md-3">
+      <div class="well text-center">
+        <img class="img-rounded center-block" height="150" ng-src="{{ user.imageURL }}"/>
+
+        <h3>{{ user.name }}</h3>
+        <p>{{ user.country }}</p>
+        <p>{{ user.description }}</p>
+        <br/>
+
+        <h4 ng-show="user.roommates.length > 0">Roommates:</h4>
+        <div class="row well text-center" ng-repeat="item in user.roommates">
+          <div class="col-md-3">
+            <img class="img-rounded center-block" height="64" ng-click="roommateSelected(item);" ng-src="{{ item.imageURL }}"/>
+          </div>
+          <div class="col-md-9">
+            <p class="text-info">{{ item.name }}</p>
+            <a class="btn btn-danger" ng-click="removeRoommate(item.username);">Remove</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="well" id="roommateRequests">
+        <h3>Inbox</h3>
+        <p ng-show="user.inbox.length == 0" class="text-info">No new requests!</p>
+        <div ng-repeat="req in user.inbox" class="well">
+          <div class="row text-center">
+            <div class="col-md-3">
+              <img class="img-rounded center-block" height="70" ng-src="{{ req.imageURL }}"/>
+            </div>
+            <div class="col-md-8 col-md-offset-1">
+              <p class="text-success"><strong>{{ req.name }}</strong> wants to be your roommate!</p>
+            </div>
+          </div>
+          <br/>
+          <a class="btn btn-default btn-success" ng-click="acceptRoommate(req.username);">Accept</a>
+          <a class="btn btn-default btn-danger" ng-click="denyRoommate(req.username);">Deny</a>
+        </div>
+
+        <br/>
+
+        <h4>Send a request</h4>
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="CampusNet username" ng-model="requestUsername"></input>
+          <a class="btn btn-default" ng-click="requestRoommate();">Request!</a>
+        </div>
+      </div>
+    </div>
+    
     <!-- //////////////// -->
     <!-- Phase -->
     <div class="container col-md-9">
@@ -74,57 +125,7 @@
         <a class="btn btn-default btn-info" ng-click="updateRooms();">Submit!</a>     
       </div>
     </div>
-
-    <!-- //////////////// -->
-    <!-- Profile -->
-    <div class="col-md-3">
-      <div class="well text-center">
-        <img class="img-rounded center-block" height="150" ng-src="{{ user.imageURL }}"/>
-
-        <h3>{{ user.name }}</h3>
-        <p>{{ user.country }}</p>
-        <p>{{ user.description }}</p>
-        <br/>
-
-        <h4 ng-show="user.roommates.length > 0">Roommates:</h4>
-        <div class="row well text-center" ng-repeat="item in user.roommates">
-          <div class="col-md-3">
-            <img class="img-rounded center-block" height="64" ng-click="roommateSelected(item);" ng-src="{{ item.imageURL }}"/>
-          </div>
-          <div class="col-md-9">
-            <p class="text-info">{{ item.name }}</p>
-            <a class="btn btn-danger" ng-click="removeRoommate(item.username);">Remove</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="well" id="roommateRequests">
-        <h3>Inbox</h3>
-        <p ng-show="user.inbox.length == 0" class="text-info">No new requests!</p>
-        <div ng-repeat="req in user.inbox" class="well">
-          <div class="row text-center">
-            <div class="col-md-3">
-              <img class="img-rounded center-block" height="70" ng-src="{{ req.imageURL }}"/>
-            </div>
-            <div class="col-md-8 col-md-offset-1">
-              <p class="text-success"><strong>{{ req.name }}</strong> wants to be your roommate!</p>
-            </div>
-          </div>
-          <br/>
-          <a class="btn btn-default btn-success" ng-click="acceptRoommate(req.username);">Accept</a>
-          <a class="btn btn-default btn-danger" ng-click="denyRoommate(req.username);">Deny</a>
-        </div>
-
-        <br/>
-
-        <h4>Send a request</h4>
-        <div class="form-group">
-          <input type="text" class="form-control" placeholder="CampusNet username" ng-model="requestUsername"></input>
-          <a class="btn btn-default" ng-click="requestRoommate();">Request!</a>
-        </div>
-      </div>
-    </div>
   </div>
-</div></div>
+</div>
 
 <div ng-include="'components/footer/footer.html'"></div>
