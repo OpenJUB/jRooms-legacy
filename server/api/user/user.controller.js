@@ -157,12 +157,16 @@ exports.add_roommate = function(req, res) {
             }
 
             if(fromUser.roommates.length >= phase.maxRoommates) {
-                return res.json(400, "There is a limit on the number of roommates you know...");
+                return res.json(400, "There is a limit on the number of roommates, you know...");
             }
 
             User.findOne({username: roommate}).exec(function(err, toUser) {
                 if(err || !toUser) {
                     return res.json(500, err);
+                }
+
+                if(fromUser.username === toUser.username) {
+                    return res.json(400, "I've heard of doppelgangers but this is ridiculous...");
                 }
 
                 fromUser.outbox.push({username: roommate, name: toUser.name, imageURL: toUser.imageURL});
@@ -336,7 +340,7 @@ exports.updateColleges = function(req, res) {
 
             var tmp = new_preference.slice();
             tmp.sort();
-            
+
             if(!_.isEqual(tmp, ['C3', 'Krupp', 'Mercator', 'Nordmetall'])) {
                 return res.json(400, "Hack much?");
             }
