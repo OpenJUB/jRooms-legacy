@@ -177,4 +177,19 @@ angular.module('jRoomsApp')
       });
     }
 
+    $scope.collegeButton = function(college) {
+      if (college === 'Krupp') {
+
+      }
+      else if (college === 'Mercator') {
+
+      }
+      else if (college === 'C3') {
+
+      }
+      else if (college === 'Nordmetall') {
+        
+      }
+    }
+
   });

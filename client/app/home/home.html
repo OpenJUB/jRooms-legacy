@@ -11,23 +11,36 @@
         <h3>{{ user.name }}</h3>
         <p>{{ user.country }}</p>
         <p>{{ user.description }}</p>
-        <br/>
 
-        <h4 ng-show="user.roommates.length > 0">Roommates:</h4>
-        <div class="row well text-center" ng-repeat="item in user.roommates">
-          <div class="col-md-3">
-            <img class="img-rounded center-block" height="64" ng-click="roommateSelected(item);" ng-src="{{ item.imageURL }}"/>
-          </div>
-          <div class="col-md-9">
-            <p class="text-info">{{ item.name }}</p>
-            <a class="btn btn-danger" ng-click="removeRoommate(item.username);">Remove</a>
+        <div ng-show="user.nextCollege">
+          <a class="btn" ng-click="collegeButton(user.nextCollege);"
+            ng-class="{ 'btn-danger' : user.nextCollege === 'Krupp', 
+                        'btn-info' : user.nextCollege === 'Mercator', 
+                        'btn-success' : user.nextCollege === 'C3', 
+                        'btn-warning' : user.nextCollege === 'Nordmetall' }">
+            Will be in {{ user.nextCollege }} next year!
+          </a>
+        </div>
+
+        <div ng-show="user.roommates.length > 0">
+          <br/>
+          <h4>Roommates:</h4>
+          <div class="row well text-center" ng-repeat="item in user.roommates">
+            <div class="col-md-3">
+              <img class="img-rounded center-block" height="50" ng-click="roommateSelected(item);" ng-src="{{ item.imageURL }}"/>
+            </div>
+            <div class="col-md-9">
+              <p>{{ item.name }}</p>
+              <a class="btn btn-danger" ng-show="!showDone" ng-click="removeRoommate(item.username);">Remove</a>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="well" id="roommateRequests">
+      <div class="well" id="roommateRequests" ng-show="!showDone">
         <h3>Inbox</h3>
         <p ng-show="user.inbox.length == 0" class="text-info">No new requests!</p>
+
         <div ng-repeat="req in user.inbox" class="well">
           <div class="row text-center">
             <div class="col-md-3">
@@ -51,7 +64,7 @@
         </div>
       </div>
     </div>
-    
+
     <!-- //////////////// -->
     <!-- Phase -->
     <div class="container col-md-9">
@@ -66,6 +79,15 @@
         <h2 class="text-danger">Sorry!</h2>
         <p>It doesn't seem like you are eligible for this phase. <br/><br/>
         To continue with allocation process, please, come back at {{ currentPhase.next }}.</p>
+      </div>
+
+      <div class="jumbotron" ng-show="showDone">
+        <div class="container">
+          <h1 class="text-success">Congratulations!</h1>
+          <h3 class="text-success">You are all set and ready for the next year!</h3>
+          <br/><br/>
+          <h4 class="text-danger">We hope you will enjoy sharing the room <strong>{{ user.allocatedRoom }}</strong> in <strong>{{ user.nextCollege }}</strong> with <strong ng-repeat="item in user.roommates">{{ item.name }} </strong>!</h4>
+        </div>
       </div>
 
       <div class="well well-lg" ng-show="showCollegeSelection">
