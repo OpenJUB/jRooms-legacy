@@ -34,7 +34,7 @@ module.exports = function(app) {
     request.cookie('openjub_session=' + token);
     request({
       method: 'GET',
-      uri : "https://api.jacobs-cs.club/user/me?token=" + token,
+      uri : config.openJUB.url + "user/me?token=" + token,
       params : { 'openjub_session' : token },
       headers: {'Cookie' : 'openjub_session=' + token}
     }, function(err, response) {

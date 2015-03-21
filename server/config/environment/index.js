@@ -66,6 +66,10 @@ var all = {
     northAfrica: [],
     southAfrica: []
   },
+
+  openJUB: {
+    url: "https://api.jacobs-cs.club/"
+  }
 };
 
 // Export the config object based on the NODE_ENV

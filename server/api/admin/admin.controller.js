@@ -158,7 +158,7 @@ exports.importUsers = function(req, res) {
 
   User.find({}).remove().exec();
 
-  var url = "https://api.jacobs-cs.club/query/?limit=10000";
+  var url = config.openJUB.url + "query/?limit=10000";
   var token = req.cookies.token;
   request.cookie('openjub_session=' + token);
 
@@ -177,7 +177,7 @@ exports.importUsers = function(req, res) {
 
     var users = JSON.parse(response.body).data;
 
-    users.forEach(function(item){
+    users.forEach(function(item) {
       utils.AddOpenJubUser(item, null, function() {});
     });
   });
