@@ -27,6 +27,7 @@ var all = {
   // Admins for the room allocation
   admins: [ 'dcucleschi', 'fstankovsk', 'vungureanu' ],
 
+  // Number of students that can be allocated to the college
   collegeCapacity: {
     c3: 100,
     krupp: 100,
@@ -34,6 +35,7 @@ var all = {
     mercator: 100
   },
 
+  // Boundary percentages for colleges
   collegeFillMinimum: 0,
   collegeFillMaximum: 100,
 
@@ -46,6 +48,24 @@ var all = {
     }
   },
 
+  // Points
+  collegeSpiritPoints: 0.5,
+  countryPoints: 2,
+  regionPoints: 1,
+  majorPoints: 1,
+
+  // Regions
+  regions: {
+    eastEurope: ["Macedonia", "Georgia"],
+    westEurope: [],
+    middleEast: [],
+    northAmerica: [],
+    southAmerica: [],
+    southEastAsia: [],
+    southAsia: [],
+    northAfrica: [],
+    southAfrica: []
+  },
 };
 
 // Export the config object based on the NODE_ENV

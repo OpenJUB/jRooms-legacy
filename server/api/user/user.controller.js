@@ -4,6 +4,7 @@ var _ = require('lodash');
 var User = require('./user.model');
 var Phase = require('./../phase/phase.model');
 var Admin = require('./../admin/admin.model');
+var utils = require('./../../utils');
 
 var freshieTemplate = [
     {
@@ -18,8 +19,12 @@ exports.me = function(req, res) {
         if(err) {
             return res.json(500, err);
         }
-        
-        return res.json(200, user);
+        utils.points(user, function(err, nuser) {
+            console.log(err);
+            user.points = nuser.points;
+            user.save();
+            return res.json(200, nuser);
+        });
     });
 }
 

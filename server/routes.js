@@ -62,7 +62,13 @@ module.exports = function(app) {
 
             if(num_affected == 0 && config.admins.indexOf(username) > -1) {
               console.log("AA");
-              return utils.AddOpenJubUser(JSON.parse(response.body), token, next);
+              utils.AddOpenJubUser(JSON.parse(response.body), token, function(err, user) {
+                if(err || !user) {
+                  return res.json(500, err);
+                } else {
+                  return next();
+                }
+              });
             }
 
             if(req.originalUrl.indexOf("/admin") === 0) { //on an admin route, check the config
