@@ -15,15 +15,14 @@ var userSchema = new Schema({
 	college_preference : Array,
 	nextCollege : String,
 	token: String,
-	round_name: String,
+	phaseId: Number,
 	rooms: Array,
 	nextRoom: String,
 	points: Object,
 	major: String,
 	description: String,
 	isAdmin: Boolean,
-	imageURL: String,
-	hasFreshman: Boolean
+	imageURL: String
 });
 
 module.exports = mongoose.model('User', userSchema);

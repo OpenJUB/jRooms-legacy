@@ -228,7 +228,40 @@ var generateResults = function(phaseId, save, callback) {
 }
 
 var calculatePhase = function(phase, save, callback) {
-  callback();
+  console.log("Here bruh");
+  User.find({phaseId: phase.id}).exec(function(err, users) {
+    var matrix = [];
+    var rooms = [];
+    for(var i = 0; i < users.length; i++) {
+      rooms = rooms.concat(users.rooms);
+    }
+
+    rooms = rooms.filter(utils.onlyUnique, users[i]);
+
+    for(var i = 0; i < users.length; i++) {
+      if(matrix[users[i].username]) {
+        continue;
+      }
+      console.log("AAAAA");
+
+      matrix[users[i]] = calc(rooms, users[i]);
+      for(var j = 0; j < users[i].roommates.length; j++) {
+        matrix[users[i].roommates[j].username] = matrix[users[i].username];
+      }
+    }
+
+    console.log(matrix);
+  });
+}
+
+var calc = function(rooms, user) {
+  var res = [];
+  for(var i = 0; i < rooms.length; i++) {
+    var ind = user.rooms.indexOf(rooms[i]);
+    res.push(ind < 0 ? 100000 : (20 - user.points.totalPoints) * (ind + 1));
+  }
+
+  return res;
 }
 
 var shuffle = function (o){ //v1.0

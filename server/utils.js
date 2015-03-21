@@ -133,9 +133,9 @@ exports.points = function(user, callback) {
 			}
 
 			user.points.roommatePoints = roommatePoints;
-			user.points.countryPoints = config.countryPoints * (countries.filter(onlyUnique).length - 1);
-			user.points.regionPoints = config.regionPoints * (regions.filter(onlyUnique).length - 1);
-			user.points.majorPoints = config.majorPoints * (majors.filter(onlyUnique).length - 1);
+			user.points.countryPoints = config.countryPoints * (countries.filter(exports.onlyUnique).length - 1);
+			user.points.regionPoints = config.regionPoints * (regions.filter(exports.onlyUnique).length - 1);
+			user.points.majorPoints = config.majorPoints * (majors.filter(exports.onlyUnique).length - 1);
 
 			user.points.totalPoints += user.points.roommatePoints + user.points.countryPoints + user.points.regionPoints + user.points.majorPoints;
 
@@ -161,8 +161,58 @@ var getRegion = function(country) {
 	return null;
 }
 
-var onlyUnique = function (value, index, self) { 
+exports.onlyUnique = function (value, index, self) { 
     return self.indexOf(value) === index;
 }
 
+exports.isEligible = function(item, round, callback) {
+  var status = true;
+  User.findOne({token: item}).exec(function(err, user) {
+    if(err || !user) {
+      status = false;
+    }
+    Admin.findOne({}).exec(function(err2, settings) {
+      if(round.filters.enableFilterTall) {
+        var tall = settings.tallPeople.split(',');
+        status = Math.min((tall.indexOf(user.username) >= 0), status);
+      }
+
+      if(round.filters.enableFilterColleges) {
+        var tmp = [];
+        if(round.filters.colleges.krupp) {
+          tmp.push("Krupp");
+        }
+        if(round.filters.colleges.mercator) {
+          tmp.push("Mercator");
+        }
+        if(round.filters.colleges.c3) {
+          tmp.push("C3");
+        }
+        if(round.filters.colleges.nordmetall) {
+          tmp.push("Nordmetall");
+        }
+
+        status = Math.min((tmp.indexOf(user.nextCollege) >= 0), status);
+      }
+
+      if(round.filters.enableFilterExchange) {
+        status = Math.min(user.isExchange, status);
+      } else {
+        status = Math.min(!user.isExchange, status);
+      }
+
+      if(round.filters.enableFilterPoints) {
+        status = Math.min((user.points.total >= round.filters.pointsMin && user.points.total <= round.filters.pointsMax) ,status);
+      }
+
+      if(round.filters.enableFilterRooms) {
+        var num = user.roommates.length + 1;
+        status = Math.min(((round.filters.rooms.one && num === 1) || (round.filters.rooms.two && num === 2) || (round.filters.rooms.three && num === 3)), status);
+      }
+
+      round.isEligible = status;
+      callback(round);
+    })
+  });
+}
 setInterval(exports.updatePhases, 1000 * 7);
