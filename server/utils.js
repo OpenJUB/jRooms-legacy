@@ -98,7 +98,7 @@ exports.updatePhases = function() {
 }
 
 exports.points = function(user, callback) {
-	if(!user.points) {
+	if(!user || !user.points) {
 		return callback("Points not defined", user);
 	}
 
