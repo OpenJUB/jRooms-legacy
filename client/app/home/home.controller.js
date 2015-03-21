@@ -42,7 +42,7 @@ angular.module('jRoomsApp')
             $scope.showCollegeSelection = true;
           }
           else {
-            $scope.rooms = $scope.user.room_preferences;
+            $scope.rooms = $scope.user.rooms;
             $scope.maxRooms = _.range(0, phase.maxRooms);
 
             $scope.showRoomSelection = true;
