@@ -21,6 +21,8 @@ exports.me = function(req, res) {
         }
         utils.points(user, function(err, nuser) {
             console.log(err);
+            if(!nuser)
+                return res.json(200, user);
             user.points = nuser.points;
             user.save();
             return res.json(200, nuser);
