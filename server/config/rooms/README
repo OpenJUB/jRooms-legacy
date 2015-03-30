@@ -1,0 +1,3 @@
+To regenerate the rooms run:
+
+node gen_rooms.js
