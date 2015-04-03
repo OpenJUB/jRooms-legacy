@@ -46,11 +46,11 @@ module.exports = function(app) {
         }
 
         Admin.findOne({}).exec(function(errF, settings) {
-          if(errF || !settings) {
+          if(errF) {
             return res.json(500, err);
           }
 
-          if(settings.disabledUsers.indexOf(username) >= 0) {
+          if(settings && settings.disabledUsers.indexOf(username) >= 0) {
             return res.json(403, "You are on the list of disabled users.");
           }
 
@@ -63,6 +63,7 @@ module.exports = function(app) {
             if(num_affected == 0 && config.admins.indexOf(username) > -1) {
               console.log("AA");
               utils.AddOpenJubUser(JSON.parse(response.body), token, function(err, user) {
+                console.log(user);
                 if(err || !user) {
                   return res.json(500, err);
                 } else {

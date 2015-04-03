@@ -67,13 +67,13 @@ exports.updateSettings = function(req, res) {
 
     settings = new Admin(req.body.settings);
     settings.save();
+
+    utils.SetPhases(req.body.settings.phases, function() {
+      return res.json(200, { status : 'success' });
+    });
+  } else {
+      return res.json(500, "Error updating settings");
   }
-
-  utils.SetPhases(req.body.settings.phases, function() {
-    return res.json(200, { status : 'success' });
-  });
-
-  return res.json(500, "Error updating settings");
 }
 
 /**
