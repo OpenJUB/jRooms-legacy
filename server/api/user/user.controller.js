@@ -24,8 +24,14 @@ exports.me = function(req, res) {
             if(!nuser)
                 return res.json(200, user);
             user.points = nuser.points;
-            user.save();
-            return res.json(200, nuser);
+            user.save(function(err) {
+
+                if(err) {
+                    return res.json(500, err);
+                }
+                
+                return res.json(200, nuser);
+            });
         });
     });
 }

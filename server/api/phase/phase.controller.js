@@ -14,12 +14,46 @@ exports.currentPhase = function(req, res) {
       return res.json(500, err);
     }
 
+    console.log("AAAA");
+
     if(!data) {
-      return res.json(200, {next: 'your earliest convenience to check again'});
+      data = {};
+      //return res.json(200, {next: 'your earliest convenience to check again'});
     }
 
-    data.isEligible = utils.isEligible(req.cookies.token, data, function(new_data) {
-      res.json(200, new_data);
+    console.log("AAAA");
+
+    utils.isEligible(req.cookies.token, data, function(new_data) {
+      if(new_data.isEligible) {
+        return res.json(200, new_data);
+      }
+      //console.log(new_data);
+      var count = 0;
+      Phase.find({}).exec(function(err, phases) {
+        console.log(phases);
+        var onComplete = function() {
+          if(count == phases.length) {
+            return res.json(200, {next: 'your earliest convenience to check again'});
+          }
+        };
+
+        for(var i = 0; i < phases.length; ++i) {
+          utils.isEligible(req.cookies.token, phases[i], function(new_phase) {
+            console.log(new_phase.to, new_phase.to <= (new Date()));
+            if(new_phase.isEligible) {
+              if(new_phase.to <= (new Date())) {
+                count++;
+                return;
+              }
+              new_data.next = new_phase.from;
+              return res.json(200, new_data);
+            }
+            count++;
+            onComplete();
+          });
+        }
+        onComplete();
+      });
     });
   });
 

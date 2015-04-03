@@ -170,12 +170,27 @@ exports.isEligible = function(item, round, callback) {
   User.findOne({token: item}).exec(function(err, user) {
     if(err || !user) {
       status = false;
+      round.isEligible = status;
+      return callback(round);
     }
     Admin.findOne({}).exec(function(err2, settings) {
+    	if(err2 || !settings) {
+    		status = false;
+    		round.isEligible = status;
+      	return callback(round);
+    	}
+    	console.log(round);
+    	if(!round.filters) { // Malformed round. Return false. Exists because of the possibility for no active phase.
+    		round.isEligible = false;
+      	return callback(round);
+    	}
+
       if(round.filters.enableFilterTall) {
         var tall = settings.tallPeople.split(',');
         status = Math.min((tall.indexOf(user.username) >= 0), status);
       }
+
+      console.log(status);
 
       if(round.filters.enableFilterColleges) {
         var tmp = [];
@@ -202,7 +217,7 @@ exports.isEligible = function(item, round, callback) {
       }
 
       if(round.filters.enableFilterPoints) {
-        status = Math.min((user.points.total >= round.filters.pointsMin && user.points.total <= round.filters.pointsMax) ,status);
+        status = Math.min((user.points.total >= round.filters.pointsMin) , status);
       }
 
       if(round.filters.enableFilterRooms) {
@@ -211,7 +226,8 @@ exports.isEligible = function(item, round, callback) {
       }
 
       round.isEligible = status;
-      callback(round);
+      console.log(status);
+      return callback(round);
     })
   });
 }
