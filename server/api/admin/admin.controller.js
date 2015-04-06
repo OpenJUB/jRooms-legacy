@@ -280,9 +280,61 @@ var calculatePhase = function(phase, save, callback) {
       }
       rooms.push("Bogus");
     }
-    console.log(rooms);
-    console.log(matrix);
+    
+    HungarianOne(matrix, callback);
   });
+}
+
+var HungarianOne = function(matrix, callback) {
+  for(var user in matrix) {
+    var min = _.min(matrix[user]);
+    for(var i = 0; i < matrix[user].length; ++i) {
+      matrix[user][i] -= min;
+    }
+  }
+
+  //console.log(matrix);
+  HungarianTwo(matrix, callback);
+}
+
+var HungarianTwo = function(matrix, callback) {
+  var assignable = true;
+  for(var p in matrix) {
+    for(var i = 0; i < matrix[p].length; ++i) {
+      var count = 0;
+      for(var prop in matrix) {
+        if(matrix[prop][i] === 0)
+          count++;
+      }
+
+      assignable = Math.min(assignable, count === 1);
+    }
+    break;
+  }
+
+  if(!assignable) {
+    for(var p in matrix) {
+      for(var i = 0; i < matrix[p].length; ++i) {
+        var min = 100000;
+        for(var prop in matrix) {
+          min = Math.min(min, matrix[prop][i]);
+        }
+
+        for(var prop in matrix) {
+          matrix[prop][i] -= min;
+        }
+      }
+      break;
+    }
+  }
+
+  console.log(matrix);
+
+  HungarianThree(matrix, callback);
+}
+
+var HungarianThree = function(matrix, callback) {
+  callback(matrix);
 }
 
 var calc = function(rooms, user) {
