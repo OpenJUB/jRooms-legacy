@@ -228,13 +228,27 @@ var generateResults = function(phaseId, save, callback) {
 }
 
 var calculatePhase = function(phase, save, callback) {
-  console.log("Here bruh");
+  //console.log("Here bruh");
+  //console.log(phase);
   User.find({phaseId: phase.id}).exec(function(err, users) {
-    var matrix = [];
-    var rooms = [];
-    for(var i = 0; i < users.length; i++) {
-      rooms = rooms.concat(users.rooms);
+    if(err) {
+      return res.json(500, err);
     }
+
+    if(!users) {
+      return res.json(200, "No allocations to be done");
+    }
+
+    //console.log(users);
+    var matrix = {};
+    var rooms = [];
+    var us = [];
+
+    for(var i = 0; i < users.length; i++) {
+      rooms = rooms.concat(users[i].rooms);
+    }
+
+    console.log(rooms);
 
     rooms = rooms.filter(utils.onlyUnique, users[i]);
 
@@ -242,14 +256,31 @@ var calculatePhase = function(phase, save, callback) {
       if(matrix[users[i].username]) {
         continue;
       }
-      console.log("AAAAA");
+      //console.log("AAAAA");
 
-      matrix[users[i]] = calc(rooms, users[i]);
+      matrix[users[i].username] = calc(rooms, users[i]);
+      us.push(users[i]);
       for(var j = 0; j < users[i].roommates.length; j++) {
         matrix[users[i].roommates[j].username] = matrix[users[i].username];
       }
     }
 
+    var tmp_count = 0;
+    while(_.size(matrix) < rooms.length) {
+      //console.log(_.size(matrix));
+      //console.log(rooms.length);
+      matrix["BLANK" + tmp_count] = calc(rooms, {rooms: []});
+      //console.log(_.size(matrix));
+      ++tmp_count;
+    }
+
+    while(rooms.length < _.size(matrix)) {
+      for(var prop in matrix) {
+        matrix[prop].push(100000);
+      }
+      rooms.push("Bogus");
+    }
+    console.log(rooms);
     console.log(matrix);
   });
 }
@@ -257,6 +288,10 @@ var calculatePhase = function(phase, save, callback) {
 var calc = function(rooms, user) {
   var res = [];
   for(var i = 0; i < rooms.length; i++) {
+    if(!user || !user.rooms) {
+      return [];
+    }
+
     var ind = user.rooms.indexOf(rooms[i]);
     res.push(ind < 0 ? 100000 : (20 - user.points.totalPoints) * (ind + 1));
   }
