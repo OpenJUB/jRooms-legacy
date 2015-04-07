@@ -81,6 +81,10 @@ exports.add_roommate = function(req, res) {
                     return res.json(400, "I've heard of doppelgangers but this is ridiculous...");
                 }
 
+                if(!fromUser.nextCollege) {
+                    return res.json(400, "You need to be allocated to a college first");
+                }
+
                 if(fromUser.nextCollege !== toUser.nextCollege) {
                     return res.json(400, "You have to be in the same college as your roommate.");
                 }
@@ -312,7 +316,7 @@ exports.updateRooms = function(req, res) {
                 user.phaseId = phase.id;
                 user.save();
 
-                for(var i = 0; i < user.roommates; i++) {
+                for(var i = 0; i < user.roommates.length; i++) {
                     User.findOne({username: user.roommates[i].username}).exec(function(err, user2) {
                         user2.rooms = user.rooms;
                         user2.phaseId = phase.id;

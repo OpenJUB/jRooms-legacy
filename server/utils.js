@@ -127,6 +127,8 @@ exports.points = function(user, callback) {
 
 			for(var i = 0; i < users.length; i++) {
 				roommatePoints += users[i].points.userPoints;
+				roommatePoints += config.collegeSpiritPoints * (users[i].college === users[i].nextCollege);
+
 				countries.push(users[i].country);
 				regions.push(getRegion(users[i].country));
 				majors.push(users[i].major);
@@ -140,12 +142,15 @@ exports.points = function(user, callback) {
 			user.points.totalPoints += user.points.roommatePoints + user.points.countryPoints + user.points.regionPoints + user.points.majorPoints;
 
 			//console.log(user);
-			callback(null, user);
+			user.save(function() {
+				callback(null, user);
+			});
 		});
 
 	} else {
-		//console.log(user);
-		callback(null, user);
+		user.save(function() {
+			callback(null, user);
+		});
 	}
 }
 
@@ -179,10 +184,23 @@ exports.isEligible = function(item, round, callback) {
     		round.isEligible = status;
       	return callback(round);
     	}
-    	console.log(round);
+    	//console.log(round);
     	if(!round.filters) { // Malformed round. Return false. Exists because of the possibility for no active phase.
-    		round.isEligible = false;
+    		status = false;
+    		round.isEligible = status;
       	return callback(round);
+    	}
+
+    	if(round.isCollegePhase && user.nextCollege) {
+    		status = false;
+    		round.isEligible = status;
+    		return callback(round);
+    	}
+
+    	if(!round.isCollegePhase && user.nextRoom) {
+    		status = false;
+    		round.isEligible = status;
+    		return callback(round);
     	}
 
       if(round.filters.enableFilterTall) {
@@ -228,7 +246,78 @@ exports.isEligible = function(item, round, callback) {
       round.isEligible = status;
       console.log(status);
       return callback(round);
-    })
+    });
   });
 }
+
+exports.phaseResult = function(phase, callback) {
+	//console.log(phase);
+  if(phase.isCollegePhase) {
+    User.find({$where: 'this.nextCollege != null'}).exec(function(err, users) {
+      //console.log(users);
+      var results = {krupp: [], c3: [], nordmetall: [], mercator: []};
+      if(err || !users) {
+        console.log(err);
+        return {};
+      }
+      //console.log(users);
+      for(var i = 0; i < users.length; i++) {
+        switch(users[i].nextCollege) {
+          case 'Krupp':
+            results.krupp.push({name: users[i].name});
+            break;
+          case 'Mercator':
+            results.mercator.push({name: users[i].name});
+            break;
+          case 'Nordmetall':
+            results.nordmetall.push({name: users[i].name});
+            break;
+          case 'C3':
+            results.c3.push({name: users[i].name});
+            break;
+        }
+      }
+      //console.log(results);
+      phase.results = results;
+      return phase.save(function() {
+        return callback(phase);
+      });
+    });
+  } else {
+    User.find({phaseId: phase.id}).exec(function(err, users) {
+      var results = {krupp: [], c3: [], nordmetall: [], mercator: []};
+      if(err || !users) {
+      	//console.log("Scaramoosh");
+        return results;
+      }
+      //console.log(users);
+
+      for(var i = 0; i < users.length; i++) {
+      	//console.log(users[i].username, users[i].nextRoom);
+        switch(users[i].nextCollege) {
+          case 'Krupp':
+            results.krupp.push({name: users[i].name, room: users[i].nextRoom});
+            break;
+          case 'Mercator':
+            results.mercator.push({name: users[i].name, room: users[i].nextRoom});
+            break;
+          case 'C3':
+            results.c3.push({name: users[i].name, room: users[i].nextRoom});
+            break;
+          case 'Nordmetall':
+            results.nordmetall.push({name: users[i].name, room: users[i].nextRoom});
+            break;
+        }
+      }
+
+      //console.log(results);
+
+      phase.results = results;
+      return phase.save(function() {
+        return callback(phase);
+      });
+    });
+  }
+}
+
 setInterval(exports.updatePhases, 1000 * 7);

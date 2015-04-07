@@ -171,7 +171,7 @@ angular.module('jRoomsApp')
         Communicator.getUser($scope.editUserString, function(err, user) {
           if (!err) {
             user.college_preference = user.college_preference.join(',');
-            user.room_preferences = user.room_preferences.join(',');
+            user.room_preferences = user.rooms.join(',');
 
             $scope.editUser = user;
           }
@@ -187,7 +187,7 @@ angular.module('jRoomsApp')
 
     $scope.editUserSubmit = function() {
       $scope.editUser.college_preference = $scope.editUser.college_preference.split(',');
-      $scope.editUser.room_preferences = $scope.editUser.room_preferences.split(',');
+      $scope.editUser.room_preferences = $scope.editUser.rooms.split(',');
 
       Communicator.setUser($scope.editUserString, $scope.editUser, function(err, smth) {
         if (!err) {

@@ -220,9 +220,9 @@ exports.cancelForce = function(req, res) {
 var generateResults = function(phaseId, save, callback) {
   Phase.findOne({id: phaseId}).exec(function(err, phase) {
     if(phase.isCollegePhase) {
-      calculateColleges(phase, save, callback);
+      return calculateColleges(phase, save, callback);
     } else {
-      calculatePhase(phase, save, callback);
+      return calculatePhase(phase, save, callback);
     }
   });
 }
@@ -230,19 +230,16 @@ var generateResults = function(phaseId, save, callback) {
 var calculatePhase = function(phase, save, callback) {
   //console.log("Here bruh");
   //console.log(phase);
-  User.find({phaseId: phase.id}).exec(function(err, users) {
-    if(err) {
-      return res.json(500, err);
+  User.find({phaseId: phase.id}).exec(function(err, u) {
+    if(err || !u) {
+      callback(null);
     }
 
-    if(!users) {
-      return res.json(200, "No allocations to be done");
-    }
+    var users = shuffle(u);
 
-    //console.log(users);
     var matrix = {};
     var rooms = [];
-    var us = [];
+    var used = [];
 
     for(var i = 0; i < users.length; i++) {
       rooms = rooms.concat(users[i].rooms);
@@ -253,24 +250,22 @@ var calculatePhase = function(phase, save, callback) {
     rooms = rooms.filter(utils.onlyUnique, users[i]);
 
     for(var i = 0; i < users.length; i++) {
-      if(matrix[users[i].username]) {
+      if(used.indexOf(users[i].username) >= 0) {
         continue;
       }
-      //console.log("AAAAA");
 
-      matrix[users[i].username] = calc(rooms, users[i]);
-      us.push(users[i]);
+      matrix[users[i].username] = calc(rooms, users[i], phase.filters.pointsMax);
+      used.push(users[i]);
       for(var j = 0; j < users[i].roommates.length; j++) {
-        matrix[users[i].roommates[j].username] = matrix[users[i].username];
+        used.push(users[i].roommates[j].username);
       }
     }
 
+    console.log(matrix);
+
     var tmp_count = 0;
-    while(_.size(matrix) < rooms.length) {
-      //console.log(_.size(matrix));
-      //console.log(rooms.length);
-      matrix["BLANK" + tmp_count] = calc(rooms, {rooms: []});
-      //console.log(_.size(matrix));
+    while(_.size(matrix) < rooms.length) { // We need to make the matrix square
+      matrix["BLANK" + tmp_count] = calc(rooms, {rooms: []}, phase.filters.pointsMax);
       ++tmp_count;
     }
 
@@ -278,14 +273,89 @@ var calculatePhase = function(phase, save, callback) {
       for(var prop in matrix) {
         matrix[prop].push(100000);
       }
-      rooms.push("Bogus");
+      rooms.push("Unallocated this round");
     }
+    console.log(matrix);
+
+    /*matrix = {
+      'fstankovsk' : [20, 25, 22, 28],
+      'slal' : [15, 18, 23, 17],
+      'dcucleschi' : [19, 17, 21, 24],
+      'abarbarosi' : [25, 23, 24, 24]
+    };
+
+    rooms = ["First", "Second", "Third", "Fourth"];*/
     
-    HungarianOne(matrix, callback);
+    return HungarianOne(matrix, rooms, function(data) {
+      if(save) {
+        var users = [];
+        for(var prop in data) {
+
+          if(/^(\-|\+)?([0-9]+|Infinity)$/.test(prop)) 
+            continue;
+          users.push(prop);
+        }
+        //console.log(users);
+        //console.log(data);
+       
+       var newCallback = function(data, nUsers, i) {
+          //console.log("You're here. Welcome");
+          if(!i && i !== 0) {
+            //console.log("You're here. Welcome");
+            return callback(null);
+          }
+          //console.log(nUsers);
+          if(i >= nUsers.length - 1) {
+            return utils.phaseResult(phase, callback);
+          } else {
+            //console.log("Blink");
+            return saveUser(data, nUsers, i + 1, newCallback);
+          }
+       };
+
+       var saveUser = function(data, nUsers, i, callB) {
+          //console.log(i);
+          if(i >= nUsers.length) {
+            return callB(data, nUsers, []);
+          }
+          User.findOne({username: nUsers[i]}).exec(function(err, item) {
+            if(err || !item) {
+              //console.log("Error, Error");
+              if(nUsers[i].lastIndexOf("BLANK", 0) === 0) {
+                return callB(data, nUsers, i);
+              }
+
+              return callB(data, nUsers, null);
+            }
+
+            //console.log(data);
+            //console.log(item.username);
+            //console.log(data[item.username]);
+
+            item.nextRoom = data[item.username];
+            item.save(function() {
+              //console.log(i);
+              item.roommates.forEach(function(tmp) {
+                User.findOne({username: tmp.username}).exec(function(err, use) {
+                  use.nextRoom = data[item.username];
+                  use.save();
+                });
+              });
+
+              return callB(data, nUsers, i);
+            });
+          });
+        };
+
+        return saveUser(data, users, 0, newCallback);
+      } else {
+        return callback(data);
+      }
+    });
   });
 }
 
-var HungarianOne = function(matrix, callback) {
+var HungarianOne = function(matrix, rooms, callback) {
   for(var user in matrix) {
     var min = _.min(matrix[user]);
     for(var i = 0; i < matrix[user].length; ++i) {
@@ -293,51 +363,181 @@ var HungarianOne = function(matrix, callback) {
     }
   }
 
-  //console.log(matrix);
-  HungarianTwo(matrix, callback);
+  return HungarianTwo(matrix, rooms, callback);
 }
 
-var HungarianTwo = function(matrix, callback) {
-  var assignable = true;
-  for(var p in matrix) {
-    for(var i = 0; i < matrix[p].length; ++i) {
-      var count = 0;
-      for(var prop in matrix) {
-        if(matrix[prop][i] === 0)
-          count++;
-      }
+var HungarianTwo = function(matrix, rooms, callback) {
 
-      assignable = Math.min(assignable, count === 1);
+  for(var i = 0; i < _.size(matrix); ++i) {
+    var min = 100000;
+    for(var prop in matrix) {
+      min = Math.min(min, matrix[prop][i]);
     }
-    break;
+
+    for(var prop in matrix) {
+      matrix[prop][i] -= min;
+    }
   }
 
-  if(!assignable) {
-    for(var p in matrix) {
-      for(var i = 0; i < matrix[p].length; ++i) {
-        var min = 100000;
-        for(var prop in matrix) {
-          min = Math.min(min, matrix[prop][i]);
-        }
+  return HungarianAssign(matrix, rooms, callback);
+}
 
-        for(var prop in matrix) {
-          matrix[prop][i] -= min;
+var HungarianAssign = function(matrix, rooms, callback) {
+  //console.log(matrix);
+  var assigned = {};
+  var lastSize = 0;
+  var matrixSize = _.size(matrix);
+  //console.log(matrixSize);
+  var broken = false;
+
+  while(lastSize < 2 * matrixSize) {
+    console.log(assigned);
+    for(var user in matrix) {
+      if(assigned[user])
+        continue;
+
+      var count = 0;
+      var index = -1;
+
+      for(var i = 0; i < matrixSize; ++i) {
+        if(matrix[user][i] === 0 && !assigned.hasOwnProperty(i)) {
+          console.log("Found zero at " + user + " " + i);
+          ++count;
+          index = i;
+        }      
+      }
+
+      if(count === 1 && index !== -1) {
+        assigned[index] = user;
+        assigned[user] = rooms[index];
+      }
+    }
+
+    for(var i = 0; i < matrixSize; ++i) {
+      if(assigned.hasOwnProperty(i))
+        continue;
+
+      var count = 0;
+      var username = "";
+
+      for(var user in matrix) {
+        if(matrix[user][i] === 0 && !assigned.hasOwnProperty(user)) {
+          ++count;
+          username = user;
+        }      
+      }
+
+      if(count === 1 && username !== "") {
+        assigned[username] = rooms[i];
+        assigned[i] = username;
+      }
+    }
+
+    if(_.size(assigned) === lastSize) {
+      var unassigned = null;
+      for(var user in matrix) {// Check if all our users are allocated. If so, we're done. If not, we can't continue so we return an empty array.
+        if(user.lastIndexOf("BLANK", 0) === 0) {
+          continue;
+        }
+        console.log("I'm in your loop");
+        console.log(user);
+        if(!assigned.hasOwnProperty(user)) {
+          
+          var zeroes = [];
+          for(var i = 0; i < matrixSize; ++i) {
+            if(matrix[user][i] === 0 && !assigned.hasOwnProperty(i))
+              zeroes.push(i);
+          }
+          console.log(zeroes);
+          if(zeroes.length > 1) {
+            var rand = Math.round(Math.random() * (zeroes.length - 1));
+            console.log(rand);
+            assigned[user] = rooms[zeroes[rand]];
+            assigned[zeroes[rand]] = user;
+            unassigned = user;
+            break;
+          }
         }
       }
+      if(unassigned) {
+        lastSize = _.size(assigned);
+        continue;
+      } else {
+        broken = true;
+        break;
+      }
+    }
+
+    lastSize = _.size(assigned);
+  }
+
+  //console.log(assigned);
+
+  if(!broken) {
+    return callback(assigned);
+  }
+
+  var markedRows = {};
+  var markedColumns = {};
+
+  for(var user in matrix) {
+    if(!assigned.hasOwnProperty(user)) {
+      markedRows[user] = true;
+    }
+  }
+
+  var lastRows = _.size(markedRows);
+  var lastCols = _.size(markedColumns);
+
+  while(true) {
+    for(var user in markedRows) {
+      for(var i = 0; i < matrixSize; ++i) {
+        if(matrix[user][i] === 0) {
+          markedColumns[i] = true;
+        }
+      }
+    }
+
+    for(var col in markedColumns) {
+      if(!assigned.hasOwnProperty(col))
+        continue;
+      markedRows[assigned[col]] = true;
+    }
+
+    if(lastRows === _.size(markedRows) && lastCols === _.size(markedColumns)) { // No assignment was made
       break;
     }
+
+    lastRows = _.size(markedRows);
+    lastCols = _.size(markedColumns);
   }
 
-  console.log(matrix);
+  // Lines go through UNMARKED rows and MARKED columns
 
-  HungarianThree(matrix, callback);
+  var minimum = 100000;
+
+  for(var user in matrix) {
+    for(var i = 0; i < matrixSize; ++i) { // Minimum from MARKED rows and UNMARKED columns
+      if(markedRows.hasOwnProperty(user) && !markedColumns.hasOwnProperty(i)) {
+        minimum = Math.min(minimum, matrix[user][i]);
+      }
+    }
+  }
+
+  for(var user in matrix) {
+    for(var i = 0; i < matrixSize; ++i) { // Add to crossroads of lines, subtract from open points
+      if(markedRows.hasOwnProperty(user) && !markedColumns.hasOwnProperty(i)) {
+        matrix[user][i] -= minimum;
+      } else if(!markedRows.hasOwnProperty(user) && markedColumns.hasOwnProperty(i)) {
+        matrix[user][i] += minimum;
+      }
+    }
+  }
+
+  return HungarianAssign(matrix, rooms, callback);
 }
 
-var HungarianThree = function(matrix, callback) {
-  callback(matrix);
-}
-
-var calc = function(rooms, user) {
+var calc = function(rooms, user, cap) {
   var res = [];
   for(var i = 0; i < rooms.length; i++) {
     if(!user || !user.rooms) {
@@ -345,7 +545,7 @@ var calc = function(rooms, user) {
     }
 
     var ind = user.rooms.indexOf(rooms[i]);
-    res.push(ind < 0 ? 100000 : (20 - user.points.totalPoints) * (ind + 1));
+    res.push(ind < 0 ? 100000 : (20 - Math.min(user.points.totalPoints, cap)) * (ind + 1));
   }
 
   return res;
@@ -417,7 +617,7 @@ var calculateColleges = function(phase, save, callback) {
         return a.fill - b.fill;
       });
 
-      console.log(percentages);
+      //console.log(percentages);
       var counter = 0;
 
       while(percentages[0].fill < config.collegeFillMinimum) {
@@ -455,85 +655,20 @@ var calculateColleges = function(phase, save, callback) {
         }
       }
       if(save) {
-        console.log("SAAVE");
+        //console.log("SAAVE");
         for(var i = 0; i < percentages.length; i++) {
           for(var j = 0; j < percentages[i].people.length; j++) {
               percentages[i].people[j].nextCollege = percentages[i].college;
+              percentages[i].people[j].points.collegeSpiritPoints = config.collegeSpiritPoints * (percentages[i].people[j].nextCollege === percentages[i].people[j].college);
               percentages[i].people[j].save();
           }
         }
 
-        phaseResult(phase, callback);
+        return utils.phaseResult(phase, callback);
       } else {
-        callback();
+        return callback();
       }
   });
-}
-
-var phaseResult = function(item, callback) {
-
-  if(item.isCollegePhase) {
-    User.find({$where: 'this.nextCollege != null'}).exec(function(err, users) {
-      console.log(users);
-      var results = {krupp: [], c3: [], nordmetall: [], mercator: []};
-      if(err || !users) {
-        console.log(err);
-        return {};
-      }
-      console.log(users);
-      for(var i = 0; i < users.length; i++) {
-        switch(users[i].nextCollege) {
-          case 'Krupp':
-            results.krupp.push({name: users[i].name});
-            break;
-          case 'Mercator':
-            results.mercator.push({name: users[i].name});
-            break;
-          case 'Nordmetall':
-            results.nordmetall.push({name: users[i].name});
-            break;
-          case 'C3':
-            results.c3.push({name: users[i].name});
-            break;
-        }
-      }
-      console.log(results);
-      item.results = results;
-      item.save(function() {
-        callback(item);
-      });
-    });
-  } else {
-    User.find({phase: item.id}).exec(function(err, users) {
-      var results = {krupp: [], c3: [], nordmetall: [], mercator: []};
-      if(err || !users) {
-        return {};
-      }
-      for(var i = 0; i < users.length; i++) {
-        switch(users[i].nextCollege) {
-          case 'Krupp':
-            results.krupp.push({name: users[i].name, room: users[i].room});
-            break;
-          case 'Mercator':
-            results.mercator.push({name: users[i].name, room: users[i].room});
-            break;
-          case 'C3':
-            results.c3.push({name: users[i].name, room: users[i].room});
-            break;
-          case 'Nordmetall':
-            results.nordmetall.push({name: users[i].name, room: users[i].room});
-            break;
-        }
-      }
-
-      return {
-        id: item.id,
-        name: item.name, 
-        results: results
-      };
-    });
-  }
-  
 }
 
 var collegeFill = function(number, name) {

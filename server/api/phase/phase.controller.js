@@ -14,45 +14,52 @@ exports.currentPhase = function(req, res) {
       return res.json(500, err);
     }
 
-    console.log("AAAA");
+    //console.log("AAAA");
 
     if(!data) {
       data = {};
       //return res.json(200, {next: 'your earliest convenience to check again'});
     }
 
-    console.log("AAAA");
+    //console.log("AAAA");
 
     utils.isEligible(req.cookies.token, data, function(new_data) {
       if(new_data.isEligible) {
         return res.json(200, new_data);
       }
+
+      var finished = false;
       //console.log(new_data);
       var count = 0;
       Phase.find({}).exec(function(err, phases) {
-        console.log(phases);
-        var onComplete = function() {
-          if(count == phases.length) {
-            return res.json(200, {next: 'your earliest convenience to check again'});
-          }
-        };
-
-        for(var i = 0; i < phases.length; ++i) {
-          utils.isEligible(req.cookies.token, phases[i], function(new_phase) {
-            console.log(new_phase.to, new_phase.to <= (new Date()));
-            if(new_phase.isEligible) {
-              if(new_phase.to <= (new Date())) {
-                count++;
-                return;
-              }
-              new_data.next = new_phase.from;
-              return res.json(200, new_data);
+        var check = function(phases, i, callback) {
+          //console.log(i);
+          utils.isEligible(req.cookies.token, phases[i], function(ph) {
+            if(ph.isEligible && ph.to >= (new Date())) {
+              return callback(phases, i, ph.from);
             }
-            count++;
-            onComplete();
+
+            return callback(phases, i, null);
           });
         }
-        onComplete();
+        var callback = function(phases, i, n) {
+          if(n) {
+            new_data.next = n;
+            return res.json(200, new_data);
+          } else {
+            if(i === phases.length - 1) {
+              var tmp = JSON.parse(JSON.stringify(new_data));
+              tmp.next = "none";
+              //new_data.next = "April fools";
+              //console.log(tmp);
+              return res.json(200, tmp);
+            } else {
+              check(phases, i + 1, callback);
+            }
+          }
+        }
+
+        return check(phases, 0, callback);
       });
     });
   });
