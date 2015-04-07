@@ -147,7 +147,7 @@
           <div class="checkbox">
             <label>
             <input type="checkbox" ng-disabled="item.isCollegePhase" ng-model="item.filters.enableFilterQuiet">
-              Quiet Block
+              Quiet block
             </label>
           </div>
         </div>
@@ -203,6 +203,7 @@
   </accordion>
 
   <br/>
+  <a class="btn btn-default btn-danger" ng-click="endAllocation();" ng-show="settings.isDebug">End allocation</a>
   <a class="btn btn-default btn-success" ng-click="addPhase();">Add phase</a>
   <a class="btn btn-default btn-info"ng-click="updateSettings();">Save</a>
 </div>

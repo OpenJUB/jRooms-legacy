@@ -12,15 +12,28 @@ angular.module('jRoomsApp')
   		else {
 			$rootScope.showAlert({
 		      type: 'danger',
-		      msg: 'Oh oh! Server has returnted an error while loading results!'
+		      msg: 'Oh oh! Server has returned an error while loading results!'
 		    });
   		}
   	});
 
-  	$scope.exportResult = function(e, phase) {
+  	$scope.exportResult = function(e, pid) {
   		e.preventDefault();
   		e.stopPropagation();
 
-  		// what to do?
+  		Communicator.exportPhase(pid, function(err, data) {
+        if (!err && data) {
+          $rootScope.showAlert({
+              type: 'success',
+              msg: 'Successfully exported!'
+            });
+        }
+        else {
+          $rootScope.showAlert({
+              type: 'danger',
+              msg: 'Oh oh! Server has returned an error while exporting results!'
+            });
+        }
+      });
   	}
   });

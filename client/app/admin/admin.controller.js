@@ -123,6 +123,23 @@ angular.module('jRoomsApp')
       ++$scope.nextPhaseId;
   	}
 
+    $scope.endAllocation = function() {
+      Communicator.endAllocation(function(err, data) {
+        if (!err) {
+          $rootScope.showAlert({
+              type: 'success',
+              msg: 'Successfully terminated the active phase!'
+            });
+        }
+        else {
+          $rootScope.showAlert({
+              type: 'danger',
+              msg: 'Oh oh! Server has returned an error while ending manual allocation process!'
+            });
+        }
+      });
+    }
+
     $scope.collegePhaseSelected = function(id) {
       var phase = _.find($scope.settings.phases, function(val) {
         if (val.id == id) return true;

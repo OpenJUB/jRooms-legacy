@@ -71,6 +71,10 @@ angular.module('jRoomsApp').service('Communicator', function ($http) {
     this.sendGET('/api/phase/allResults', {}, fn);
   }
 
+  this.exportPhase = function(phaseId, fn) {
+    this.sendGET('/api/phase/csv', { id: phaseId }, fn);
+  }
+
   // /admin
   this.currentSettings = function(fn) {
     this.sendGET('/api/admin/currentSettings', {}, fn);
@@ -94,6 +98,10 @@ angular.module('jRoomsApp').service('Communicator', function ($http) {
 
   this.forcePhase = function(phaseId, fn) {
     this.sendPOST('/api/admin/forcePhase', { id: phaseId }, fn);
+  }
+
+  this.endAllocation = function(fn) {
+    this.sendPOST('/api/admin/endAllocation', {}, fn);
   }
 
   this.resetSystem = function(fn) {
