@@ -21,19 +21,6 @@ angular.module('jRoomsApp')
   		e.preventDefault();
   		e.stopPropagation();
 
-  		Communicator.exportPhase(pid, function(err, data) {
-        if (!err && data) {
-          $rootScope.showAlert({
-              type: 'success',
-              msg: 'Successfully exported!'
-            });
-        }
-        else {
-          $rootScope.showAlert({
-              type: 'danger',
-              msg: 'Oh oh! ' + err.error
-            });
-        }
-      });
+      location.href = '/api/phase/csv?id=' + pid;
   	}
   });

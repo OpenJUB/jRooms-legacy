@@ -80,10 +80,6 @@ angular.module('jRoomsApp').service('Communicator', function ($http) {
     this.sendGET('/api/phase/allResults', {}, fn);
   }
 
-  this.exportPhase = function(phaseId, fn) {
-    this.sendGET('/api/phase/csv', { id: phaseId }, fn);
-  }
-
   // /admin
   this.currentSettings = function(fn) {
     this.sendGET('/api/admin/currentSettings', {}, fn);
