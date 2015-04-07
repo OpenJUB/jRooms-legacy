@@ -394,26 +394,27 @@ exports.switchRooms = function(req, res) {
         return res.json(500, err);
       }
 
+      if(room.rooms.indexOf(user.nextRoom) < 0) {
+        return res.json(400, "Nice try :)");
+      }
+
       var usernames = _.pluck(user.roommates, 'username');
       User.find({username: {$in: usernames}}).exec(function(err, roommates) {
-        var found = false;
+        if(err) {
+          return res.json(500, err);
+        }
+
         for(var i = 0; i < roommates.length; ++i) {
           if(roommates[i].nextRoom === roomName) {
-            found = true;
             roommates[i].nextRoom = user.nextRoom;
-            user.nextRoom = roomName;
-            user.save(function() {
-              roommates.save(function(){
-                return res.json(200, null);
-              });
-            });
+            roommates[i].save();
             break;
           }
         }
 
-        if(!found) {
-          return res.json(400, "Nice try :)");
-        }
+        user.nextRoom = roomName;
+        user.save();
+        return res.json(200, {});
       });
     });
   });
