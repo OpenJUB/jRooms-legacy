@@ -51,7 +51,7 @@ exports.currentPhase = function(req, res) {
             if(i === phases.length - 1) {
               var tmp = JSON.parse(JSON.stringify(new_data)); // The database will try to convert the next field to a date if this line isn't here
               User.findOne({token: req.cookies.token}).exec(function(err, user) {
-                if(user.phaseId) {
+                if(user.phaseId && user.nextRoom) {
                   tmp.next = "none";
                 } else {
                   tmp.next = "your earliest convenience to check again.";

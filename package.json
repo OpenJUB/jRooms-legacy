@@ -20,6 +20,7 @@
     "method-override": "~1.0.0",
     "mongoose": "~3.8.8",
     "morgan": "~1.0.0",
+    "nice-json2csv": "^0.2.0",
     "postcss": "^4.0.6",
     "request": "^2.53.0",
     "serve-favicon": "~2.0.1"
