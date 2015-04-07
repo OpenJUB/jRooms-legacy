@@ -25,6 +25,11 @@ angular.module('jRoomsApp').service('Communicator', function ($http) {
       });
   }
 
+  // /room
+  this.getCurrentRoom = function(room, fn) {
+    this.sendGET('/api/room/get', { room : room }, fn);
+  }
+
   // /user
   this.getCurrentUser = function(fn) {
     this.sendGET('/api/user/me', {}, fn);
@@ -56,6 +61,10 @@ angular.module('jRoomsApp').service('Communicator', function ($http) {
 
   this.updateRooms = function(arr, fn) {
     this.sendPOST('/api/user/updateRooms' , { rooms : arr }, fn);
+  }
+
+  this.switchRoom = function(room, fn) {
+    this.sendPOST('/api/user/switchRooms', { room : room }, fn);
   }
 
   // phase

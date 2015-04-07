@@ -12,7 +12,7 @@ angular.module('jRoomsApp')
   		else {
 			$rootScope.showAlert({
 		      type: 'danger',
-		      msg: 'Oh oh! Server has returned an error while loading results!'
+		      msg: 'Oh oh! ' + err.error
 		    });
   		}
   	});
@@ -31,7 +31,7 @@ angular.module('jRoomsApp')
         else {
           $rootScope.showAlert({
               type: 'danger',
-              msg: 'Oh oh! Server has returned an error while exporting results!'
+              msg: 'Oh oh! ' + err.error
             });
         }
       });

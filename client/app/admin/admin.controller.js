@@ -40,7 +40,7 @@ angular.module('jRoomsApp')
       else {
         $rootScope.showAlert({
           type: 'danger',
-          msg: err
+          msg: 'Oh oh! ' + err.error
         });
       }
     });
@@ -61,7 +61,7 @@ angular.module('jRoomsApp')
         else {
           $rootScope.showAlert({
             type: 'danger',
-            msg: err
+            msg: 'Oh oh! ' + err.error
           });
         }
       });
@@ -81,7 +81,7 @@ angular.module('jRoomsApp')
         else {
           $rootScope.showAlert({
             type: 'danger',
-            msg: 'Oh oh! Server returned an error while importing users!'
+            msg: 'Oh oh! ' + err.error
           });
         }
      });
@@ -134,7 +134,7 @@ angular.module('jRoomsApp')
         else {
           $rootScope.showAlert({
               type: 'danger',
-              msg: 'Oh oh! Server has returned an error while ending manual allocation process!'
+              msg: 'Oh oh! ' + err.error
             });
         }
       });
@@ -177,7 +177,7 @@ angular.module('jRoomsApp')
         else {
           $rootScope.showAlert({
             type: 'danger',
-            msg: err
+            msg: 'Oh oh! ' + err.error
           });
         }
       })
@@ -189,15 +189,12 @@ angular.module('jRoomsApp')
       if ($scope.showEditUser) {
         Communicator.getUser($scope.editUserString, function(err, user) {
           if (!err) {
-            user.college_preference = user.college_preference.join(',');
-            user.room_preferences = user.rooms.join(',');
-
             $scope.editUser = user;
           }
           else {
             $rootScope.showAlert({
               type: 'danger',
-              msg: 'Oh oh! Server returned an error while getting a user called "' + $scope.editUserString + '"!'
+              msg: 'Oh oh! ' + err.error
             });
           }
         });
@@ -205,13 +202,6 @@ angular.module('jRoomsApp')
     }
 
     $scope.editUserSubmit = function() {
-      if($scope.editUser.college_preference) {
-        $scope.editUser.college_preference = $scope.editUser.college_preference.split(',');
-      }
-      if($scope.editUser.room_preferences) {
-        $scope.editUser.rooms = $scope.editUser.rooms.split(',');
-      } 
-
       Communicator.setUser($scope.editUserString, $scope.editUser, function(err, smth) {
         if (!err) {
           $rootScope.showAlert({
@@ -222,7 +212,7 @@ angular.module('jRoomsApp')
         else {
           $rootScope.showAlert({
             type: 'danger',
-            msg: 'Oh oh! Server returned an error while modifying the user "' + $scope.editUserString + '"!'
+            msg: 'Oh oh! ' + err.error
           });
         }
 
@@ -273,7 +263,7 @@ angular.module('jRoomsApp')
         else {
            $rootScope.showAlert({
             type: 'danger',
-            msg: err
+            msg: 'Oh oh! ' + err.error
           });
         }
       });

@@ -98,12 +98,12 @@
           <p class="lead text-success">You are all set and ready for the next year!</p>
           <br/><br/>
 
-          <div class="container btn btn-lg" ng-click="collegeButton(user.nextCollege);"
+          <div class="container btn btn-lg dropdown-toggle" dropdown-toggle ng-click="collegeButton(user.nextCollege);"
             ng-class="{ 'btn-danger' : user.nextCollege === 'Krupp', 
                         'btn-info' : user.nextCollege === 'Mercator', 
                         'btn-success' : user.nextCollege === 'C3', 
                         'btn-warning' : user.nextCollege === 'Nordmetall' }">
-            Living in {{ user.nextCollege }}, room {{ user.nextRoom }}
+            Living in {{ user.nextCollege }}, {{ user.nextRoom }}
           </div>
           <br/>
 
@@ -116,6 +116,14 @@
                 <img class="img-rounded center-block" height="60" ng-src="{{ item.imageURL }}"/>
               </div>
             </div>
+          </div>
+
+          <br/><br/><br/>
+          <div class="form-inline" ng-show="futureRoom.rooms.length > 1">
+          <select class="form-control" ng-model="roomToSwap">
+            <option ng-repeat="room in futureRoom.rooms">{{ room }}</option>
+          </select>
+          <div class="btn btn-info" ng-click="switchRoom();">Switch room!</div>
           </div>
         </div>
       </div>

@@ -7,12 +7,15 @@ angular.module('jRoomsApp')
     $scope.colleges = ['Krupp', 'Nordmetall', 'Mercator', 'C3'];
     $scope.rooms = [];
     $scope.maxRooms = [];
+    $scope.futureRoom = {};
+    $scope.roomToSwap = null;
 
     $scope.currentPhase = {};
     $scope.showNotEligible = false;
     $scope.showCollegeSelection = false;
     $scope.showRoomSelection = false;
     $scope.showDone = false;
+    $scope.isDropdownOpen = false;
     $scope.showError = false;
 
   	$scope.$watch(State.user, function(val) {
@@ -30,7 +33,20 @@ angular.module('jRoomsApp')
 
         if (!phase.isEligible) {
           if (phase.next == 'none') {
-            $scope.showDone = true;
+            Communicator.getCurrentRoom($scope.user.nextRoom, function(err, data) {
+              if (!err && data) {
+                $scope.futureRoom = data;
+                $scope.roomToSwap = $scope.user.nextRoom;
+                $scope.showDone = true;
+              }
+              else {
+                $scope.showError = true;
+                $rootScope.showAlert({
+                  type: 'danger',
+                  msg: 'Oh oh! ' + err.error
+                });
+              }
+            });
           }
           else {
             $scope.showNotEligible = true;
@@ -66,7 +82,7 @@ angular.module('jRoomsApp')
         else {
           $rootScope.showAlert({
             type: 'danger',
-            msg: err
+            msg: 'Oh oh! ' + err.error
           });
         }
 
@@ -85,7 +101,7 @@ angular.module('jRoomsApp')
         else {
           $rootScope.showAlert({
             type: 'danger',
-            msg: err
+            msg: 'Oh oh! ' + err.error
           });
         }
       });
@@ -105,7 +121,7 @@ angular.module('jRoomsApp')
         else {
            $rootScope.showAlert({
             type: 'danger',
-            msg: err
+            msg: 'Oh oh! ' + err.error
           });
         }
       });
@@ -125,7 +141,7 @@ angular.module('jRoomsApp')
         else {
            $rootScope.showAlert({
             type: 'danger',
-            msg: err
+            msg: 'Oh oh! ' + err.error
           });
         }
       });
@@ -144,7 +160,7 @@ angular.module('jRoomsApp')
         else {
           $rootScope.showAlert({
             type: 'danger',
-            msg: err
+            msg: 'Oh oh! ' + err.error
           });
         }
       })
@@ -169,7 +185,7 @@ angular.module('jRoomsApp')
         else {
          $rootScope.showAlert({
             type: 'danger',
-            msg: err
+            msg: 'Oh oh! ' + err.error
           });
         return;
         }
@@ -178,7 +194,6 @@ angular.module('jRoomsApp')
     }
 
     $scope.updateRooms = function() {
-      //console.log($scope.rooms);
       Communicator.updateRooms($scope.rooms, function(err, data) {
         if (!err && data) {
            $rootScope.showAlert({
@@ -189,7 +204,25 @@ angular.module('jRoomsApp')
         else {
            $rootScope.showAlert({
             type: 'danger',
-            msg: err
+            msg: 'Oh oh! ' + err.error
+          });
+        }
+      });
+    }
+
+    $scope.switchRoom = function() {
+      Communicator.switchRoom($scope.roomToSwap, function(err, data) {
+        if (!err && data) {
+          $scope.user.nextRoom = $scope.roomToSwap;
+           $rootScope.showAlert({
+            type: 'success',
+            msg: 'Successfully switched rooms!'
+          });
+        }
+        else {
+           $rootScope.showAlert({
+            type: 'danger',
+            msg: 'Oh oh! ' + err.error
           });
         }
       });
