@@ -4,6 +4,7 @@ var _ = require('lodash');
 var User = require('./user.model');
 var Phase = require('./../phase/phase.model');
 var Admin = require('./../admin/admin.model');
+var Room = require('./../room/room.model');
 var utils = require('./../../utils');
 
 var freshieTemplate = [
@@ -303,29 +304,79 @@ exports.updateRooms = function(req, res) {
     }
 
     Phase.findOne({isCurrent: true}).exec(function(err, p) {
-        utils.isEligible(req.cookies.token, p, function(phase) {
-            if(!phase.isEligible) {
-                return res.json(400, "Not eligible for round");
-            }
-            User.findOne({token: req.cookies.token}).exec(function(err, user) {
-                user.rooms = _.filter(rooms, function(r) {
-                    if(r) 
-                        return true;
-                    return false;
-                });
-                user.phaseId = phase.id;
-                user.save();
+      utils.isEligible(req.cookies.token, p, function(phase) {
+        if(!phase.isEligible || phase.isCollegePhase) {
+          return res.json(400, "Not eligible for round");
+        }
+        var appliedRooms = _.filter(rooms, function(r) {
+            if(r) 
+                return true;
+            return false;
+        });
 
-                for(var i = 0; i < user.roommates.length; i++) {
-                    User.findOne({username: user.roommates[i].username}).exec(function(err, user2) {
-                        user2.rooms = user.rooms;
-                        user2.phaseId = phase.id;
-                        user2.save();
-                    });
+        Room.find({name: {$in: appliedRooms}}).exec(function(err, rooms) {
+          if(err) {
+            return res.json(500, err);
+          }
+
+          if(phase.filters) {
+            if(phase.filters.enableFilterQuiet) {
+              for(var i = 0; i < rooms.length; ++i) {
+                if(!(rooms[i].college === "Krupp" && rooms[i].block === "A") && !(rooms[i].college === "C3" && rooms[i].block === "D")) {
+                  return res.json(400, rooms[i].name + " is not a quiet block room.");
                 }
 
-                return res.json(200, {status: "success"});
+                if(phase.filters.rooms && phase.filters.rooms.triple && rooms[i].type !== 'triple') {
+                  return res.json(400, rooms[i].name + " is a triple room. Please choose an appropriate room");
+                }
+
+                if(phase.filters.rooms && phase.filters.rooms.double && rooms[i].type !== 'double') {
+                  return res.json(400, rooms[i].name + " is a double room. Please choose an appropriate room");
+                }
+
+                if(phase.filters.rooms && phase.filters.rooms.single && rooms[i].type !== 'single') {
+                  return res.json(400, rooms[i].name + " is a single room. Please choose an appropriate room");
+                }
+              }
+            }
+
+            if(!(phase.filters.rooms && phase.filters.rooms.triple) && appliedRooms.length < 4) {
+              return res.json(400, "Please select at least 4 rooms");
+            }
+          }
+
+          User.findOne({token: req.cookies.token}).exec(function(err, user) {
+            if(err || !user) {
+              return res.json(500, err);
+            }
+
+            Admin.findOne({}).exec(function(err, settings) {
+              if(err || !settings) {
+                return res.json(500, err);
+              }
+
+              for(var i = 0; i < rooms.length; ++i) {
+                if(rooms[i].college !== user.nextCollege || settings.disabledRooms.indexOf(rooms[i].name) >= 0) {
+                  return res.json(400, rooms[i].name + " is either blocked or not in your college.");
+                }
+              }
+
+              user.rooms = appliedRooms;
+              user.phaseId = phase.id;
+              user.save();
+
+              for(var i = 0; i < user.roommates.length; i++) {
+                User.findOne({username: user.roommates[i].username}).exec(function(err, user2) {
+                  user2.rooms = user.rooms;
+                  user2.phaseId = phase.id;
+                  user2.save();
+                });
+              }
+
+              return res.json(200, {status: "success"});
             });
+          });
         });
+      });
     });
 }

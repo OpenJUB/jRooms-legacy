@@ -100,6 +100,7 @@ angular.module('jRoomsApp')
 	  			enableFilterExchange: false,
           enableFilterPoints: false,
           enableFilterRooms: false,
+          enableFilterQuiet: false,
 
           pointsMin: '',
           pointsMax: '',
@@ -112,9 +113,9 @@ angular.module('jRoomsApp')
           },
 
           rooms: {
-            one: false,
-            two: false,
-            three: false
+            single: false,
+            double: false,
+            triple: false
           }
 	  		}
   		});
@@ -133,6 +134,7 @@ angular.module('jRoomsApp')
         phase.filters.enableFilterExchange = false;
         phase.filters.enableFilterPoints = false;
         phase.filters.enableFilterRooms = false;
+        phase.filters.enableFilterQuiet = false;
       }
     }
 
@@ -186,8 +188,12 @@ angular.module('jRoomsApp')
     }
 
     $scope.editUserSubmit = function() {
-      $scope.editUser.college_preference = $scope.editUser.college_preference.split(',');
-      $scope.editUser.room_preferences = $scope.editUser.rooms.split(',');
+      if($scope.editUser.college_preference) {
+        $scope.editUser.college_preference = $scope.editUser.college_preference.split(',');
+      }
+      if($scope.editUser.room_preferences) {
+        $scope.editUser.rooms = $scope.editUser.rooms.split(',');
+      } 
 
       Communicator.setUser($scope.editUserString, $scope.editUser, function(err, smth) {
         if (!err) {

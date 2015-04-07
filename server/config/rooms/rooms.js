@@ -2345,8 +2345,8 @@ module.exports = [
     ]
   },
   {
-    "name": "College 3",
-    "description": "College 3 College",
+    "name": "C3",
+    "description": "College 3",
     "blocks": [
       {
         "name": "A",
@@ -3279,7 +3279,7 @@ module.exports = [
         ]
       },
       {
-        "name": "D",
+        "name": "E",
         "floors": [
           {
             "number": 1,

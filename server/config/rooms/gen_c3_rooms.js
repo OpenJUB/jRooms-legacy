@@ -224,16 +224,16 @@ var floor3 = [
 	[42, -12, 8, 5, "CD 324/325", ["CD-324","CD-325"], "student"]
 ]
 
-floors = [floor1, floor2, floor3]
+floors = [floor1, floor2, floor3];
 
 blocks = []
-block_a = {'name': 'A', 'floors': []}
-block_b = {'name': 'B', 'floors': []}
-block_c = {'name': 'C', 'floors': []}
-block_d = {'name': 'D', 'floors': []}
-block_e = {'name': 'D', 'floors': []}
+block_a = {'name': 'A', 'floors': []};
+block_b = {'name': 'B', 'floors': []};
+block_c = {'name': 'C', 'floors': []};
+block_d = {'name': 'D', 'floors': []};
+block_e = {'name': 'E', 'floors': []};
 
-fls = []
+fls = [];
 
 for(i = 0; i < floors.length; i++) {
 	floor = floors[i];
@@ -294,7 +294,7 @@ for(i = 0; i < floors.length; i++) {
 blocks = [block_a, block_b, block_c, block_d, block_e]
 // console.log(JSON.stringify(blocks, null, 4))
 
-var collegethree = {'name': 'College 3', 'description': 'College 3 College', 'blocks': blocks}
+var collegethree = {'name': 'C3', 'description': 'College 3', 'blocks': blocks}
 exports.collegethree = collegethree
 // var outputFilename = 'college3_rooms.js';
 

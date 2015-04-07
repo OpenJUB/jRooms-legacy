@@ -5,6 +5,7 @@ var config = require('../../config/environment');
 var User = require('./../user/user.model');
 var Admin = require('./../admin/admin.model');
 var Phase = require('./../phase/phase.model');
+var Room = require('./../room/room.model');
 var request = require('request');
 var utils = require('../../utils');
 
@@ -42,7 +43,9 @@ exports.currentSettings = function(req, res) {
       }
       var tmp = data;
       tmp.sort(function(a, b) {
-          return a.id - b.id});
+          return a.id - b.id;
+        });
+
       var clean_settings = {
         isDatabaseReady: settings.isDatabaseReady, 
         tallPeople: settings.tallPeople, 
@@ -306,6 +309,7 @@ var calculatePhase = function(phase, save, callback) {
           }
           //console.log(nUsers);
           if(i >= nUsers.length - 1) {
+            console.log("WooHoo");
             return utils.phaseResult(phase, callback);
           } else {
             //console.log("Blink");
@@ -328,19 +332,37 @@ var calculatePhase = function(phase, save, callback) {
               return callB(data, nUsers, null);
             }
 
-            //console.log(data);
+            console.log(data);
             //console.log(item.username);
             //console.log(data[item.username]);
+            Room.findOne({name: data[item.username]}).exec(function(err, room) {
+              if(err) {
+                return callB(data, nUsers, null);
+              }
 
-            item.nextRoom = data[item.username];
-            item.save(function() {
-              //console.log(i);
-              item.roommates.forEach(function(tmp) {
-                User.findOne({username: tmp.username}).exec(function(err, use) {
-                  use.nextRoom = data[item.username];
-                  use.save();
+              console.log(room);
+
+              if(!room) { // Unallocated this round
+                item.phaseId = null;
+                item.save();
+
+                item.roommates.forEach(function(tmp) {
+                  User.update({username: {$in:item.roommates}}, {phaseId: null}).exec();
                 });
-              });
+              } else {
+                item.nextRoom = room.rooms[0];
+                item.save(function() {
+                  //console.log(i);
+                  var counter = 1;
+                  item.roommates.forEach(function(tmp) {
+                    User.findOne({username: tmp.username}).exec(function(err, use) {
+                      use.nextRoom = room.rooms[counter];
+                      ++counter;
+                      use.save();
+                    });
+                  });
+                });
+              }
 
               return callB(data, nUsers, i);
             });
@@ -436,9 +458,10 @@ var HungarianAssign = function(matrix, rooms, callback) {
     if(_.size(assigned) === lastSize) {
       var unassigned = null;
       for(var user in matrix) {// Check if all our users are allocated. If so, we're done. If not, we can't continue so we return an empty array.
-        if(user.lastIndexOf("BLANK", 0) === 0) {
+        /*if(user.lastIndexOf("BLANK", 0) !== 0) {
+          
           continue;
-        }
+        }*/
         console.log("I'm in your loop");
         console.log(user);
         if(!assigned.hasOwnProperty(user)) {
@@ -471,7 +494,7 @@ var HungarianAssign = function(matrix, rooms, callback) {
     lastSize = _.size(assigned);
   }
 
-  //console.log(assigned);
+  console.log(assigned);
 
   if(!broken) {
     return callback(assigned);

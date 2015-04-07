@@ -4,7 +4,9 @@ var _ = require('lodash');
 var User = require('./api/user/user.model');
 var Phase = require('./api/phase/phase.model');
 var Admin = require('./api/admin/admin.model');
+var Room = require('./api/room/room.model');
 var config = require('./config/environment');
+var allRooms = require('./config/rooms/rooms');
 
 exports.AddOpenJubUser = function(item, token, callback) {
 	var user = new User({
@@ -170,9 +172,9 @@ exports.onlyUnique = function (value, index, self) {
     return self.indexOf(value) === index;
 }
 
-exports.isEligible = function(item, round, callback) {
+exports.isEligible = function(token, round, callback) {
   var status = true;
-  User.findOne({token: item}).exec(function(err, user) {
+  User.findOne({token: token}).exec(function(err, user) {
     if(err || !user) {
       status = false;
       round.isEligible = status;
@@ -208,7 +210,7 @@ exports.isEligible = function(item, round, callback) {
         status = Math.min((tall.indexOf(user.username) >= 0), status);
       }
 
-      console.log(status);
+      //console.log(status);
 
       if(round.filters.enableFilterColleges) {
         var tmp = [];
@@ -318,6 +320,32 @@ exports.phaseResult = function(phase, callback) {
       });
     });
   }
+}
+
+exports.populateRoomInfo = function() {
+	Room.remove({}).exec();
+	
+	for(var i = 0; i < allRooms.length; ++i) {
+		for(var j = 0; j < allRooms[i].blocks.length; ++j) {
+			for(var fl = 0; fl < allRooms[i].blocks[j].floors.length; ++fl) {
+				for(var ro = 0; ro < allRooms[i].blocks[j].floors[fl].rooms.length; ++ro) {
+					for(var room = 0; room < allRooms[i].blocks[j].floors[fl].rooms[ro].contains.length; ++room) {
+
+						var result = new Room({
+							college : allRooms[i].name,
+							block : allRooms[i].blocks[j].name,
+							floor : allRooms[i].blocks[j].floors[fl].number,
+							type : allRooms[i].blocks[j].floors[fl].rooms[ro].type,
+							rooms : allRooms[i].blocks[j].floors[fl].rooms[ro].contains,
+							name : allRooms[i].blocks[j].floors[fl].rooms[ro].contains[room]
+						});
+
+						result.save();
+					}
+				}
+			}
+		}
+	}
 }
 
 setInterval(exports.updatePhases, 1000 * 7);

@@ -142,6 +142,16 @@
           </div>
         </div>
 
+        <!-- Filter by quiet -->
+        <div class="form-group"> 
+          <div class="checkbox">
+            <label>
+            <input type="checkbox" ng-disabled="item.isCollegePhase" ng-model="item.filters.enableFilterQuiet">
+              Quiet Block
+            </label>
+          </div>
+        </div>
+
         <!-- Filter by exchange -->
         <div class="form-group"> 
           <div class="checkbox">
@@ -166,21 +176,21 @@
               <div class="checkbox col-md-offset-1">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <label>
-                <input type="checkbox" ng-model="item.filters.rooms.one">
+                <input type="checkbox" ng-model="item.filters.rooms.single">
                   Single
                 </label>
               </div>
               <div class="checkbox col-md-offset-1">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <label>
-                <input type="checkbox" ng-model="item.filters.rooms.two">
+                <input type="checkbox" ng-model="item.filters.rooms.double">
                   Double
                 </label>
               </div>
               <div class="checkbox col-md-offset-1">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <label>
-                <input type="checkbox" ng-model="item.filters.rooms.three">
+                <input type="checkbox" ng-model="item.filters.rooms.triple">
                   Triple
                 </label>
               </div>

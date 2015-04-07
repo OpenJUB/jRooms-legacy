@@ -79,6 +79,7 @@ exports.currentPhase = function(req, res) {
       // enableFilterExchange: false,
       // enableFilterPoints: false,
       // enableFilterRooms: false,
+      // enableFilterQuiet: false
 
       // pointsMin: '',
       // pointsMax: '',
@@ -91,9 +92,9 @@ exports.currentPhase = function(req, res) {
       // },
 
       // rooms: {
-      //   one: false,
-      //   two: false,
-      //   three: false
+      //   single: false,
+      //   double: false,
+      //   triple: false
       // }
     }
   });*/
