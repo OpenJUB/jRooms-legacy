@@ -40,7 +40,7 @@ angular.module('jRoomsApp')
       else {
         $rootScope.showAlert({
           type: 'danger',
-          msg: 'Oh oh! Server returned an error while requesting current settings!'
+          msg: err
         });
       }
     });
@@ -61,7 +61,7 @@ angular.module('jRoomsApp')
         else {
           $rootScope.showAlert({
             type: 'danger',
-            msg: 'Oh oh! Server returned an error while saving the settings!'
+            msg: err
           });
         }
       });
@@ -160,7 +160,7 @@ angular.module('jRoomsApp')
         else {
           $rootScope.showAlert({
             type: 'danger',
-            msg: 'Oh oh! Server returned an error while setting active phase!'
+            msg: err
           });
         }
       })
@@ -256,7 +256,7 @@ angular.module('jRoomsApp')
         else {
            $rootScope.showAlert({
             type: 'danger',
-            msg: 'Oh oh! Server returned an error while trying to reset its state. Not good.'
+            msg: err
           });
         }
       });

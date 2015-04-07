@@ -9,5 +9,6 @@ var router = express.Router();
 router.get('/current', controller.currentPhase);
 router.get('/result', controller.result);
 router.get('/allResults', controller.allResults);
+router.get('/csv/:phaseId', controller.csv);
 
 module.exports = router;

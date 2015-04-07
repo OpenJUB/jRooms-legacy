@@ -242,7 +242,9 @@ exports.isEligible = function(token, round, callback) {
 
       if(round.filters.enableFilterRooms) {
         var num = user.roommates.length + 1;
-        status = Math.min(((round.filters.rooms.one && num === 1) || (round.filters.rooms.two && num === 2) || (round.filters.rooms.three && num === 3)), status);
+        status = Math.min(((round.filters.rooms.single && num === 1) || (round.filters.rooms.double && num === 2) || (round.filters.rooms.triple && num === 3)), status);
+      } else {
+      	status = Math.min(status, user.roommates.length === 1);
       }
 
       round.isEligible = status;
@@ -324,7 +326,7 @@ exports.phaseResult = function(phase, callback) {
 
 exports.populateRoomInfo = function() {
 	Room.remove({}).exec();
-	
+
 	for(var i = 0; i < allRooms.length; ++i) {
 		for(var j = 0; j < allRooms[i].blocks.length; ++j) {
 			for(var fl = 0; fl < allRooms[i].blocks[j].floors.length; ++fl) {

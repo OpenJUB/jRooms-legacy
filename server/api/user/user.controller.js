@@ -306,7 +306,7 @@ exports.updateRooms = function(req, res) {
     Phase.findOne({isCurrent: true}).exec(function(err, p) {
       utils.isEligible(req.cookies.token, p, function(phase) {
         if(!phase.isEligible || phase.isCollegePhase) {
-          return res.json(400, "Not eligible for round");
+          return res.json(400, "Not eligible for the current round");
         }
         var appliedRooms = _.filter(rooms, function(r) {
             if(r) 
@@ -326,15 +326,15 @@ exports.updateRooms = function(req, res) {
                   return res.json(400, rooms[i].name + " is not a quiet block room.");
                 }
 
-                if(phase.filters.rooms && phase.filters.rooms.triple && rooms[i].type !== 'triple') {
+                if(phase.filters.enableFilterRooms && phase.filters.rooms.triple && rooms[i].type !== 'triple') {
                   return res.json(400, rooms[i].name + " is a triple room. Please choose an appropriate room");
                 }
 
-                if(phase.filters.rooms && phase.filters.rooms.double && rooms[i].type !== 'double') {
+                if(phase.filters.enableFilterRooms && phase.filters.rooms.double && rooms[i].type !== 'double') {
                   return res.json(400, rooms[i].name + " is a double room. Please choose an appropriate room");
                 }
 
-                if(phase.filters.rooms && phase.filters.rooms.single && rooms[i].type !== 'single') {
+                if(phase.filters.enableFilterRooms && phase.filters.rooms.single && rooms[i].type !== 'single') {
                   return res.json(400, rooms[i].name + " is a single room. Please choose an appropriate room");
                 }
               }
@@ -379,4 +379,43 @@ exports.updateRooms = function(req, res) {
         });
       });
     });
+}
+
+exports.switchRooms = function(req, res) {
+  var roomName = req.body.room;
+
+  User.findOne({token: req.cookies.token}).exec(function(err, user) {
+    if(err || !user) {
+      return res.json(500, err);
+    }
+
+    Room.findOne({name: roomName}).exec(function(err, room) {
+      if(err || !room) {
+        return res.json(500, err);
+      }
+
+      var found = false;
+
+      var usernames = _.pluck(item.roommates, 'username');
+      User.find({username: {$in: usernames}}).exec(function(err, roommates) {
+        for(var i = 0; i < roommates.length; ++i) {
+          if(roommates[i].nextRoom === roomName) {
+            found = true;
+            roommates[i].nextRoom = user.nextRoom;
+            user.nextRoom = roomName;
+            user.save(function() {
+              roommates.save(function(){
+                return res.json(200, null);
+              });
+            });
+            break;
+          }
+        }
+
+        if(!found) {
+          return res.json(400, "Nice try :)");
+        }
+      });
+    });
+  });
 }

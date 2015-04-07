@@ -6,6 +6,7 @@
 
 var errors = require('./components/errors');
 var cookieParser = require('cookie-parser');
+var json2csv = require('nice-json2csv');
 var request = require('request');
 var bodyParser = require('body-parser');
 var User = require('./api/user/user.model');
@@ -17,6 +18,7 @@ var config = require('./config/environment');
 module.exports = function(app) {
 
   app.use(cookieParser());
+  app.use(json2csv.expressDecorator);  
 
   app.use( bodyParser.json() );       // to support JSON-encoded bodies
   app.use(bodyParser.urlencoded({     // to support URL-encoded bodies

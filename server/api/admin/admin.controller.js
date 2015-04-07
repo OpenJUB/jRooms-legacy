@@ -347,7 +347,8 @@ var calculatePhase = function(phase, save, callback) {
                 item.save();
 
                 item.roommates.forEach(function(tmp) {
-                  User.update({username: {$in:item.roommates}}, {phaseId: null}).exec();
+                  var usernames = _.pluck(item.roommates, 'username');
+                  User.update({username: {$in:usernames}}, {phaseId: null}).exec();
                 });
               } else {
                 item.nextRoom = room.rooms[0];

@@ -66,7 +66,7 @@ angular.module('jRoomsApp')
         else {
           $rootScope.showAlert({
             type: 'danger',
-            msg: 'Oh oh! Server returned an error while sending a roommate request!'
+            msg: err
           });
         }
 
@@ -85,7 +85,7 @@ angular.module('jRoomsApp')
         else {
           $rootScope.showAlert({
             type: 'danger',
-            msg: 'Oh oh! Server returned an error while requesting a freshie roommate!'
+            msg: err
           });
         }
       });
@@ -105,7 +105,7 @@ angular.module('jRoomsApp')
         else {
            $rootScope.showAlert({
             type: 'danger',
-            msg: 'Oh oh! Server returned an error while accepting a roommate request!'
+            msg: err
           });
         }
       });
@@ -125,7 +125,7 @@ angular.module('jRoomsApp')
         else {
            $rootScope.showAlert({
             type: 'danger',
-            msg: 'Oh oh! Server returned an error while denying the roommate request!'
+            msg: err
           });
         }
       });
@@ -144,7 +144,7 @@ angular.module('jRoomsApp')
         else {
           $rootScope.showAlert({
             type: 'danger',
-            msg: 'Oh oh! Server returned an error while removing roommate!'
+            msg: err
           });
         }
       })
@@ -169,7 +169,7 @@ angular.module('jRoomsApp')
         else {
          $rootScope.showAlert({
             type: 'danger',
-            msg: 'Oh oh! Server returned an error while updating college selections!'
+            msg: err
           });
         return;
         }
@@ -189,7 +189,7 @@ angular.module('jRoomsApp')
         else {
            $rootScope.showAlert({
             type: 'danger',
-            msg: 'Oh oh! Server returned an error while updating room selections!'
+            msg: err
           });
         }
       });

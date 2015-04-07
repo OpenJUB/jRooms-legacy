@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
+var json2csv = require('nice-json2csv');
 var config = require('./../../config/environment');
 var Phase = require('./phase.model');
 var User = require('./../user/user.model');
@@ -48,11 +49,16 @@ exports.currentPhase = function(req, res) {
             return res.json(200, new_data);
           } else {
             if(i === phases.length - 1) {
-              var tmp = JSON.parse(JSON.stringify(new_data));
-              tmp.next = "none";
-              //new_data.next = "April fools";
-              //console.log(tmp);
-              return res.json(200, tmp);
+              var tmp = JSON.parse(JSON.stringify(new_data)); // The database will try to convert the next field to a date if this line isn't here
+              User.findOne({token: req.cookies.token}).exec(function(err, user) {
+                if(user.phaseId) {
+                  tmp.next = "none";
+                } else {
+                  tmp.next = "your earliest convenience to check again.";
+                }
+
+                return res.json(200, tmp);
+              });
             } else {
               check(phases, i + 1, callback);
             }
@@ -98,6 +104,33 @@ exports.currentPhase = function(req, res) {
       // }
     }
   });*/
+}
+
+exports.csv = function(req, res) {
+  console.log("AAAA");
+  var phaseId = req.params.phaseId;
+  console.log(phaseId);
+
+  Phase.findOne({id: phaseId}).exec(function(err, phase) {
+    if(err || !phase) {
+      return res.json(500, err);
+    }
+
+    var tmp = [phase.results.krupp, phase.results.mercator, phase.results.c3, phase.results.nordmetall];
+    var colleges = ['Krupp', 'Mercator', 'C3', 'Nordmetall'];
+
+    for(var i = 0; i < tmp.length; ++i) {
+      for(var j = 0; j < tmp[i].length; ++j) {
+        tmp[i][j].college = colleges[i];
+      }
+    }
+
+    tmp = tmp[0].concat(tmp[1], tmp[2], tmp[3]);
+
+    //var result = json2csv.convert(tmp);
+    console.log(tmp);
+    return res.csv(tmp, 'Results for ' + phase.name + '.csv', ['name', 'college', 'room']);
+  });
 }
 
 exports.result = function(req, res) {
