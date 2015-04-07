@@ -76,6 +76,7 @@ exports.SetPhases = function(phases, callback) {
 }
 
 exports.updatePhases = function() {
+  console.log("Tick");
 
 	Admin.findOne({}).exec(function(err, settings) {
 		if(err || !settings){
@@ -97,7 +98,7 @@ exports.updatePhases = function() {
 				}
 				data.forEach(function(item) {
 					item.isCurrent = (item.from <= (new Date()) && item.to >= (new Date()));
-					if(item.isCurrent && item !== phase) {
+					if(phase && item.isCurrent && item !== phase) {
 
 						phase.isCurrent = false;
 						phase.save();
@@ -394,7 +395,9 @@ var calculatePhase = function(phase, save, callback) {
 
     console.log(rooms);
 
-    rooms = rooms.filter(exports.onlyUnique, users[i]);
+    rooms = rooms.filter(exports.onlyUnique);
+
+    console.log(rooms);
 
     for(var i = 0; i < users.length; i++) {
       if(used.indexOf(users[i].username) >= 0) {
@@ -443,7 +446,7 @@ var calculatePhase = function(phase, save, callback) {
           users.push(prop);
         }
         //console.log(users);
-        //console.log(data);
+        console.log(data);
        
        var newCallback = function(data, nUsers, i) {
           //console.log("You're here. Welcome");
@@ -501,9 +504,13 @@ var calculatePhase = function(phase, save, callback) {
                   var counter = 1;
                   item.roommates.forEach(function(tmp) {
                     User.findOne({username: tmp.username}).exec(function(err, use) {
-                      use.nextRoom = room.rooms[counter];
-                      ++counter;
-                      use.save();
+                      if(err || !use) {
+                        ++counter;
+                      } else {
+                        use.nextRoom = room.rooms[counter];
+                        ++counter;
+                        use.save();
+                      }
                     });
                   });
                 });
@@ -568,7 +575,7 @@ var HungarianAssign = function(matrix, rooms, callback) {
 
       for(var i = 0; i < matrixSize; ++i) {
         if(matrix[user][i] === 0 && !assigned.hasOwnProperty(i)) {
-          console.log("Found zero at " + user + " " + i);
+          //console.log("Found zero at " + user + " " + i);
           ++count;
           index = i;
         }      
@@ -607,7 +614,7 @@ var HungarianAssign = function(matrix, rooms, callback) {
           
           continue;
         }*/
-        console.log("I'm in your loop");
+        //console.log("I'm in your loop");
         console.log(user);
         if(!assigned.hasOwnProperty(user)) {
           

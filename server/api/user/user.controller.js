@@ -6,6 +6,7 @@ var Phase = require('./../phase/phase.model');
 var Admin = require('./../admin/admin.model');
 var Room = require('./../room/room.model');
 var utils = require('./../../utils');
+var config = require('./../../config/environment/');
 
 var freshieTemplate = [
     {
@@ -24,6 +25,7 @@ exports.me = function(req, res) {
       console.log(err);
       if(!nuser)
           return res.json(200, user);
+      user.isAdmin = (config.admins.indexOf(nuser.username) >= 0);
       user.points = nuser.points;
       user.save(function(err) {
 
@@ -367,6 +369,9 @@ exports.updateRooms = function(req, res) {
 
               for(var i = 0; i < user.roommates.length; i++) {
                 User.findOne({username: user.roommates[i].username}).exec(function(err, user2) {
+                    if(err || !user2) {
+                        return;
+                    }
                   user2.rooms = user.rooms;
                   user2.phaseId = phase.id;
                   user2.save();
