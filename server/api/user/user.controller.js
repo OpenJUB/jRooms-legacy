@@ -219,9 +219,9 @@ exports.remove_roommate = function(req, res) {
 
         if(index >= 0) {
             fromUser.roommates = [];
-            fromUser.save(function() {
-                return res.json(200, {status: 'success'});
-            });
+            fromUser.save();
+                
+            return res.json(200, {status: 'success'});
         }
 
         User.findOne({username: roommate}).exec(function(err2, toUser) {
