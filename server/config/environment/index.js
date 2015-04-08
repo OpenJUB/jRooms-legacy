@@ -56,15 +56,15 @@ var all = {
 
   // Regions
   regions: {
-    eastEurope: ["Macedonia", "Georgia"],
-    westEurope: [],
+    eastEurope: ['Albania', 'Armenia', 'Belarus', 'Bosnia and Herzegovina', 'Bulgaria', 'Croatia', 'Czech Republic', 'Estonia', 'Georgia', 'Hungary', 'Latvia', 'Lithuania', 'Macedonia', 'Moldova', 'Montenegro', 'Poland', 'Romania', 'Russia', 'Serbia', 'Slovakia', 'Slovenia', 'Kosovo', 'Ukraine'],
+    westEurope: ['Andorra', 'Austria', 'Belgium', 'Cyprus', 'Denmark', 'Finland', 'Greece', 'Iceland', 'Ireland', 'Italy', 'Liechtenstein', 'Luxembourg', 'Malta', 'Monaco', 'Netherlands', 'Norway', 'Portugal', 'San Marino', 'Spain', 'Sweden', 'Switzerland', 'United Kingdom', 'Vatican City'],
     middleEast: [],
-    northAmerica: [],
-    southAmerica: [],
+    northAmerica: ['Canada', 'USA'],
+    latinAmerica: ['Argentina', 'Bahamas', 'Barbaros', 'Belize', 'Bolivia', 'Brazil', 'Chile', 'Colombia', 'Costa Rica', 'Cuba', 'Dominican Republic', 'Ecuador', 'El Salvador', 'Grenada', 'Guatemala', 'Guyana', 'Haiti', 'Honduras', 'Jamaica', 'Mexico', 'Nicaragua', 'Panama', 'Paraguay', 'Peru', 'Saint Vincent & the Grenadines', 'St Kitts & Nevis', 'St Lucia', 'Suriname', 'Trinidad & Tobago', 'Uruguay', 'Venezuela'],
     southEastAsia: [],
     southAsia: [],
-    northAfrica: [],
-    southAfrica: []
+    westAfrica: ['Benin', 'Burkina Faso', 'Cameroon', 'Cape Verde', 'Central African Republic', 'Chad', 'Congo', 'Democratic Republic of the Congo', 'Equiatorial Guinea', 'Gabon', 'Gambia', 'Ghana', 'Guinea', 'Guinea-Bissau', 'Ivory Coast', 'Liberia', 'Mali', 'Mauritania', 'Niger', 'Nigeria', 'Sao Tome and Principe', 'Senegal', 'Sierra Leone', 'Togo'],
+    southAfrica: ['Angola', 'Botswana', 'Burundi', 'Comoros', 'Djibouti', 'Eritrea', 'Ethiopia', 'Kenya', 'Lesotho', 'Madagascar', 'Malawi', 'Mauritius', 'Mozambique', 'Namibia', 'Rwanda', 'Seychelles', 'Somalia', 'South Africa', 'Swaziland', 'Tanzania', 'Uganda', 'Zambia', 'Zimbabwe']
   },
 
   openJUB: {
