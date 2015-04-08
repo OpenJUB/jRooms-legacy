@@ -98,10 +98,14 @@ exports.updatePhases = function() {
 				data.forEach(function(item) {
 					item.isCurrent = (item.from <= (new Date()) && item.to >= (new Date()));
 					if(item.isCurrent && item !== phase) {
-						exports.generateResults(phase.id, true, function() {
-							item.save();
-						});
+
+						phase.isCurrent = false;
+						phase.save();
+
+						exports.generateResults(phase.id, true, function() {});
 					}
+
+					item.save();
 				});
 			});
 		});
@@ -851,5 +855,28 @@ var collegeFill = function(number, name) {
       break;
   }
 }
+
+/*var sendEmails = function() {
+	var email   = require("./path/to/emailjs/email");
+	var server  = email.server.connect({
+	   user:    "username", 
+	   password:"password", 
+	   host:    "smtp-mail.outlook.com", 
+	   ssl: true
+	});
+
+	var message = {
+	   text:    "i hope this works", 
+	   from:    "you <fstankovsk@jacobs-university.de>", 
+	   to:      "someone <someone@your-email.com>, another <another@your-email.com>",
+//	   cc:      "else <else@your-email.com>",
+	   subject: "testing emailjs",
+	   attachment: 
+	   [
+	      {data:"<html>i <i>hope</i> this works!</html>", alternative:true},
+	      // {path:"path/to/file.zip", type:"application/zip", name:"renamed.zip"}
+	   ]
+	};
+}*/
 
 setInterval(exports.updatePhases, 1000 * 7);
