@@ -15,26 +15,26 @@ var freshieTemplate = [
     }];
 
 exports.me = function(req, res) {
-    var tok = req.cookies.token;
-    User.findOne({token: tok}, function(err, user) {
-        if(err) {
-            return res.json(500, err);
-        }
-        utils.points(user, function(err, nuser) {
-            console.log(err);
-            if(!nuser)
-                return res.json(200, user);
-            user.points = nuser.points;
-            user.save(function(err) {
+  var tok = req.cookies.token;
+  User.findOne({token: tok}, function(err, user) {
+    if(err) {
+        return res.json(500, err);
+    }
+    utils.points(user, function(err, nuser) {
+      console.log(err);
+      if(!nuser)
+          return res.json(200, user);
+      user.points = nuser.points;
+      user.save(function(err) {
 
-                if(err) {
-                    return res.json(500, err);
-                }
-                
-                return res.json(200, nuser);
-            });
-        });
+          if(err) {
+            return res.json(500, err);
+          }
+          
+          return res.json(200, nuser);
+      });
     });
+  });
 }
 
 exports.all = function(req, res) {

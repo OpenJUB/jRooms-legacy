@@ -39,7 +39,9 @@ exports.AddOpenJubUser = function(item, token, callback) {
 			console.log("Poof");
 		}
 
-		updated.save(callback);
+		updated.save(function(err) {
+			callback(err, updated);
+		});
 	});
 }
 
@@ -80,8 +82,9 @@ exports.updatePhases = function() {
 			console.log(err);
 		}
 
-		if(settings.isDebug)
+		if(settings && settings.isDebug)
 			return;
+
 		Phase.findOne({isCurrent: true}).exec(function(err, phase) {
 			if(err) {
 				return;

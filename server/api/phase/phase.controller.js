@@ -11,15 +11,8 @@ var utils = require('./../../utils');
 exports.currentPhase = function(req, res) {
 
   Phase.findOne({isCurrent: true}).exec(function(err, data) {
-    if(err) {
+    if(err || !data) {
       return res.json(500, err);
-    }
-
-    //console.log("AAAA");
-
-    if(!data) {
-      data = {};
-      //return res.json(200, {next: 'your earliest convenience to check again'});
     }
 
     //console.log("AAAA");
