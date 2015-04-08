@@ -41,39 +41,38 @@ module.exports = function(app) {
       headers: {'Cookie' : 'openjub_session=' + token}
     }, function(err, response) {
 
-        var username = JSON.parse(response.body).username;
-        // console.log(JSON.parse(response.body));
-        if(!username) {
-          return res.json(401, "Unauthorized. Invalid user returned by OpenJUB");
+      var username = JSON.parse(response.body).username;
+      // console.log(JSON.parse(response.body));
+      if(!username) {
+        return res.json(401, "Unauthorized. Invalid user returned by OpenJUB");
+      }
+
+      Admin.findOne({}).exec(function(errF, settings) {
+        if(errF) {
+          return res.json(500, err);
         }
 
-        Admin.findOne({}).exec(function(errF, settings) {
-          if(errF) {
-            return res.json(500, err);
+        if(settings && settings.disabledUsers.indexOf(username) >= 0) {
+          return res.json(403, "You are on the list of disabled users.");
+        }
+
+        User.update({username: username}, {token: token}, function(err2, num_affected) {
+          if(err2) {
+            return res.json(500, "Database failure");
           }
+          console.log(num_affected);
 
-          if(settings && settings.disabledUsers.indexOf(username) >= 0) {
-            return res.json(403, "You are on the list of disabled users.");
-          }
-
-          User.update({username: username}, {token: token}, function(err2, num_affected) {
-            if(err2) {
-              return res.json(500, "Database failure");
-            }
-            console.log(num_affected);
-
-            if(num_affected == 0 && config.admins.indexOf(username) > -1) {
-              console.log("AA");
-              utils.AddOpenJubUser(JSON.parse(response.body), token, function(err, user) {
-                console.log(user);
-                if(err || !user) {
-                  return res.json(500, err);
-                } else {
-                  return next();
-                }
-              });
-            }
-
+          if(num_affected === 0 && config.admins.indexOf(username) > -1) {
+            console.log("AA");
+            utils.AddOpenJubUser(JSON.parse(response.body), token, function(err, user) {
+              console.log(user);
+              if(err || !user) {
+                return res.json(500, err);
+              } else {
+                return next();
+              }
+            });
+          } else if(num_affected > 0) {
             if(req.originalUrl.indexOf("/admin") === 0) { //on an admin route, check the config
               console.log("Admin route");
               if(config.admins.indexOf(username) > -1)
@@ -83,9 +82,9 @@ module.exports = function(app) {
               console.log("User route");
               return next();
             }
+          }
         });
-
-        });
+      });
     });
   });
 

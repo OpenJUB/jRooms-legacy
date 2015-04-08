@@ -132,6 +132,8 @@ exports.setUser = function(req, res) {
 exports.resetSystem = function(req, res) {
   User.find({}).remove().exec();
   Admin.find({}).remove().exec();
+  Phase.find({}).remove().exec();
+  Room.find({}).remove().exec();
 
    settings = new Admin({
     isDatabaseReady : false,
