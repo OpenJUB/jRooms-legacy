@@ -67,6 +67,10 @@ angular.module('jRoomsApp').service('Communicator', function ($http) {
     this.sendPOST('/api/user/switchRooms', { room : room }, fn);
   }
 
+  this.addPoint = function(college, fn) {
+    this.sendPOST('/api/user/addPoint', { college : college }, fn);
+  }
+
   // phase
   this.currentPhase = function(fn) {
     this.sendGET('/api/phase/current', {}, fn);

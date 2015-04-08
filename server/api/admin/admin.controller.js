@@ -28,6 +28,12 @@ Admin.findOne({}).exec(function(err, data) {
         preference2: false,
         preference3: false,
         preference4: false
+      },
+      collegeGame: {
+        Krupp: 0,
+        Mercator: 0,
+        C3: 0,
+        Nordmetall: 0
       }
     });
 
@@ -54,7 +60,8 @@ exports.currentSettings = function(req, res) {
         maxRooms: settings.maxRooms, 
         email: settings.email, 
         phases: tmp,
-        isDebug: settings.isDebug
+        isDebug: settings.isDebug,
+        collegeGame: settings.collegeGame
       };
 
       return res.json(200, clean_settings);
@@ -148,7 +155,13 @@ exports.resetSystem = function(req, res) {
       preference3: false,
       preference4: false
     },
-    phases: []
+    phases: [],
+    collegeGame: {
+      Krupp: 0,
+      Mercator: 0,
+      C3: 0,
+      Nordmetall: 0
+    }
   });
 
   settings.save();

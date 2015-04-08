@@ -421,3 +421,22 @@ exports.switchRooms = function(req, res) {
     });
   });
 }
+
+exports.addPoint = function(req, res) {
+    var college = req.body.college;
+
+    Admin.findOne({}).exec(function(err, data) {
+        if(err || !data) {
+            return res.json(500, "Not today!");
+        }
+
+        var tmp = JSON.parse(JSON.stringify(data.collegeGame));
+        ++tmp[college];
+
+        data.collegeGame = tmp;
+        console.log(data.collegeGame);
+        data.save(function() {
+            return res.json(200, "1 point to Griffyndor!");
+        });
+    });
+}

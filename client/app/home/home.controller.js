@@ -1,7 +1,9 @@
 'use strict';
 
 angular.module('jRoomsApp')
-  .controller('HomeCtrl', function ($rootScope, $scope, $location, State, Communicator) {
+  .controller('HomeCtrl', function ($rootScope, $scope, $timeout, $location, State, Communicator) {
+    var collegeClicks = 0;
+
     $scope.user = {};
     $scope.requestUsername = '';
     $scope.colleges = ['Krupp', 'Nordmetall', 'Mercator', 'C3'];
@@ -96,6 +98,10 @@ angular.module('jRoomsApp')
             type: 'success',
             msg: 'Successfully requested a freshie as a roommate!'
           });
+
+          $timeout(function() {
+            location.href = '/home';
+          }, 1000);
         }
         else {
           $rootScope.showAlert({
@@ -110,12 +116,15 @@ angular.module('jRoomsApp')
       //console.log("Accepting request from " + cid);
       Communicator.acceptRoommate(cid, function(err, data) {
         if (!err && data) {
+          $scope.user.inbox = _.filter($scope.user.inbox, function(val) { val.username !== cid });
           $rootScope.showAlert({
             type: 'success',
             msg: 'Successfully accepted a roommate request from ' + cid + '!'
           });
 
-          $scope.user.inbox = _.filter($scope.user.inbox, function(val) { val.username !== cid });
+          $timeout(function() {
+            location.href = '/home';
+          }, 1000);
         }
         else {
            $rootScope.showAlert({
@@ -228,18 +237,35 @@ angular.module('jRoomsApp')
     }
 
     $scope.collegeButton = function(college) {
-      if (college === 'Krupp') {
+      Communicator.addPoint(college, function(err, data) {
+        // 1 point to Griffyndor.
+        ++collegeClicks;
 
-      }
-      else if (college === 'Mercator') {
-
-      }
-      else if (college === 'C3') {
-
-      }
-      else if (college === 'Nordmetall') {
-
-      }
+        if (collegeClicks === 10) {
+          $rootScope.showAlert({
+            type: 'warning',
+            msg: '?'
+          });
+        }
+        else if (collegeClicks === 50) {
+          $rootScope.showAlert({
+            type: 'warning',
+            msg: 'Do you really think this button has a meaning?'
+          });
+        }
+        else if (collegeClicks === 100) {
+          $rootScope.showAlert({
+            type: 'warning',
+            msg: 'Okay, whatever. Continue clicking, if you fancy. Finals are coming, you know?'
+          });
+        }
+        else if (collegeClicks > 1000) {
+          $rootScope.showAlert({
+            type: 'warning',
+            msg: 'Good job, Mr.Potter! ' + collegeClicks + ' points to Griffyndor!'
+          });
+        }
+      });
     }
 
   });

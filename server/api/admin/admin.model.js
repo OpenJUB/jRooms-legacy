@@ -10,7 +10,8 @@ var AdminSchema = new Schema({
 	disabledUsers: String,
 	maxRooms: Number,
 	email: Object,
-	isDebug: Boolean
+	isDebug: Boolean,
+	collegeGame: Object
 });
 
 module.exports = mongoose.model('Admin', AdminSchema);

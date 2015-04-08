@@ -25,13 +25,19 @@ angular.module('jRoomsApp')
   			preference3: false,
   			preference4: false
   		},
+      collegeGame: {
+        Krupp: 0,
+        Mercator: 0,
+        C3: 0,
+        Nordmetall: 0
+      },
   		phases: []
   	};
 
   	Communicator.currentSettings(function(err, settings) {
       if (!err && settings) {
-        $scope.pageReady = true;
         $scope.settings = settings;
+        $scope.pageReady = true;
 
         if (settings.phases.length > 0) {
           $scope.nextPhaseId = _.max(settings.phases, function(phase) { return phase.id; }).id + 1;

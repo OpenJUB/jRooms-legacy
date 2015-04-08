@@ -21,5 +21,6 @@ router.post('/updateColleges', controller.updateColleges);
 router.post('/updateRooms', controller.updateRooms);
 router.post('/removeRoommate', controller.remove_roommate);
 router.post('/switchRooms', controller.switchRooms);
+router.post('/addPoint', controller.addPoint);
 
 module.exports = router;
