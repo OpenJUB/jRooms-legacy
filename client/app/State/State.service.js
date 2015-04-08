@@ -58,7 +58,10 @@ angular.module('jRoomsApp')
               $location.path('/home');
             }
             else {
-              $rootScope.showAlert({ type: 'danger', msg: 'Oh oh! ' + err });
+              $rootScope.showAlert({ 
+                type: 'danger', 
+                msg: 'Oh oh! ' + err.error 
+              });
             }
           });
         }

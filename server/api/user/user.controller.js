@@ -301,9 +301,6 @@ var random_freshman = function() {
 
 exports.updateRooms = function(req, res) {
     var rooms = req.body.rooms;
-    if(rooms.length === 0) {
-        return res.json(304, null);
-    }
 
     Phase.findOne({isCurrent: true}).exec(function(err, p) {
       utils.isEligible(req.cookies.token, p, function(phase) {

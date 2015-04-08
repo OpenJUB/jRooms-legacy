@@ -15,7 +15,6 @@ angular.module('jRoomsApp')
     $scope.showCollegeSelection = false;
     $scope.showRoomSelection = false;
     $scope.showDone = false;
-    $scope.isDropdownOpen = false;
     $scope.showError = false;
 
   	$scope.$watch(State.user, function(val) {
