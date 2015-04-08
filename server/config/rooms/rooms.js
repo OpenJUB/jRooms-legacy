@@ -90,11 +90,10 @@ module.exports = [
               {
                 "enabled": true,
                 "contains": [
-                  "KA-201",
                   "KA-202",
                   "KA-203"
                 ],
-                "type": "triple"
+                "type": "double"
               },
               {
                 "enabled": true,
@@ -176,11 +175,10 @@ module.exports = [
               {
                 "enabled": true,
                 "contains": [
-                  "KA-301",
                   "KA-302",
                   "KA-303"
                 ],
-                "type": "triple"
+                "type": "double"
               },
               {
                 "enabled": true,
@@ -345,11 +343,10 @@ module.exports = [
               {
                 "enabled": true,
                 "contains": [
-                  "KB-201",
                   "KB-202",
                   "KB-203"
                 ],
-                "type": "triple"
+                "type": "double"
               },
               {
                 "enabled": true,
@@ -431,11 +428,10 @@ module.exports = [
               {
                 "enabled": true,
                 "contains": [
-                  "KB-301",
                   "KB-302",
                   "KB-303"
                 ],
-                "type": "triple"
+                "type": "double"
               },
               {
                 "enabled": true,
@@ -600,11 +596,10 @@ module.exports = [
               {
                 "enabled": true,
                 "contains": [
-                  "KC-201",
                   "KC-202",
                   "KC-203"
                 ],
-                "type": "triple"
+                "type": "double"
               },
               {
                 "enabled": true,
@@ -686,11 +681,10 @@ module.exports = [
               {
                 "enabled": true,
                 "contains": [
-                  "KC-301",
                   "KC-302",
                   "KC-303"
                 ],
-                "type": "triple"
+                "type": "double"
               },
               {
                 "enabled": true,
@@ -3446,11 +3440,10 @@ module.exports = [
               {
                 "enabled": true,
                 "contains": [
-                  "MA-201",
                   "MA-202",
                   "MA-203"
                 ],
-                "type": "triple"
+                "type": "double"
               },
               {
                 "enabled": true,
@@ -3532,11 +3525,10 @@ module.exports = [
               {
                 "enabled": true,
                 "contains": [
-                  "MA-301",
                   "MA-302",
                   "MA-303"
                 ],
-                "type": "triple"
+                "type": "double"
               },
               {
                 "enabled": true,
@@ -3701,11 +3693,10 @@ module.exports = [
               {
                 "enabled": true,
                 "contains": [
-                  "MB-201",
                   "MB-202",
                   "MB-203"
                 ],
-                "type": "triple"
+                "type": "double"
               },
               {
                 "enabled": true,
@@ -3787,11 +3778,10 @@ module.exports = [
               {
                 "enabled": true,
                 "contains": [
-                  "MB-301",
                   "MB-302",
                   "MB-303"
                 ],
-                "type": "triple"
+                "type": "double"
               },
               {
                 "enabled": true,
@@ -3956,11 +3946,10 @@ module.exports = [
               {
                 "enabled": true,
                 "contains": [
-                  "MC-201",
                   "MC-202",
                   "MC-203"
                 ],
-                "type": "triple"
+                "type": "double"
               },
               {
                 "enabled": true,
@@ -4042,11 +4031,10 @@ module.exports = [
               {
                 "enabled": true,
                 "contains": [
-                  "MC-301",
                   "MC-302",
                   "MC-303"
                 ],
-                "type": "triple"
+                "type": "double"
               },
               {
                 "enabled": true,

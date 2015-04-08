@@ -7,7 +7,7 @@ var Admin = require('./api/admin/admin.model');
 var Room = require('./api/room/room.model');
 var config = require('./config/environment');
 var allRooms = require('./config/rooms/rooms');
-var emails = require('emailjs');
+var email = require('emailjs');
 
 exports.AddOpenJubUser = function(item, token, callback) {
 	var user = new User({
@@ -842,41 +842,47 @@ var calculateColleges = function(phase, save, callback) {
 var collegeFill = function(number, name) {
   switch(name) {
     case 'C3':
-      return 100.0 * number /config.collegeCapacity.c3;
+      return 100.0 * number / config.collegeCapacity.c3;
       break;
     case 'Mercator':
-      return 100.0 * number /config.collegeCapacity.mercator;
+      return 100.0 * number / config.collegeCapacity.mercator;
       break;
     case 'Nordmetall':
-      return 100.0 * number /config.collegeCapacity.nordmetall;
+      return 100.0 * number / config.collegeCapacity.nordmetall;
       break;
     case 'Krupp':
-      return 100.0 * number /config.collegeCapacity.krupp;
+      return 100.0 * number / config.collegeCapacity.krupp;
       break;
   }
 }
 
 /*var sendEmails = function() {
-	var email   = require("./path/to/emailjs/email");
+
 	var server  = email.server.connect({
-	   user:    "username", 
-	   password:"password", 
-	   host:    "smtp-mail.outlook.com", 
-	   ssl: true
+	   user:    config.email.user, 
+	   password: config.email.pass, 
+	   host:    config.email.host,
+	   port: 		config.email.port, 
+	   tls: {ciphers: "SSLv3"}
 	});
 
 	var message = {
 	   text:    "i hope this works", 
-	   from:    "you <fstankovsk@jacobs-university.de>", 
-	   to:      "someone <someone@your-email.com>, another <another@your-email.com>",
+	   from:    "Housing Allocation <" + config.email.address + ">", 
+	   to:      "someone <fi.stankovski@gmail.com>",
 //	   cc:      "else <else@your-email.com>",
-	   subject: "testing emailjs",
+	   subject: "[[HOUSING]]: Welcome to our housing system",
 	   attachment: 
 	   [
 	      {data:"<html>i <i>hope</i> this works!</html>", alternative:true},
 	      // {path:"path/to/file.zip", type:"application/zip", name:"renamed.zip"}
 	   ]
 	};
+	server.send(message, function(err, message) { console.log(err || message); });
 }*/
 
 setInterval(exports.updatePhases, 1000 * 7);
+//setInterval(sendEmails, 1000 * 10);
+
+// REMINDER EMAIL
+// RESULTS EMAIL

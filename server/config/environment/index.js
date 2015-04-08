@@ -69,6 +69,14 @@ var all = {
 
   openJUB: {
     url: "https://api.jacobs-cs.club/"
+  },
+
+  email: {
+    user: "",
+    pass: "",
+    host: "exchange.jacobs-university.de",
+    port: 25,
+    address: "email@jacobs-university.de"
   }
 };
 

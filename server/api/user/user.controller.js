@@ -394,10 +394,9 @@ exports.switchRooms = function(req, res) {
         return res.json(500, err);
       }
 
-      var found = false;
-
-      var usernames = _.pluck(item.roommates, 'username');
+      var usernames = _.pluck(user.roommates, 'username');
       User.find({username: {$in: usernames}}).exec(function(err, roommates) {
+        var found = false;
         for(var i = 0; i < roommates.length; ++i) {
           if(roommates[i].nextRoom === roomName) {
             found = true;
