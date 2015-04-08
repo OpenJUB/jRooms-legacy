@@ -36,6 +36,7 @@ angular.module('jRoomsApp')
 
   	Communicator.currentSettings(function(err, settings) {
       if (!err && settings) {
+        console.log(settings);
         $scope.settings = settings;
         $scope.pageReady = true;
 

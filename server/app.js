@@ -20,6 +20,14 @@ if(config.seedDB) { require('./config/seed'); }
 
 utils.populateRoomInfo();
 
+// Define global variables (oh oh!)
+global.collegeGame = {
+	Krupp: 0,
+	Mercator: 0,
+	Nordmetall: 0,
+	C3: 0
+};
+
 // Setup server
 var app = express();
 var server = require('http').createServer(app);

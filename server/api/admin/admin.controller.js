@@ -28,12 +28,6 @@ Admin.findOne({}).exec(function(err, data) {
         preference2: false,
         preference3: false,
         preference4: false
-      },
-      collegeGame: {
-        Krupp: 0,
-        Mercator: 0,
-        C3: 0,
-        Nordmetall: 0
       }
     });
 
@@ -61,7 +55,7 @@ exports.currentSettings = function(req, res) {
         email: settings.email, 
         phases: tmp,
         isDebug: settings.isDebug,
-        collegeGame: settings.collegeGame
+        collegeGame: global.collegeGame
       };
 
       return res.json(200, clean_settings);
@@ -154,13 +148,6 @@ exports.resetSystem = function(req, res) {
       preference2: false,
       preference3: false,
       preference4: false
-    },
-    phases: [],
-    collegeGame: {
-      Krupp: 0,
-      Mercator: 0,
-      C3: 0,
-      Nordmetall: 0
     }
   });
 
