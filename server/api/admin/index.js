@@ -14,5 +14,6 @@ router.get('/importUsers', controller.importUsers);
 router.get('/resetSystem', controller.resetSystem);
 router.post('/forcePhase', controller.forcePhase);
 router.post('/cancelForce', controller.cancelForce);
+router.post('/endAllocation', controller.endAllocation);
 
 module.exports = router;

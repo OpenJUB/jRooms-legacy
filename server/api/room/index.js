@@ -5,6 +5,6 @@ var controller = require('./room.controller');
 
 var router = express.Router();
 
-router.get('/getRoom/:roomName', controller.getRoom);
+router.get('/get', controller.getRoom);
 
 module.exports = router;

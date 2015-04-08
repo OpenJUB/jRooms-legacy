@@ -221,3 +221,18 @@ exports.cancelForce = function(req, res) {
 
   return res.json(200, {status: "Success", isDebug: false});
 }
+
+exports.endAllocation = function(req, res) {
+  Phase.findOne({isCurrent: true}).exec(function(err, phase) {
+    if(err) {
+      return res.json(500, err);
+    }
+
+    if(!phase) {
+      return res.json(200, {});
+    }
+    utils.generateResults(phase.id, true, function() {
+      return res.json(200, {});
+    });
+  });
+}

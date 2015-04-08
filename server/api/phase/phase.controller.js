@@ -101,7 +101,7 @@ exports.currentPhase = function(req, res) {
 
 exports.csv = function(req, res) {
   console.log("AAAA");
-  var phaseId = req.params.phaseId;
+  var phaseId = req.query.phaseId;
   console.log(phaseId);
 
   Phase.findOne({id: phaseId}).exec(function(err, phase) {
