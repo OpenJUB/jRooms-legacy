@@ -231,6 +231,10 @@ exports.endAllocation = function(req, res) {
     if(!phase) {
       return res.json(200, {});
     }
+
+    phase.isCurrent = false;
+    phase.save();
+    
     utils.generateResults(phase.id, true, function() {
       return res.json(200, {});
     });
