@@ -1,5 +1,64 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
+<script type="text/ng-template" id="pointsModal.html">
+  <div class="modal-header">
+      <h4 class="modal-title">Points breakdown</h4>
+  </div>
+  <div class="modal-body">
+    <table class="table table-bordered">
+      <tr class="active">
+        <td>Criteria</td>
+        <td>Your points</td>
+        <td>Max points</td>
+      </tr>
+
+      <tr>
+        <td>College spirit</td>
+        <td>{{ points.collegeSpiritPoints }}</td>
+        <td>Bla</td>
+      </tr>
+
+      <tr>
+        <td>Countries</td>
+        <td>{{ points.countryPoints }}</td>
+        <td>Bla</td>
+      </tr>
+
+      <tr>
+        <td>Majors</td>
+        <td>{{ points.majorPoints }}</td>
+        <td>Bla</td>
+      </tr>
+
+      <tr>
+        <td>World regions</td>
+        <td>{{ points.regionPoints }}</td>
+        <td>Bla</td>
+      </tr>
+
+      <tr class="success">
+        <td>You</td>
+        <td>{{ points.userPoints }}</td>
+        <td>Bla</td>
+      </tr>
+
+      <tr class="warning">
+        <td>Roommate(s)</td>
+        <td>{{ points.roommatePoints }}</td>
+        <td>Bla</td>
+      </tr>
+
+      <tr class="info">
+        <td><strong>Total points</strong></td>
+        <td>{{ points.totalPoints }}</td>
+        <td>Bla</td>
+      </tr>
+    </table>
+
+    <button class="btn btn-default" ng-click="close()">Close</button>
+  </div>
+</script>
+
 <div class="container full-height">
   <div class="row">
     <!-- //////////////// -->
@@ -13,30 +72,35 @@
         <p>{{ user.description }}</p>
 
         <div ng-show="user.nextCollege && !showDone">
-          <a class="btn" ng-click="collegeButton(user.nextCollege);"
+          <div class="btn" ng-click="collegeButton(user.nextCollege);"
             ng-class="{ 'btn-danger' : user.nextCollege === 'Krupp', 
-                        'btn-info' : user.nextCollege === 'Mercator', 
+                        'btn-primary' : user.nextCollege === 'Mercator', 
                         'btn-success' : user.nextCollege === 'C3', 
                         'btn-warning' : user.nextCollege === 'Nordmetall' }">
             Will be in {{ user.nextCollege }} next year!
-          </a>
+          </div>
         </div>
 
         <div ng-show="user.roommates.length > 0 && !showDone">
           <br/>
-          <h4>Roommates:</h4>
-          <div class="row well text-center" ng-repeat="item in user.roommates">
+          <br/>
+          <div class="row">
+              <div class="col-xs-7">
+                <h4 style="text-align:right;">Roommates:</h4>
+              </div>
+              <div class="col-xs-5">
+                 <div class="btn btn-sm btn-info" ng-click="openPointsModal('sm');">Points: <strong>{{ user.points.totalPoints }}</strong></div>
+              </div>
+          </div>
+
+          <div class="row well well-sm text-center" ng-repeat="item in user.roommates">
             <div class="col-md-3">
-              <img class="img-rounded center-block" height="50" ng-click="roommateSelected(item);" ng-src="{{ item.imageURL }}"/>
+              <img class="img-rounded center-block" height="60" ng-click="roommateSelected(item);" ng-src="{{ item.imageURL }}"/>
             </div>
             <div class="col-md-9">
               <p>{{ item.name }}</p>
-              <a class="btn btn-danger" ng-show="!showDone" ng-click="removeRoommate(item.username);">Remove</a>
+              <a class="btn btn-sm btn-danger" ng-show="!showDone" ng-click="removeRoommate(item.username);">Remove</a>
             </div>
-          </div>
-
-          <div class="form-group">
-            <div class="btn btn-info">Points: <strong>{{ user.points.totalPoints }}</strong></div>
           </div>
         </div>
       </div>
@@ -100,7 +164,7 @@
 
           <div class="container btn btn-lg dropdown-toggle" dropdown-toggle ng-click="collegeButton(user.nextCollege);"
             ng-class="{ 'btn-danger' : user.nextCollege === 'Krupp', 
-                        'btn-info' : user.nextCollege === 'Mercator', 
+                        'btn-primary' : user.nextCollege === 'Mercator', 
                         'btn-success' : user.nextCollege === 'C3', 
                         'btn-warning' : user.nextCollege === 'Nordmetall' }">
             Living in {{ user.nextCollege }}, {{ user.nextRoom }}

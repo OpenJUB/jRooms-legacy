@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('jRoomsApp')
-  .controller('HomeCtrl', function ($rootScope, $scope, $timeout, $location, State, Communicator) {
+  .controller('HomeCtrl', function ($rootScope, $scope, $modal, $timeout, $location, State, Communicator) {
     var collegeClicks = 0;
 
     $scope.user = {};
@@ -174,6 +174,18 @@ angular.module('jRoomsApp')
       })
     }
 
+    $scope.openPointsModal = function() {
+      var modalInstance = $modal.open({
+        templateUrl: 'pointsModal.html',
+        controller: 'PointsModalCtrl',
+        resolve: {
+          points: function() {
+            return $scope.user.points;
+          }
+        }
+      });
+    }
+
     $scope.updateColleges = function() {
       if ($scope.colleges.length != _.uniq($scope.colleges).length) {
         $rootScope.showAlert({
@@ -269,3 +281,13 @@ angular.module('jRoomsApp')
     }
 
   });
+
+
+angular.module('jRoomsApp')
+  .controller('PointsModalCtrl', function ($scope, $modalInstance, points) {
+  $scope.points = points;
+
+  $scope.close = function () {
+    $modalInstance.close();
+  };
+});
