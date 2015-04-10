@@ -47,45 +47,67 @@ exports.AddOpenJubUser = function(item, token, callback) {
 }
 
 exports.SetPhases = function(phases, callback) {
-	Phase.find({}).remove().exec();
-
 	console.log(phases);
 	if(!phases)
 		callback();
 
-	for(var i = 0; i < phases.length; i++) {
-		var item = phases[i];
+	Phase.findOne({isCurrent: true}).exec(function(err, phase) {
+		if(err) {
+			return callback();
+		}
 
-		console.log(item);
-		var tmp = new Phase({
-			id: item.id,
-			name: item.name,
-			from: item.from,
-			to: item.to,
-			isCollegePhase: item.isCollegePhase,
-			maxRooms: 7,
-			next: item.next,
-			filters: item.filters,
-			isCurrent: false,
-			results: item.results
-		});
-		tmp.save();
-	}
+		var id = -1;
+		if(phase) {
+			id = phase.id;
+		}
 
-	callback();
+		Phase.find({}).remove().exec();
+
+		for(var i = 0; i < phases.length; i++) {
+			var item = phases[i];
+
+			console.log(item);
+			var tmp = new Phase({
+				id: item.id,
+				name: item.name,
+				from: item.from,
+				to: item.to,
+				isCollegePhase: item.isCollegePhase,
+				maxRooms: 7,
+				next: item.next,
+				filters: item.filters,
+				results: item.results
+			});
+
+			if(id < 0) {
+				tmp.isCurrent = (item.from <= (new Date()) && item.to >= (new Date()));
+			} else if(tmp.id === id) {
+				tmp.isCurrent = true;
+			} else {
+				tmp.isCurrent = false;
+			}
+
+			tmp.save(callback);
+		}
+	});
 }
 
 exports.updatePhases = function() {
-  console.log("Tick");
+  //console.log("Tick");
 
 	Admin.findOne({}).exec(function(err, settings) {
 		if(err || !settings){
 			console.log("PANIC");
 			console.log(err);
+			return;
 		}
+
+    //console.log("Not kidding");
 
 		if(settings && settings.isDebug)
 			return;
+
+    //console.log("Not kidding");
 
 		Phase.findOne({isCurrent: true}).exec(function(err, phase) {
 			if(err) {
@@ -95,19 +117,39 @@ exports.updatePhases = function() {
 				if(err2 || !data) {
 					console.log("ANOTHER PANIC");
 					console.log(err);
+          return;
 				}
+
+				var cur = false;
 				data.forEach(function(item) {
+          //console.log("OMG");
 					item.isCurrent = (item.from <= (new Date()) && item.to >= (new Date()));
-					if(phase && item.isCurrent && item !== phase) {
+					if(phase && item.isCurrent && item.id !== phase.id) {
+						cur = true;
 
 						phase.isCurrent = false;
 						phase.save();
 
-						exports.generateResults(phase.id, true, function() {});
+						exports.generateResults(phase.id, true, function() {
+              item.save();
+            });
 					}
-
-					item.save();
+          else {
+            //console.log("Boop");
+            exports.phaseResult(item, function(results) {});
+          }
 				});
+
+				if(!cur && !phase) {
+          console.log("How likely is this?");
+          console.log(phase);
+
+					settings.isDone = true;
+					settings.save();
+				} else {
+          settings.isDone = false;
+          settings.save();
+        }
 			});
 		});
 	});
@@ -189,6 +231,9 @@ exports.onlyUnique = function (value, index, self) {
 
 exports.isEligible = function(token, round, callback) {
   var status = true;
+  if(!round) {
+  	return callback(round);
+  }
   User.findOne({token: token}).exec(function(err, user) {
     if(err || !user) {
       status = false;
@@ -366,16 +411,17 @@ exports.populateRoomInfo = function() {
 }
 
 exports.generateResults = function(phaseId, save, callback) {
+	console.log("Hey, this was called");
   Phase.findOne({id: phaseId}).exec(function(err, phase) {
     if(phase.isCollegePhase) {
-      return calculateColleges(phase, save, callback);
+      return calculateColleges(phase, callback);
     } else {
-      return calculatePhase(phase, save, callback);
+      return calculatePhase(phase, callback);
     }
   });
 }
 
-var calculatePhase = function(phase, save, callback) {
+var calculatePhase = function(phase, callback) {
   //console.log("Here bruh");
   //console.log(phase);
   User.find({phaseId: phase.id}).exec(function(err, u) {
@@ -429,102 +475,103 @@ var calculatePhase = function(phase, save, callback) {
 
     /*matrix = {
       'fstankovsk' : [20, 25, 22, 28],
-      'slal' : [15, 18, 23, 17],
+      'slal' :       [15, 18, 23, 17],
       'dcucleschi' : [19, 17, 21, 24],
       'abarbarosi' : [25, 23, 24, 24]
     };
 
-    rooms = ["First", "Second", "Third", "Fourth"];*/
+    rooms = ["First", "Second", "Third", "Fourth"];
+		// PROPER RESULT IS:
+		// fstankovsk: First
+		// slal: Fourth
+		// dcucleschi: Second
+		// abarbarosi: Third
+    */
     
     return HungarianOne(matrix, rooms, function(data) {
-      if(save) {
-        var users = [];
-        for(var prop in data) {
+      var users = [];
+      for(var prop in data) {
 
-          if(/^(\-|\+)?([0-9]+|Infinity)$/.test(prop)) 
-            continue;
-          users.push(prop);
+        if(/^(\-|\+)?([0-9]+|Infinity)$/.test(prop)) 
+          continue;
+        users.push(prop);
+
+      }
+      console.log(data);
+     
+     var newCallback = function(data, nUsers, i) {
+
+        if(!i && i !== 0) {
+          return callback(null);
         }
-        //console.log(users);
-        console.log(data);
-       
-       var newCallback = function(data, nUsers, i) {
-          //console.log("You're here. Welcome");
-          if(!i && i !== 0) {
-            //console.log("You're here. Welcome");
-            return callback(null);
-          }
-          //console.log(nUsers);
-          if(i >= nUsers.length - 1) {
-            console.log("WooHoo");
-            return exports.phaseResult(phase, callback);
-          } else {
-            //console.log("Blink");
-            return saveUser(data, nUsers, i + 1, newCallback);
-          }
-       };
 
-       var saveUser = function(data, nUsers, i, callB) {
-          //console.log(i);
-          if(i >= nUsers.length) {
-            return callB(data, nUsers, []);
-          }
-          User.findOne({username: nUsers[i]}).exec(function(err, item) {
-            if(err || !item) {
-              //console.log("Error, Error");
-              if(nUsers[i].lastIndexOf("BLANK", 0) === 0) {
-                return callB(data, nUsers, i);
-              }
+        if(i >= nUsers.length - 1) {
+          console.log("WooHoo");
+          return exports.phaseResult(phase, callback);
+        } 
+        else {
+          return saveUser(data, nUsers, i + 1, newCallback);
+        }
+     };
 
+     var saveUser = function(data, nUsers, i, callB) {
+
+        if(i >= nUsers.length) {
+          return callB(data, nUsers, []);
+        }
+        User.findOne({username: nUsers[i]}).exec(function(err, item) {
+          if(err || !item) {
+
+            if(nUsers[i].lastIndexOf("BLANK", 0) === 0) {
+              return callB(data, nUsers, i);
+            }
+
+            return callB(data, nUsers, null);
+          }
+
+          console.log(data);
+          //console.log(item.username);
+          //console.log(data[item.username]);
+          Room.findOne({name: data[item.username]}).exec(function(err, room) {
+            if(err) {
               return callB(data, nUsers, null);
             }
 
-            console.log(data);
-            //console.log(item.username);
-            //console.log(data[item.username]);
-            Room.findOne({name: data[item.username]}).exec(function(err, room) {
-              if(err) {
-                return callB(data, nUsers, null);
-              }
+            console.log(room);
 
-              console.log(room);
+            if(!room) { // Unallocated this round
+              item.phaseId = null;
+              item.save();
 
-              if(!room) { // Unallocated this round
-                item.phaseId = null;
-                item.save();
-
+              item.roommates.forEach(function(tmp) {
+                var usernames = _.pluck(item.roommates, 'username');
+                User.update({username: {$in:usernames}}, {phaseId: null}).exec();
+              });
+            } else {
+              item.nextRoom = room.rooms[0];
+              item.save(function() {
+                //console.log(i);
+                var counter = 1;
                 item.roommates.forEach(function(tmp) {
-                  var usernames = _.pluck(item.roommates, 'username');
-                  User.update({username: {$in:usernames}}, {phaseId: null}).exec();
-                });
-              } else {
-                item.nextRoom = room.rooms[0];
-                item.save(function() {
-                  //console.log(i);
-                  var counter = 1;
-                  item.roommates.forEach(function(tmp) {
-                    User.findOne({username: tmp.username}).exec(function(err, use) {
-                      if(err || !use) {
-                        ++counter;
-                      } else {
-                        use.nextRoom = room.rooms[counter];
-                        ++counter;
-                        use.save();
-                      }
-                    });
+                  User.findOne({username: tmp.username}).exec(function(err, use) {
+                    if(err || !use) {
+                      ++counter;
+                    } else {
+                      use.nextRoom = room.rooms[counter];
+                      ++counter;
+                      use.save();
+                    }
                   });
                 });
-              }
+              });
+            }
 
-              return callB(data, nUsers, i);
-            });
+            return callB(data, nUsers, i);
           });
-        };
+        });
+      };
 
-        return saveUser(data, users, 0, newCallback);
-      } else {
-        return callback(data);
-      }
+      return saveUser(data, users, 0, newCallback);
     });
   });
 }
@@ -731,7 +778,7 @@ var shuffle = function (o){ //v1.0
     return o;
 };
 
-var calculateColleges = function(phase, save, callback) {
+var calculateColleges = function(phase, callback) {
   User.find({$where: "this.college_preference.length > 0" }).exec(function(err, u) {
       if(err || !u) {
         return res.json(500, err);
@@ -829,20 +876,17 @@ var calculateColleges = function(phase, save, callback) {
           break;
         }
       }
-      if(save) {
-        //console.log("SAAVE");
-        for(var i = 0; i < percentages.length; i++) {
-          for(var j = 0; j < percentages[i].people.length; j++) {
-              percentages[i].people[j].nextCollege = percentages[i].college;
-              percentages[i].people[j].points.collegeSpiritPoints = config.collegeSpiritPoints * (percentages[i].people[j].nextCollege === percentages[i].people[j].college);
-              percentages[i].people[j].save();
-          }
-        }
 
-        return exports.phaseResult(phase, callback);
-      } else {
-        return callback();
+      for(var i = 0; i < percentages.length; i++) {
+        for(var j = 0; j < percentages[i].people.length; j++) {
+            percentages[i].people[j].nextCollege = percentages[i].college;
+            percentages[i].people[j].points.collegeSpiritPoints = config.collegeSpiritPoints * (percentages[i].people[j].nextCollege === percentages[i].people[j].college);
+            percentages[i].people[j].save();
+        }
       }
+
+      return exports.phaseResult(phase, callback);
+
   });
 }
 

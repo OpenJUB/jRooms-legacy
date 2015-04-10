@@ -28,7 +28,9 @@ Admin.findOne({}).exec(function(err, data) {
         preference2: false,
         preference3: false,
         preference4: false
-      }
+      },
+      isDone: false,
+      phases: []
     });
 
     settings.save();
@@ -55,13 +57,14 @@ exports.currentSettings = function(req, res) {
         email: settings.email, 
         phases: tmp,
         isDebug: settings.isDebug,
+        isDone: settings.isDone,
         collegeGame: global.collegeGame
       };
 
       return res.json(200, clean_settings);
     });
   } else {
-    return res.json(500, "No settings found!");
+    return res.json(404, "No settings found!");
   }
 }
 
@@ -70,13 +73,16 @@ exports.updateSettings = function(req, res) {
     Admin.find({}).remove().exec();
 
     settings = new Admin(req.body.settings);
-    settings.save();
-
-    utils.SetPhases(req.body.settings.phases, function() {
-      return res.json(200, { status : 'success' });
+    settings.isDone = false;
+    settings.save(function() {
+      utils.SetPhases(req.body.settings.phases, function() {
+        utils.updatePhases();
+        return res.json(200, { status : 'success' });
+      });
     });
+
   } else {
-      return res.json(500, "Error updating settings");
+      return res.json(400, "Please provide valid settings");
   }
 }
 
@@ -118,15 +124,27 @@ exports.getUser = function(req, res) {
  */
 exports.setUser = function(req, res) {
   if (!req.body.username && req.body.user) {
-    return res.json(500, 'Username or user field is not set');
+    return res.json(404, 'Username or user field is not set');
   }
 
-  User.update({ username : req.body.username }, req.body.user, function(err, data) {
-      if (err) {
+  var newUser = req.body.user;
+  var username = req.body.username;
+
+  User.findOne({username: username}).exec(function(err, user) {
+    if(err || !user) {
+      return res.json(500, err);
+    }
+
+    if(user.nextRoom !== newUser.nextRoom) {
+      newUser.phaseId = -1;
+    }
+    User.update({username: user.username}, newUser, function(err, num) {
+      if(err || !num) {
         return res.json(500, err);
       }
 
       return res.json(200, {});
+    })
   });
 }
 
@@ -139,6 +157,7 @@ exports.resetSystem = function(req, res) {
    settings = new Admin({
     isDatabaseReady : false,
     isDebug : false,
+    isDone : false,
     tallPeople: '',
     disabledRooms: '',
     disabledUsers: '',
@@ -148,7 +167,8 @@ exports.resetSystem = function(req, res) {
       preference2: false,
       preference3: false,
       preference4: false
-    }
+    },
+    phases: []
   });
 
   settings.save();
@@ -197,29 +217,34 @@ exports.forcePhase = function(req, res) {
     if(err || !data) {
       return res.json(500, err);
     }
-//    utils.round_force = phaseId;
-    data.forEach(function(item) {
-      var status = (item.id === phaseId);
-      if(item.isCurrent && !status) {
-        utils.generateResults(item.id, true, function() {
+
+    settings.isDebug = true;
+    settings.save(function() {
+
+      data.forEach(function(item) {
+        var status = (item.id === phaseId);
+        if(item.isCurrent && !status) {
+
+          utils.generateResults(item.id, true, function() {
+            item.isCurrent = status;
+            item.save();
+          });
+        } else {
           item.isCurrent = status;
           item.save();
-        });
-      } else {
-        item.isCurrent = status;
-        item.save();
-      }
+        }
+      });
     });
-
     return res.json(200, {status: "Success", isDebug: true});
   });
 }
 
 exports.cancelForce = function(req, res) {
-
-  utils.updatePhases();
-
-  return res.json(200, {status: "Success", isDebug: false});
+  settings.isDebug = false;
+  settings.save(function() {
+    utils.updatePhases();
+    return res.json(200, {status: "Success", isDebug: false});
+  });
 }
 
 exports.endAllocation = function(req, res) {
@@ -231,12 +256,13 @@ exports.endAllocation = function(req, res) {
     if(!phase) {
       return res.json(200, {});
     }
-
-    phase.isCurrent = false;
-    phase.save();
     
     utils.generateResults(phase.id, true, function() {
-      return res.json(200, {});
+      settings.isDone = true;
+      phase.isCurrent = false;
+      phase.save(function() {
+        return res.json(200, {});
+      });
     });
   });
 }

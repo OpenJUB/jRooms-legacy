@@ -125,18 +125,14 @@ exports.confirm_roommate = function(req, res) {
                 return res.json(500, err);
             }
 
-            for(var i = 0; i < fromUser.roommates.length; i++) {
-                if(freshieTemplate.indexOf(fromUser.roommates[i]) >= 0) {
-                    fromUser.roommates.splice(i, 1);
-                    i--;
-                }
+            var fromFresh = _.intersection(freshieTemplate, fromUser.roommates);
+            if(fromFresh) {
+              fromUser.roommates = [];
             }
 
-            for(var i = 0; i < toUser.roommates.length; i++) {
-                if(freshieTemplate.indexOf(toUser.roommates[i]) >= 0) {
-                    toUser.roommates.splice(i, 1);
-                    i--;
-                }
+            var toFresh = _.intersection(freshieTemplate, toUser.roommates);
+            if(toFresh) {
+              toUser.roommates = [];
             }
 
             Phase.findOne({isCurrent: true}).exec(function(err, phase) {
@@ -151,10 +147,28 @@ exports.confirm_roommate = function(req, res) {
                 fromUser.roommates.push({username: roommate, name: toUser.name, imageURL: toUser.imageURL});
                 toUser.roommates.push({username: fromUser.username, name: fromUser.name, imageURL: fromUser.imageURL});
 
-                fromUser.save();
-                toUser.save();
+                var people = _.union(fromUser.roommates, toUser.roommates);
+                var peopleNames = _.pluck(people, 'username');
 
-                return res.json(200, {status: 'success'});
+                fromUser.roommates = people;
+                fromUser.save(function() {
+                  User.find({username: {$in: peopleNames}}).exec(function(err, all) {
+                    if(err || !all) {
+                      return res.json(500, err);
+                    }
+
+                    for(var i = 0; i < all.length; ++i) {
+                      if(all[i].username === fromUser.username) {
+                        continue;
+                      }
+
+                      all[i].roommates = people;
+                      all[i].save();
+                    }
+
+                    return res.json(200, {status: 'success'});
+                  });
+                });
             });
         });
     });   
@@ -221,23 +235,31 @@ exports.remove_roommate = function(req, res) {
 
         if(index >= 0) {
             fromUser.roommates = [];
+            fromUser.phaseId = null;
+            fromUser.rooms = [];
             fromUser.save();
                 
             return res.json(200, {status: 'success'});
         }
 
-        User.findOne({username: roommate}).exec(function(err2, toUser) {
-            if(err2 || !toUser) {
+        var usernames = _.pluck(fromUser.roommates, 'username');
+        User.find({username: {$in: usernames}}).exec(function(err, roommates) {
+
+            if(err || !roommates) {
                 return res.json(500, err);
             }
 
-            var toIndex = _.findIndex(toUser.roommates, {username: fromUser.username});
-
-            fromUser.roommates.splice(fromIndex, 1);
-            toUser.roommates.splice(toIndex, 1);
-
+            fromUser.roommates = [];
+            fromUser.phaseId = null;
+            fromUser.rooms = [];
             fromUser.save();
-            toUser.save();
+
+            for(var i = 0; i < roommates.length; i++) {
+              roommates[i].roommates = [];
+              roommates[i].phaseId = null;
+              roommates[i].rooms = [];
+              roommates[i].save();
+            }
 
             return res.json(200, {status: 'success'});
         });
