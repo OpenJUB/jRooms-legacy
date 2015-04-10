@@ -47,9 +47,9 @@ exports.AddOpenJubUser = function(item, token, callback) {
 }
 
 exports.SetPhases = function(phases, callback) {
-	console.log(phases);
+	//console.log(phases);
 	if(!phases)
-		callback();
+		return callback();
 
 	Phase.findOne({isCurrent: true}).exec(function(err, phase) {
 		if(err) {
@@ -87,8 +87,10 @@ exports.SetPhases = function(phases, callback) {
 				tmp.isCurrent = false;
 			}
 
-			tmp.save(callback);
+			tmp.save();
 		}
+
+    callback();
 	});
 }
 

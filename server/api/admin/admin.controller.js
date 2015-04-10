@@ -69,6 +69,7 @@ exports.currentSettings = function(req, res) {
 }
 
 exports.updateSettings = function(req, res) {
+
   if (req.body.settings) {
     Admin.find({}).remove().exec();
 
@@ -82,6 +83,7 @@ exports.updateSettings = function(req, res) {
     });
 
   } else {
+    //console.log("???");
       return res.json(400, "Please provide valid settings");
   }
 }
