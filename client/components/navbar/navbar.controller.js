@@ -19,7 +19,7 @@ angular.module('jRoomsApp')
         state: 'admin'
     },
     {
-    	title: 'Issues?',
+    	title: 'Guidelines',
     	link: '/faq',
         state: 'faq'
     },
