@@ -218,6 +218,10 @@ exports.importUsers = function(req, res) {
     }
 
     users.forEach(function(item) {
+      var cur = (new Date()).getFullYear() - 2000;
+      if(item.year <= cur)
+        continue;
+      
       utils.AddOpenJubUser(item, null, function() {});
     });
   });

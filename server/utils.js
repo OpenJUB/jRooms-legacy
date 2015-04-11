@@ -318,7 +318,7 @@ exports.isEligible = function(token, round, callback) {
         var num = user.roommates.length + 1;
         status = Math.min(((round.filters.rooms.single && num === 1) || (round.filters.rooms.double && num === 2) || (round.filters.rooms.triple && num === 3)), status);
       } else {
-      	//status = Math.min(status, user.roommates.length === 1);
+      	status = Math.min(status, user.roommates.length === 1);
       }
 
       round.isEligible = status;
