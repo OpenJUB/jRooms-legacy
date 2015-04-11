@@ -125,9 +125,9 @@ exports.updatePhases = function() {
 				var cur = false;
 				data.forEach(function(item) {
           //console.log("OMG");
+          cur = Math.max(cur, item.to >= (new Date()));
 					item.isCurrent = (item.from <= (new Date()) && item.to >= (new Date()));
 					if(phase && item.isCurrent && item.id !== phase.id) {
-						cur = true;
 
 						phase.isCurrent = false;
 						phase.save();
@@ -143,8 +143,8 @@ exports.updatePhases = function() {
 				});
 
 				if(!cur && !phase) {
-          console.log("How likely is this?");
-          console.log(phase);
+          //console.log("How likely is this?");
+          //console.log(phase);
 
 					settings.isDone = true;
 					settings.save();
