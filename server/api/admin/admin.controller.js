@@ -140,13 +140,20 @@ exports.setUser = function(req, res) {
     if(user.nextRoom !== newUser.nextRoom) {
       newUser.phaseId = -1;
     }
-    User.update({username: user.username}, newUser, function(err, num) {
-      if(err || !num) {
-        return res.json(500, err);
-      }
 
+    user.name = newUser.name;
+    user.country = newUser.country;
+    user.major = newUser.major;
+    user.year = newUser.year;
+    user.college = newUser.college;
+    user.nextCollege = newUser.nextCollege;
+    user.nextRoom = newUser.nextRoom;
+    user.phaseId = newUser.phaseId;
+
+
+    user.save(function() {
       return res.json(200, {});
-    })
+    });
   });
 }
 
@@ -184,7 +191,7 @@ exports.importUsers = function(req, res) {
   settings.save();
 
   User.find({}).remove().exec();
-  
+
   var token = req.cookies.token;
   var url = config.openJUB.url + "query/?limit=10000&token=" + token;
   request.cookie('openjub_session=' + token);
