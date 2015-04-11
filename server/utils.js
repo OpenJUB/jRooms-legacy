@@ -875,7 +875,7 @@ var calculateColleges = function(phase, callback) {
           }
         }
 
-        var ind = Math.random() * (second_choice.length - 1);
+        var ind = Math.round(Math.random() * (second_choice.length - 1));
         var tmp = percentages[3].people[second_choice[ind]];
 
         percentages[3].people.splice(ind, 1);
