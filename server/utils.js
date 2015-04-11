@@ -272,6 +272,12 @@ exports.isEligible = function(token, round, callback) {
     		round.isEligible = status;
     		return callback(round);
     	}
+      else if(round.isCollegePhase)
+      {
+        status = true;
+        round.isEligible = status;
+        return callback(round);
+      }
 
     	if(!round.isCollegePhase && user.nextRoom) {
     		status = false;
