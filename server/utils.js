@@ -860,6 +860,16 @@ var calculateColleges = function(phase, callback) {
       var counter = 0;
 
       while(percentages[0].fill < config.collegeFillMinimum || percentages[3].fill > config.collegeFillMaximum) {
+        var total = 0;
+        for(var i = 0; i < percentages.length; ++i) {
+          total += percentages[i].people.length;
+        }
+
+        var totalCollege = config.collegeCapacity.c3 + config.collegeCapacity.krupp + config.collegeCapacity.nordmetall + config.collegeCapacity.mercator;
+
+        if(total < config.collegeFillMinimum * totalCollege) {
+          break;
+        }
         var second_choice = [];
         for(var i = 0; i < percentages[3].people; ++i) {
           if(percentages[3].people[i].college_preference[1] === percentages[0].name && percentages[3].people[i].college !== percentages[3].people[i].college_preference[0] && percentages[3].people[i].year === (new Date()).getFullYear() - 2000 + 2) {
