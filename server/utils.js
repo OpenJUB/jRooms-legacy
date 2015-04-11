@@ -148,6 +148,7 @@ exports.updatePhases = function() {
           else {
             //console.log("Boop");
             exports.phaseResult(item, function(results) {
+              item.results = results;
               item.save();
             });
           }
