@@ -184,9 +184,9 @@ exports.importUsers = function(req, res) {
   settings.save();
 
   User.find({}).remove().exec();
-
-  var url = config.openJUB.url + "query/?limit=10000";
+  
   var token = req.cookies.token;
+  var url = config.openJUB.url + "query/?limit=10000&token=" + token;
   request.cookie('openjub_session=' + token);
 
   request({
@@ -206,11 +206,9 @@ exports.importUsers = function(req, res) {
       if(!users) {
         return res.json(500, "OpenJUB error");
       }
-      
+
       res.json(200, { status: 'success' });
     }
-
-    var users = 
 
     users.forEach(function(item) {
       utils.AddOpenJubUser(item, null, function() {});

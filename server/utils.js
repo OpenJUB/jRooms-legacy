@@ -79,6 +79,9 @@ exports.SetPhases = function(phases, callback) {
 				results: item.results
 			});
 
+      tmp.from.setHours(0, 15);
+      tmp.to.setHours(0, 15);
+
 			if(id < 0) {
 				tmp.isCurrent = (item.from <= (new Date()) && item.to >= (new Date()));
 			} else if(tmp.id === id) {
@@ -95,7 +98,7 @@ exports.SetPhases = function(phases, callback) {
 }
 
 exports.updatePhases = function() {
-  //console.log("Tick");
+  console.log("Tick");
 
 	Admin.findOne({}).exec(function(err, settings) {
 		if(err || !settings){
@@ -126,7 +129,12 @@ exports.updatePhases = function() {
 				data.forEach(function(item) {
           //console.log("OMG");
           cur = Math.max(cur, item.to >= (new Date()));
+          console.log(cur);
+          console.log(item.to);
+          console.log(new Date());
+          
 					item.isCurrent = (item.from <= (new Date()) && item.to >= (new Date()));
+          console.log(item);
 					if(phase && item.isCurrent && item.id !== phase.id) {
 
 						phase.isCurrent = false;
@@ -138,7 +146,9 @@ exports.updatePhases = function() {
 					}
           else {
             //console.log("Boop");
-            exports.phaseResult(item, function(results) {});
+            exports.phaseResult(item, function(results) {
+              item.save();
+            });
           }
 				});
 
@@ -795,6 +805,7 @@ var calculateColleges = function(phase, callback) {
 
       for(var i = 0; i < users.length; i++) {
         var tmp = users[i];
+
         switch(users[i].college_preference[0]) {
           case 'C3':
             c3.push(tmp);
@@ -844,17 +855,17 @@ var calculateColleges = function(phase, callback) {
       //console.log(percentages);
       var counter = 0;
 
-      while(percentages[0].fill < config.collegeFillMinimum) {
+      while(percentages[0].fill < config.collegeFillMinimum || percentages[3].fill > config.collegeFillMaximum) {
         var second_choice = [];
         for(var i = 0; i < percentages[3].people; ++i) {
-          if(percentages[3].college_preference[1] === percentages[0].name) {
+          if(percentages[3].people[i].college_preference[1] === percentages[0].name && percentages[3].people[i]college !== percentages[3].people[i].college_preference[0] && percentages[3].people[i].year === (new Date()).getFullYear() - 2000 + 2) {
             second_choice.push(i);
           }
         }
 
         if(second_choice.length === 0) {
           for(var i = 0; i < percentages[3].people; ++i) {
-            if(percentages[3].college_preference[2] === percentages[0].name) {
+             if(percentages[3].people[i].college_preference[2] === percentages[0].name && percentages[3].people[i]college !== percentages[3].people[i].college_preference[0] && percentages[3].people[i].year === (new Date()).getFullYear() - 2000 + 2) {
               second_choice.push(i);
             }
           }

@@ -29,15 +29,15 @@ var all = {
 
   // Number of students that can be allocated to the college
   collegeCapacity: {
-    c3: 100,
-    krupp: 100,
-    nordmetall: 100,
-    mercator: 100
+    c3: 280,
+    krupp: 240,
+    nordmetall: 250,
+    mercator: 240
   },
 
   // Boundary percentages for colleges
-  collegeFillMinimum: 0,
-  collegeFillMaximum: 100,
+  collegeFillMinimum: 60,
+  collegeFillMaximum: 75,
 
   // MongoDB connection options
   mongo: {
