@@ -794,7 +794,7 @@ var shuffle = function (o){ //v1.0
 var calculateColleges = function(phase, callback) {
   User.find({$where: "this.college_preference.length > 0" }).exec(function(err, u) {
       if(err || !u) {
-        return res.json(500, err);
+        return;
       }
 
       var users = shuffle(u);
