@@ -28,7 +28,9 @@ Admin.findOne({}).exec(function(err, data) {
         preference2: false,
         preference3: false,
         preference4: false
-      }
+      },
+      isDone: false,
+      phases: []
     });
 
     settings.save();
@@ -55,28 +57,34 @@ exports.currentSettings = function(req, res) {
         email: settings.email, 
         phases: tmp,
         isDebug: settings.isDebug,
+        isDone: settings.isDone,
         collegeGame: global.collegeGame
       };
 
       return res.json(200, clean_settings);
     });
   } else {
-    return res.json(500, "No settings found!");
+    return res.json(404, "No settings found!");
   }
 }
 
 exports.updateSettings = function(req, res) {
+
   if (req.body.settings) {
     Admin.find({}).remove().exec();
 
     settings = new Admin(req.body.settings);
-    settings.save();
-
-    utils.SetPhases(req.body.settings.phases, function() {
-      return res.json(200, { status : 'success' });
+    settings.isDone = false;
+    settings.save(function() {
+      utils.SetPhases(req.body.settings.phases, function() {
+        utils.updatePhases();
+        return res.json(200, { status : 'success' });
+      });
     });
+
   } else {
-      return res.json(500, "Error updating settings");
+    //console.log("???");
+      return res.json(400, "Please provide valid settings");
   }
 }
 
@@ -118,15 +126,34 @@ exports.getUser = function(req, res) {
  */
 exports.setUser = function(req, res) {
   if (!req.body.username && req.body.user) {
-    return res.json(500, 'Username or user field is not set');
+    return res.json(404, 'Username or user field is not set');
   }
 
-  User.update({ username : req.body.username }, req.body.user, function(err, data) {
-      if (err) {
-        return res.json(500, err);
-      }
+  var newUser = req.body.user;
+  var username = req.body.username;
 
+  User.findOne({username: username}).exec(function(err, user) {
+    if(err || !user) {
+      return res.json(500, err);
+    }
+
+    if(user.nextRoom !== newUser.nextRoom) {
+      newUser.phaseId = -1;
+    }
+
+    user.name = newUser.name;
+    user.country = newUser.country;
+    user.major = newUser.major;
+    user.year = newUser.year;
+    user.college = newUser.college;
+    user.nextCollege = newUser.nextCollege;
+    user.nextRoom = newUser.nextRoom;
+    user.phaseId = newUser.phaseId;
+
+
+    user.save(function() {
       return res.json(200, {});
+    });
   });
 }
 
@@ -139,6 +166,7 @@ exports.resetSystem = function(req, res) {
    settings = new Admin({
     isDatabaseReady : false,
     isDebug : false,
+    isDone : false,
     tallPeople: '',
     disabledRooms: '',
     disabledUsers: '',
@@ -148,7 +176,8 @@ exports.resetSystem = function(req, res) {
       preference2: false,
       preference3: false,
       preference4: false
-    }
+    },
+    phases: []
   });
 
   settings.save();
@@ -163,8 +192,8 @@ exports.importUsers = function(req, res) {
 
   User.find({}).remove().exec();
 
-  var url = config.openJUB.url + "query/?limit=10000";
   var token = req.cookies.token;
+  var url = config.openJUB.url + "query/?limit=10000&token=" + token;
   request.cookie('openjub_session=' + token);
 
   request({
@@ -173,16 +202,26 @@ exports.importUsers = function(req, res) {
     params: {'openjub_session' : token},
     headers: {'Cookie' : 'openjub_session=' + token}
   }, function(err, response, body) {
-    if(err) {
+
+    var users;
+
+    if(err || !response.body) {
       return res.json(500, err);
     }
     else {
+      users = JSON.parse(response.body).data;
+      if(!users) {
+        return res.json(500, "OpenJUB error");
+      }
+
       res.json(200, { status: 'success' });
     }
 
-    var users = JSON.parse(response.body).data;
-
     users.forEach(function(item) {
+      var cur = (new Date()).getFullYear() - 2000;
+      if(item.year <= cur)
+        return;
+
       utils.AddOpenJubUser(item, null, function() {});
     });
   });
@@ -197,29 +236,34 @@ exports.forcePhase = function(req, res) {
     if(err || !data) {
       return res.json(500, err);
     }
-//    utils.round_force = phaseId;
-    data.forEach(function(item) {
-      var status = (item.id === phaseId);
-      if(item.isCurrent && !status) {
-        utils.generateResults(item.id, true, function() {
+
+    settings.isDebug = true;
+    settings.save(function() {
+
+      data.forEach(function(item) {
+        var status = (item.id === phaseId);
+        if(item.isCurrent && !status) {
+
+          utils.generateResults(item.id, true, function() {
+            item.isCurrent = status;
+            item.save();
+          });
+        } else {
           item.isCurrent = status;
           item.save();
-        });
-      } else {
-        item.isCurrent = status;
-        item.save();
-      }
+        }
+      });
     });
-
     return res.json(200, {status: "Success", isDebug: true});
   });
 }
 
 exports.cancelForce = function(req, res) {
-
-  utils.updatePhases();
-
-  return res.json(200, {status: "Success", isDebug: false});
+  settings.isDebug = false;
+  settings.save(function() {
+    utils.updatePhases();
+    return res.json(200, {status: "Success", isDebug: false});
+  });
 }
 
 exports.endAllocation = function(req, res) {
@@ -231,12 +275,13 @@ exports.endAllocation = function(req, res) {
     if(!phase) {
       return res.json(200, {});
     }
-
-    phase.isCurrent = false;
-    phase.save();
     
     utils.generateResults(phase.id, true, function() {
-      return res.json(200, {});
+      settings.isDone = true;
+      phase.isCurrent = false;
+      phase.save(function() {
+        return res.json(200, {});
+      });
     });
   });
 }

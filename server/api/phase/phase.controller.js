@@ -11,54 +11,69 @@ var utils = require('./../../utils');
 exports.currentPhase = function(req, res) {
 
   Phase.findOne({isCurrent: true}).exec(function(err, data) {
-    if(err || !data) {
+    if(err) {
       return res.json(500, err);
     }
 
-    //console.log("AAAA");
-
-    utils.isEligible(req.cookies.token, data, function(new_data) {
-      if(new_data.isEligible) {
-        return res.json(200, new_data);
+    Admin.findOne({}).exec(function(err, settings) {
+      if(err || !settings) {
+        return res.json(500, err);
       }
 
-      var finished = false;
-      //console.log(new_data);
-      var count = 0;
-      Phase.find({}).exec(function(err, phases) {
-        var check = function(phases, i, callback) {
-          //console.log(i);
-          utils.isEligible(req.cookies.token, phases[i], function(ph) {
-            if(ph.isEligible && ph.to >= (new Date())) {
-              return callback(phases, i, ph.from);
-            }
+      if(settings.isDone) {
+        return res.json(200, {next: 'none'})
+      }
 
-            return callback(phases, i, null);
-          });
+      //console.log("AAAA");
+
+      utils.isEligible(req.cookies.token, data, function(new_data) {
+      if(!new_data) {
+        return res.json(500, "Something went horribly wrong. Please email us.");
+      }
+
+        if(new_data.isEligible) {
+          return res.json(200, new_data);
         }
-        var callback = function(phases, i, n) {
-          if(n) {
-            new_data.next = n;
-            return res.json(200, new_data);
-          } else {
-            if(i === phases.length - 1) {
-              var tmp = JSON.parse(JSON.stringify(new_data)); // The database will try to convert the next field to a date if this line isn't here
-              User.findOne({token: req.cookies.token}).exec(function(err, user) {
-                if(user.phaseId && user.nextRoom) {
-                  tmp.next = "none";
-                } else {
-                  tmp.next = "your earliest convenience to check again.";
-                }
 
-                return res.json(200, tmp);
-              });
-            } else {
-              check(phases, i + 1, callback);
+        var count = 0;
+        Phase.find({}).exec(function(err, phases) {
+          var check = function(phases, i, callback) {
+            //console.log(i);
+            utils.isEligible(req.cookies.token, phases[i], function(ph) {
+              if(ph.isEligible && ph.to >= (new Date())) {
+                return callback(phases, i, ph.from);
+              }
+
+              return callback(phases, i, null);
+            });
+          }
+
+          var callback = function(phases, i, n) {
+            if(n) {
+              new_data.next = n;
+              return res.json(200, new_data);
+            } 
+            else {
+              if(i === phases.length - 1) {
+                var tmp = JSON.parse(JSON.stringify(new_data)); // The database will try to convert the next field to a date if this line isn't here
+                User.findOne({token: req.cookies.token}).exec(function(err, user) {
+                  if(user.phaseId && user.nextRoom) {
+                    tmp.next = "none";
+                  } else {
+                    tmp.next = "your earliest convenience to check again.";
+                  }
+
+                  return res.json(200, tmp);
+                });
+              } 
+              else {
+                check(phases, i + 1, callback);
+              }
             }
           }
-        }
 
-        return check(phases, 0, callback);
+          return check(phases, 0, callback);
+        });
       });
     });
   });
