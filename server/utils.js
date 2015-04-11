@@ -146,10 +146,10 @@ exports.updatePhases = function() {
             });
 					}
           else {
-            //console.log("Boop");
+            console.log("Boop");
             exports.phaseResult(item, function(results) {
-              item.results = results;
-              item.save();
+              //item.results = results;
+              //item.save();
             });
           }
 				});
