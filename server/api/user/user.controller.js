@@ -150,7 +150,9 @@ exports.confirm_roommate = function(req, res) {
                 var people = _.union(fromUser.roommates, toUser.roommates);
                 var peopleNames = _.pluck(people, 'username');
 
-                fromUser.roommates = people;
+                fromUser.roommates = _.filter(people, function(p) {
+                  return p.username !== fromUser.username;
+                });
                 fromUser.save(function() {
                   User.find({username: {$in: peopleNames}}).exec(function(err, all) {
                     if(err || !all) {
@@ -162,7 +164,9 @@ exports.confirm_roommate = function(req, res) {
                         continue;
                       }
 
-                      all[i].roommates = people;
+                      all[i].roommates = _.filter(people, function(p) {
+                        return p.username !== all[i].username;
+                      });
                       all[i].save();
                     }
 
