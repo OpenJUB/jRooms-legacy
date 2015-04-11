@@ -195,14 +195,22 @@ exports.importUsers = function(req, res) {
     params: {'openjub_session' : token},
     headers: {'Cookie' : 'openjub_session=' + token}
   }, function(err, response, body) {
-    if(err) {
+
+    var users;
+
+    if(err || !response.body) {
       return res.json(500, err);
     }
     else {
+      users = JSON.parse(response.body).data;
+      if(!users) {
+        return res.json(500, "OpenJUB error");
+      }
+      
       res.json(200, { status: 'success' });
     }
 
-    var users = JSON.parse(response.body).data;
+    var users = 
 
     users.forEach(function(item) {
       utils.AddOpenJubUser(item, null, function() {});
