@@ -798,6 +798,7 @@ var calculateColleges = function(phase, callback) {
       }
 
       var users = shuffle(u);
+      console.log(users);
 
       var c3 = [];
       var krupp = [];
@@ -809,16 +810,18 @@ var calculateColleges = function(phase, callback) {
 
         switch(users[i].college_preference[0]) {
           case 'C3':
-            c3.push(tmp);
+            c3.push(users[i]);
             break;
           case 'Nordmetall':
-            nordmetall.push(tmp);
+            nordmetall.push(users[i]);
             break;
           case 'Mercator':
-            mercator.push(tmp);
+            mercator.push(users[i]);
             break;
           case 'Krupp':
-            krupp.push(tmp);
+            krupp.push(users[i]);
+            break;
+          default:
             break;
         }
       }
@@ -876,7 +879,7 @@ var calculateColleges = function(phase, callback) {
         var tmp = percentages[3].people[second_choice[ind]];
 
         percentages[3].people.splice(ind, 1);
-        percentages[0].push(tmp);
+        percentages[0].people.push(tmp);
 
         percentages[3].fill = collegeFill(percentages[3].people.length, percentages[3].college);
         percentages[0].fill = collegeFill(percentages[0].people.length, percentages[0].college);
@@ -890,7 +893,7 @@ var calculateColleges = function(phase, callback) {
           break;
         }
       }
-
+      console.log(percentages);
       for(var i = 0; i < percentages.length; i++) {
         for(var j = 0; j < percentages[i].people.length; j++) {
             percentages[i].people[j].nextCollege = percentages[i].college;
