@@ -78,9 +78,10 @@ exports.SetPhases = function(phases, callback) {
 				filters: item.filters,
 				results: item.results
 			});
-
-      tmp.from.setHours(0, 15);
-      tmp.to.setHours(0, 15);
+      if(item) {
+        tmp.from.setHours(0, 15);
+        tmp.to.setHours(0, 15);
+      }
 
 			if(id < 0) {
 				tmp.isCurrent = (item.from <= (new Date()) && item.to >= (new Date()));
