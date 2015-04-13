@@ -13,7 +13,9 @@
   <p class="text-danger">This section is made mostly for testing the system setup, please, don't use this during the actual allocation as this might be a little bit risky.</p>
   <p>When debug mode is active, the following changes will occur:
     <ul>
-      <li>From and to dates can't be set for the phases. Instead, they can be switched manually on this page.
+      <li>From and to dates can't be set for the phases. Instead, they can be switched manually on this page.</li>
+      <li>Terminating a phase this way will calculate its results immediately</li>
+      <li>Re-enabling the phase that was already completed can lead to bizarre behaviour</li>
     </ul>
   </p>
   <br/>
@@ -236,7 +238,7 @@
   <p>Modify list of rooms, which are excluded from the room allocation process. Please, enter room numbers separated by commas.</p>
 
   <div class="form-group">
-    <textarea class="form-control"rows="4" placeholder="KC302,MA108,CC326,NB220" ng-model="settings.disabledRooms"></textarea>
+    <textarea class="form-control"rows="4" placeholder="KC-302,MA-108,CC-326,NB-220" ng-model="settings.disabledRooms"></textarea>
   </div>
 
   <a class="btn btn-default btn-info"ng-click="updateSettings();">Save</a>
@@ -264,7 +266,7 @@
   <a class="btn btn-default btn-info"ng-click="updateSettings();">Save</a>
 </div>
 
-<div class="container well well-lg">
+<div class="container well well-lg hidden">
   <h3>Email options</h3>
   <p>Don't spam the community too much!</p>
   <div class="form-group">
