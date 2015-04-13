@@ -130,12 +130,12 @@ exports.updatePhases = function() {
 				data.forEach(function(item) {
           //console.log("OMG");
           cur = Math.max(cur, item.to >= (new Date()));
-          console.log(cur);
-          console.log(item.to);
-          console.log(new Date());
+          //console.log(cur);
+          //console.log(item.to);
+          //console.log(new Date());
           
 					item.isCurrent = (item.from <= (new Date()) && item.to >= (new Date()));
-          console.log(item);
+          //console.log(item);
 					if(phase && item.isCurrent && item.id !== phase.id) {
 
 						phase.isCurrent = false;
