@@ -98,7 +98,7 @@ exports.SetPhases = function(phases, callback) {
 				filters: item.filters,
 				results: item.results
 			});
-      if(item) {
+      if(item.from && item.to) {
         tmp.from.setHours(0, 15);
         tmp.to.setHours(0, 15);
       }
@@ -348,7 +348,7 @@ exports.isEligible = function(token, round, callback) {
       }
 
       if(round.filters.enableFilterWhitelist) {
-        var whitelist = settings.whitelistPeople.split(',');
+        var whitelist = settings.whitelist.split(',');
         status = Math.min((whitelist.indexOf(user.username) >= 0), status);
       }
 

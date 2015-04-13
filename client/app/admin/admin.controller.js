@@ -96,6 +96,9 @@ angular.module('jRoomsApp')
     };
 
   	$scope.addPhase = function() {
+      if(!$scope.settings.phases) {
+        $scope.settings.phases = [];
+      }
   		$scope.settings.phases.push({
   			id: $scope.nextPhaseId,
   			name: 'New phase',

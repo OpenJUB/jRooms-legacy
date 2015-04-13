@@ -61,8 +61,8 @@ module.exports = function(app) {
             return res.json(500, "Database failure");
           }
           console.log(num_affected);
-
-          if(num_affected === 0 && config.admins.indexOf(username) > -1) {
+          
+          if(num_affected === 0 && config.admins.indexOf(username) >= 0) {
             console.log("AA");
             utils.AddOpenJubUser(JSON.parse(response.body), token, function(err, user) {
               console.log(user);
@@ -79,9 +79,27 @@ module.exports = function(app) {
                 return next();
               return res.json(403, "Access denied");
             } else {
+
               console.log("User route");
               return next();
             }
+          } else{
+            var whitelist = [];
+            if(settings.whitelistUsers) {
+              whitelist = settings.whitelistUsers.split(',');
+            }
+
+            if(whitelist.indexOf(username) >= 0) {
+              return utils.AddOpenJubUser(JSON.parse(response.body), token, function(err, user) {
+                if(err || !user) {
+                  return res.json(500, err);
+                }
+
+                return next();
+              });
+            }
+
+            return res.json(400, "You are not part of the allocation system");
           }
         });
       });
