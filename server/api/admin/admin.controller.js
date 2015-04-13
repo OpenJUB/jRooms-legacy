@@ -110,23 +110,14 @@ exports.getUser = function(req, res) {
     }
 
     if(!data) {
-      utils.AddUser(req.query.username, req.cookies.token, function(err, data) {
-        if(err || !data) {
-          return res.json(500, err);
-        }
-        if (data.token) delete data.token;
-        if (data.__v) delete data.__v;
-        if (data._id) delete data._id;
-
-        return res.json(200, data);
-      });
-    } else {
-      if (data.token) delete data.token;
-      if (data.__v) delete data.__v;
-      if (data._id) delete data._id;
-
-      return res.json(200, data);
+      return res.json(404, "User does not exist in the database");
     }
+
+    if (data.token) delete data.token;
+    if (data.__v) delete data.__v;
+    if (data._id) delete data._id;
+
+    return res.json(200, data);
   });
 }
 
@@ -148,8 +139,12 @@ exports.setUser = function(req, res) {
   var username = req.body.username;
 
   User.findOne({username: username}).exec(function(err, user) {
-    if(err || !user) {
+    if(err) {
       return res.json(500, err);
+    }
+
+    if(!user) {
+      return res.json(404, "User does not exist in the database");
     }
 
     if(user.nextRoom !== newUser.nextRoom) {
