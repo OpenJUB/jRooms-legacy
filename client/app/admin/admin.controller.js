@@ -18,6 +18,7 @@ angular.module('jRoomsApp')
   		tallPeople: '',
   		disabledRooms: '',
       disabledUsers: '',
+      whitelistUsers: '',
       maxRooms: 7,
   		email: {
   			preference1: false,
@@ -108,9 +109,12 @@ angular.module('jRoomsApp')
           enableFilterPoints: false,
           enableFilterRooms: false,
           enableFilterQuiet: false,
+          enableFilterWhitelist: false,
 
           pointsMin: '',
           pointsMax: '',
+
+          whitelist: '',
 
           colleges: {
             krupp: false,

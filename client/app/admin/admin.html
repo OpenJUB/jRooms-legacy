@@ -197,6 +197,18 @@
             </div>
           </div>
         </div>
+
+        <div class="form-group">
+           <div class="checkbox">
+            <label>
+            <input type="checkbox" ng-disabled="item.isCollegePhase" ng-model="item.filters.enableWhitelist">
+              Only certain users
+            </label>
+          </div>
+          <div ng-show="item.filters.enableWhitelist" class="col-xs-6">
+            <textarea class="form-control"rows="2" placeholder="mkohlhase,apopa" ng-model="item.filters.whitelist"></textarea>
+          </div>
+        </div>
         </div>
       </div>
     </accordion-group>
@@ -236,6 +248,17 @@
 
   <div class="form-group">
     <textarea class="form-control"rows="4" placeholder="mkohlhase,apopa" ng-model="settings.disabledUsers"></textarea>
+  </div>
+
+  <a class="btn btn-default btn-info"ng-click="updateSettings();">Save</a>
+</div>
+
+<div class="container well well-lg">
+  <h3>Whitelist users</h3>
+  <p>Modify list of users, which are included in room allocation process, but would be blocked otherwise (because they are 3rd or Foundation years). Please, enter CampusNet usernames separated by commas.</p>
+
+  <div class="form-group">
+    <textarea class="form-control"rows="4" placeholder="mkohlhase,apopa" ng-model="settings.whitelistUsers"></textarea>
   </div>
 
   <a class="btn btn-default btn-info"ng-click="updateSettings();">Save</a>
