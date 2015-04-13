@@ -30,7 +30,8 @@ Admin.findOne({}).exec(function(err, data) {
         preference4: false
       },
       isDone: false,
-      phases: []
+      phases: [],
+      whitelistUsers: false
     });
 
     settings.save();
@@ -58,6 +59,7 @@ exports.currentSettings = function(req, res) {
         phases: tmp,
         isDebug: settings.isDebug,
         isDone: settings.isDone,
+        whitelistUsers: settings.whitelistUsers,
         collegeGame: global.collegeGame
       };
 

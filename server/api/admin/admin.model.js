@@ -11,7 +11,8 @@ var AdminSchema = new Schema({
 	maxRooms: Number,
 	email: Object,
 	isDebug: Boolean,
-	isDone: Boolean
+	isDone: Boolean,
+	whitelistUsers: String
 });
 
 module.exports = mongoose.model('Admin', AdminSchema);
