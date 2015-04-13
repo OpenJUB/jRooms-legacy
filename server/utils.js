@@ -8,6 +8,26 @@ var Room = require('./api/room/room.model');
 var config = require('./config/environment');
 var allRooms = require('./config/rooms/rooms');
 var email = require('emailjs');
+var request = require('request');
+
+
+exports.AddUser = function(username, token, callback) {
+  var url = config.openJUB.url + "user/name/" + username + "?token=" + token;
+  request.cookie('openjub_session=' + token);
+
+  request({
+    method: 'GET',
+    uri: url,
+    params: {'openjub_session' : token},
+    headers: {'Cookie' : 'openjub_session=' + token}
+  }, function(err, response, body) {
+    var res = JSON.parse(response.body);
+    if(!res)
+      return;
+
+    exports.AddOpenJubUser(res, null, callback);
+  });
+}
 
 exports.AddOpenJubUser = function(item, token, callback) {
 	var user = new User({
@@ -132,7 +152,7 @@ exports.updatePhases = function() {
           cur = Math.max(cur, item.to >= (new Date()));
           //console.log(cur);
           //console.log(item.to);
-          //console.log(new Date());
+          console.log(new Date());
           
 					item.isCurrent = (item.from <= (new Date()) && item.to >= (new Date()));
           //console.log(item);
