@@ -31,7 +31,7 @@ Admin.findOne({}).exec(function(err, data) {
       },
       isDone: false,
       phases: [],
-      whitelistUsers: false
+      whitelistUsers: ''
     });
 
     settings.save();
@@ -75,19 +75,55 @@ exports.updateSettings = function(req, res) {
   if (req.body.settings) {
     Admin.find({}).remove().exec();
 
+    var tmp = JSON.parse(JSON.stringify(settings));
+
     settings = new Admin(req.body.settings);
     settings.isDone = false;
-    settings.save(function() {
-      utils.SetPhases(req.body.settings.phases, function() {
-        utils.updatePhases();
+
+    var newWhitelist = [];
+    var oldWhitelist = [];
+
+    if(settings.whitelistUsers && tmp.whitelistUsers) {
+      newWhitelist = settings.whitelistUsers.split(',');
+      oldWhitelist = tmp.whitelistUsers.split(',');
+    }
+    
+
+    var removedWhitelistUsers = _.difference(oldWhitelist, newWhitelist);
+    console.log("REMOVED: ", removedWhitelistUsers);
+
+    if(removedWhitelistUsers.length > 0) {
+      User.find({username: {$in: removedWhitelistUsers}}).exec(function(err, users) {
+        if(err || !users) {
+          return res.json(500, err);
+        }
+
+        for(var i = 0; i < users.length; ++i) {
+          if(users[i].year >= (new Date()).getFullYear() - 2000) {
+            continue;
+          }
+
+          users[i].remove();
+          users[i].save();
+        }
+
+        settings.save(function() {
+          utils.SetPhases(req.body.settings.phases, function() {
+            utils.updatePhases();
+            return res.json(200, {status: 'success'});
+          });
+        });
+      });
+    } else {
+      settings.save(function() {
         return res.json(200, { status : 'success' });
       });
-    });
+    }
 
   } else {
     //console.log("???");
       return res.json(400, "Please provide valid settings");
-  }
+  } 
 }
 
 /**
