@@ -25,7 +25,7 @@ var all = {
   seedDB: false,
 
   // Admins for the room allocation
-  admins: [ 'slal','dcucleschi','fstankovsk','twiesing','mfieraru','lkuboschek' ],
+  admins: [ 'slal','dcucleschi','fstankovsk','twiesing','mfieraru','lkuboschek', 'vungureanu'],
 
   // Number of students that can be allocated to the college
   collegeCapacity: {
