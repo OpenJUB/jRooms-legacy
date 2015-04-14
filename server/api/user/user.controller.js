@@ -330,6 +330,9 @@ exports.updateRooms = function(req, res) {
 
     Phase.findOne({isCurrent: true}).exec(function(err, p) {
       utils.isEligible(req.cookies.token, p, function(phase) {
+        if(!phase) {
+          return res.json(500, "No active phase");
+        }
         if(!phase.isEligible || phase.isCollegePhase) {
           return res.json(400, "Not eligible for the current round");
         }

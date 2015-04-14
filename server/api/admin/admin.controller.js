@@ -116,7 +116,10 @@ exports.updateSettings = function(req, res) {
       });
     } else {
       settings.save(function() {
-        return res.json(200, { status : 'success' });
+        utils.SetPhases(req.body.settings.phases, function() {
+          utils.updatePhases();
+          return res.json(200, {status: 'success'});
+        });
       });
     }
 

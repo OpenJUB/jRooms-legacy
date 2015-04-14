@@ -67,7 +67,7 @@ exports.AddOpenJubUser = function(item, token, callback) {
 }
 
 exports.SetPhases = function(phases, callback) {
-	//console.log(phases);
+	console.log(phases);
 	if(!phases)
 		return callback();
 
@@ -99,17 +99,11 @@ exports.SetPhases = function(phases, callback) {
 				results: item.results
 			});
       if(item.from && item.to) {
-        tmp.from.setHours(0, 15);
-        tmp.to.setHours(0, 15);
+        tmp.from.setHours(2, 15);
+        tmp.to.setHours(2, 15);
       }
 
-			if(id < 0) {
-				tmp.isCurrent = (item.from <= (new Date()) && item.to >= (new Date()));
-			} else if(tmp.id === id) {
-				tmp.isCurrent = true;
-			} else {
-				tmp.isCurrent = false;
-			}
+			tmp.isCurrent = (item.from <= (new Date()) && item.to >= (new Date()));
 
 			tmp.save();
 		}
@@ -167,9 +161,11 @@ exports.updatePhases = function() {
 					}
           else {
             console.log("Boop");
-            exports.phaseResult(item, function(results) {
-              //item.results = results;
-              //item.save();
+            item.save(function() {
+              exports.phaseResult(item, function(results) {
+                //item.results = results;
+                //item.save();
+              });
             });
           }
 				});
@@ -829,7 +825,9 @@ var calculateColleges = function(phase, callback) {
         return;
       }
 
-      var users = shuffle(u);
+      var users = _.shuffle(_.filter(u, function(item) {
+        return item.year > (new Date()).getFullYear() - 2000;
+      }));
       console.log(users);
 
       var c3 = [];
