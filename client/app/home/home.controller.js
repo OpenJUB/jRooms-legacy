@@ -11,6 +11,7 @@ angular.module('jRoomsApp')
     $scope.maxRooms = [];
     $scope.futureRoom = {};
     $scope.roomToSwap = null;
+    $scope.map = null;
 
     $scope.currentPhase = {};
     $scope.showNotEligible = false;
@@ -63,6 +64,21 @@ angular.module('jRoomsApp')
             $scope.maxRooms = _.range(0, phase.maxRooms);
 
             $scope.showRoomSelection = true;
+            Communicator.getCurrentMap($scope.user.nextCollege, function(err, data) {
+              if (!err && data) {
+                $scope.map = data;
+                var canvas = document.getElementById('mapCanvas');
+                var context = canvas.getContext('2d');
+
+                context.beginPath();
+                context.rect(0, 0, 200, 100);
+                context.fillStyle = 'yellow';
+                context.fill();
+              }
+              else {
+                $scope.showError = true;
+              }
+            });
           }
         }
       }
@@ -279,6 +295,7 @@ angular.module('jRoomsApp')
         }
       });
     }
+
 
   });
 

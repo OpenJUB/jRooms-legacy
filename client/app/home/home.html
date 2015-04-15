@@ -73,9 +73,9 @@
 
         <div ng-show="user.nextCollege && !showDone">
           <div class="btn" ng-click="collegeButton(user.nextCollege);"
-            ng-class="{ 'btn-danger' : user.nextCollege === 'Krupp', 
-                        'btn-primary' : user.nextCollege === 'Mercator', 
-                        'btn-success' : user.nextCollege === 'C3', 
+            ng-class="{ 'btn-danger' : user.nextCollege === 'Krupp',
+                        'btn-primary' : user.nextCollege === 'Mercator',
+                        'btn-success' : user.nextCollege === 'C3',
                         'btn-warning' : user.nextCollege === 'Nordmetall' }">
             Will be in {{ user.nextCollege }} next year!
           </div>
@@ -163,9 +163,9 @@
           <br/><br/>
 
           <div class="container btn btn-lg dropdown-toggle" dropdown-toggle ng-click="collegeButton(user.nextCollege);"
-            ng-class="{ 'btn-danger' : user.nextCollege === 'Krupp', 
-                        'btn-primary' : user.nextCollege === 'Mercator', 
-                        'btn-success' : user.nextCollege === 'C3', 
+            ng-class="{ 'btn-danger' : user.nextCollege === 'Krupp',
+                        'btn-primary' : user.nextCollege === 'Mercator',
+                        'btn-success' : user.nextCollege === 'C3',
                         'btn-warning' : user.nextCollege === 'Nordmetall' }">
             Living in {{ user.nextCollege }}, {{ user.nextRoom }}
           </div>
@@ -239,15 +239,20 @@
         <p>Please, select up to {{ maxRooms.length }} rooms, from most to least favorable.<br/>
         Here will be an inspirational snippet about how does the housing system works and points and blablabla.</p>
         <br/>
-
-        <div class="form-group container" ng-repeat="index in maxRooms">
-          <div class="col-md-4">
-            <input type="text" class="form-control" placeholder="Room #" ng-model="rooms[index]" required></input>
+        <div class="modal-body row">
+          <div class="col-md-6">
+            <div class="form-group container" ng-repeat="index in maxRooms">
+              <div class="col-md-4">
+                <input type="text" class="form-control" placeholder="Room #" ng-model="rooms[index]" required></input>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <canvas id="mapCanvas"/>
           </div>
         </div>
-
         <br/>
-        <a class="btn btn-default btn-info" ng-click="updateRooms();">Submit!</a>     
+        <a class="btn btn-default btn-info" ng-click="updateRooms();">Submit!</a>
       </div>
     </div>
   </div>
