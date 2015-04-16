@@ -25,6 +25,21 @@ exports.getCollegeMap = function(req, res) {
             return res.json(500, err);
         }
 
-        return res.json(200, data);
+        Admin.findOne({}).exec(function(err, settings) {
+            if(err) {
+              return res.json(500, err);
+            }
+
+            if(!settings) {
+              settings = {};
+              settings.disabledRooms = [];
+            }
+
+            for(var i = 0; i < data.length; ++i) {
+              data[i].isDisabled = settings.disabledRooms.indexOf(allRooms[i].blocks[j].floors[fl].rooms[ro].contains[room]) >= 0;
+            }
+            
+            return res.json(200, data);
+        });
     });
 }
