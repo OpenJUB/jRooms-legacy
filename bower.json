@@ -13,7 +13,8 @@
     "font-awesome": ">=4.1.0",
     "lodash": "~2.4.1",
     "angular-ui-router": "~0.2.10",
-    "angular-cookie": "~4.0.6"
+    "angular-cookie": "~4.0.6",
+    "fabric": "~1.5.0"
   },
   "devDependencies": {
     "angular-mocks": ">=1.2.*",
