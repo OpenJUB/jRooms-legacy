@@ -148,7 +148,7 @@ exports.updatePhases = function() {
           //console.log(cur);
           //console.log(item.to);
           console.log(new Date());
-          
+
 					item.isCurrent = (item.from <= (new Date()) && item.to >= (new Date()));
           //console.log(item);
 					if(phase && item.isCurrent && item.id !== phase.id) {
@@ -281,7 +281,7 @@ var getRegion = function(country) {
 	return null;
 }
 
-exports.onlyUnique = function (value, index, self) { 
+exports.onlyUnique = function (value, index, self) {
     return self.indexOf(value) === index;
 }
 
@@ -478,7 +478,7 @@ exports.populateRoomInfo = function() {
                 name : allRooms[i].blocks[j].floors[fl].rooms[ro].contains[room],
                 isAvailable : true,
                 applicants : 0,
-                isDisabled = settings.disabledRooms.indexOf(allRooms[i].blocks[j].floors[fl].rooms[ro].contains[room]) >= 0
+                isDisabled : settings.disabledRooms.indexOf(allRooms[i].blocks[j].floors[fl].rooms[ro].contains[room]) >= 0
               });
 
               result.save();
@@ -567,18 +567,18 @@ var calculatePhase = function(phase, callback) {
 		// dcucleschi: Second
 		// abarbarosi: Third
     */
-    
+
     return HungarianOne(matrix, rooms, function(data) {
       var users = [];
       for(var prop in data) {
 
-        if(/^(\-|\+)?([0-9]+|Infinity)$/.test(prop)) 
+        if(/^(\-|\+)?([0-9]+|Infinity)$/.test(prop))
           continue;
         users.push(prop);
 
       }
       console.log(data);
-     
+
      var newCallback = function(data, nUsers, i) {
 
         if(!i && i !== 0) {
@@ -588,7 +588,7 @@ var calculatePhase = function(phase, callback) {
         if(i >= nUsers.length - 1) {
           console.log("WooHoo");
           return exports.phaseResult(phase, callback);
-        } 
+        }
         else {
           return saveUser(data, nUsers, i + 1, newCallback);
         }
@@ -705,7 +705,7 @@ var HungarianAssign = function(matrix, rooms, callback) {
           //console.log("Found zero at " + user + " " + i);
           ++count;
           index = i;
-        }      
+        }
       }
 
       if(count === 1 && index !== -1) {
@@ -725,7 +725,7 @@ var HungarianAssign = function(matrix, rooms, callback) {
         if(matrix[user][i] === 0 && !assigned.hasOwnProperty(user)) {
           ++count;
           username = user;
-        }      
+        }
       }
 
       if(count === 1 && username !== "") {
@@ -738,13 +738,13 @@ var HungarianAssign = function(matrix, rooms, callback) {
       var unassigned = null;
       for(var user in matrix) {// Check if all our users are allocated. If so, we're done. If not, we can't continue so we return an empty array.
         /*if(user.lastIndexOf("BLANK", 0) !== 0) {
-          
+
           continue;
         }*/
         //console.log("I'm in your loop");
         console.log(user);
         if(!assigned.hasOwnProperty(user)) {
-          
+
           var zeroes = [];
           for(var i = 0; i < matrixSize; ++i) {
             if(matrix[user][i] === 0 && !assigned.hasOwnProperty(i))
@@ -896,28 +896,28 @@ var calculateColleges = function(phase, callback) {
       var percentages = [];
 
       percentages.push({
-        people: c3, 
-        college: 'C3', 
+        people: c3,
+        college: 'C3',
         fill: collegeFill(c3.length, 'C3')
-      }); 
+      });
 
       percentages.push({
-        people: mercator, 
-        college: 'Mercator', 
+        people: mercator,
+        college: 'Mercator',
         fill: collegeFill(mercator.length, 'Mercator')
-      }); 
+      });
 
       percentages.push({
-        people: krupp, 
-        college: 'Krupp', 
+        people: krupp,
+        college: 'Krupp',
         fill: collegeFill(krupp.length, 'Krupp')
-      }); 
+      });
 
       percentages.push({
-        people: nordmetall, 
-        college: 'Nordmetall', 
+        people: nordmetall,
+        college: 'Nordmetall',
         fill: collegeFill(nordmetall.length, 'Nordmetall')
-      }); 
+      });
 
       percentages.sort(function(a, b) {
         return a.fill - b.fill;
@@ -1004,20 +1004,20 @@ var collegeFill = function(number, name) {
 /*var sendEmails = function() {
 
 	var server  = email.server.connect({
-	   user:    config.email.user, 
-	   password: config.email.pass, 
+	   user:    config.email.user,
+	   password: config.email.pass,
 	   host:    config.email.host,
-	   port: 		config.email.port, 
+	   port: 		config.email.port,
 	   tls: {ciphers: "SSLv3"}
 	});
 
 	var message = {
-	   text:    "i hope this works", 
-	   from:    "Housing Allocation <" + config.email.address + ">", 
+	   text:    "i hope this works",
+	   from:    "Housing Allocation <" + config.email.address + ">",
 	   to:      "someone <fi.stankovski@gmail.com>",
 //	   cc:      "else <else@your-email.com>",
 	   subject: "[[HOUSING]]: Welcome to our housing system",
-	   attachment: 
+	   attachment:
 	   [
 	      {data:"<html>i <i>hope</i> this works!</html>", alternative:true},
 	      // {path:"path/to/file.zip", type:"application/zip", name:"renamed.zip"}
