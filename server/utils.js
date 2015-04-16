@@ -454,27 +454,40 @@ exports.phaseResult = function(phase, callback) {
 exports.populateRoomInfo = function() {
 	Room.remove({}).exec();
 
-	for(var i = 0; i < allRooms.length; ++i) {
-		for(var j = 0; j < allRooms[i].blocks.length; ++j) {
-			for(var fl = 0; fl < allRooms[i].blocks[j].floors.length; ++fl) {
-				for(var ro = 0; ro < allRooms[i].blocks[j].floors[fl].rooms.length; ++ro) {
-					for(var room = 0; room < allRooms[i].blocks[j].floors[fl].rooms[ro].contains.length; ++room) {
+  Admin.findOne({}).exec(function(err, settings) {
+    if(err) {
+      return;
+    }
 
-						var result = new Room({
-							college : allRooms[i].name,
-							block : allRooms[i].blocks[j].name,
-							floor : allRooms[i].blocks[j].floors[fl].number,
-							type : allRooms[i].blocks[j].floors[fl].rooms[ro].type,
-							rooms : allRooms[i].blocks[j].floors[fl].rooms[ro].contains,
-							name : allRooms[i].blocks[j].floors[fl].rooms[ro].contains[room]
-						});
+    if(!settings) {
+      settings = {};
+      settings.disabledRooms = [];
+    }
+    for(var i = 0; i < allRooms.length; ++i) {
+      for(var j = 0; j < allRooms[i].blocks.length; ++j) {
+        for(var fl = 0; fl < allRooms[i].blocks[j].floors.length; ++fl) {
+          for(var ro = 0; ro < allRooms[i].blocks[j].floors[fl].rooms.length; ++ro) {
+            for(var room = 0; room < allRooms[i].blocks[j].floors[fl].rooms[ro].contains.length; ++room) {
 
-						result.save();
-					}
-				}
-			}
-		}
-	}
+              var result = new Room({
+                college : allRooms[i].name,
+                block : allRooms[i].blocks[j].name,
+                floor : allRooms[i].blocks[j].floors[fl].number,
+                type : allRooms[i].blocks[j].floors[fl].rooms[ro].type,
+                rooms : allRooms[i].blocks[j].floors[fl].rooms[ro].contains,
+                name : allRooms[i].blocks[j].floors[fl].rooms[ro].contains[room],
+                isAvailable : true,
+                applicants : 0,
+                isDisabled = settings.disabledRooms.indexOf(allRooms[i].blocks[j].floors[fl].rooms[ro].contains[room]) >= 0
+              });
+
+              result.save();
+            }
+          }
+        }
+      }
+    }
+  });
 }
 
 exports.generateResults = function(phaseId, save, callback) {
