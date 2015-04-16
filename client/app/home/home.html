@@ -239,7 +239,7 @@
         <p>Please, select up to {{ maxRooms.length }} rooms, from most to least favorable.<br/>
         Here will be an inspirational snippet about how does the housing system works and points and blablabla.</p>
         <br/>
-        <div class="container">
+        <div class="row">
          <!--  <div class="col-md-6">
             <div class="form-group container" ng-repeat="index in maxRooms">
               <div class="col-md-4">
@@ -248,7 +248,7 @@
             </div>
           </div> -->
 
-          <canvas id="mapCanvas" style="width: 67%; height: 100%; background-color: white;"/>
+          <canvas id="mapCanvas" class="container col-xs-12" style="height: 500px; background-color: white;"/>
         </div>
         <br/>
         <a class="btn btn-default btn-info" ng-click="updateRooms();">Submit!</a>
