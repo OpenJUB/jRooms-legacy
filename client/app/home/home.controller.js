@@ -65,10 +65,6 @@ angular.module('jRoomsApp')
                                 var canvas = document.getElementById('mapCanvas');
                                 var context = canvas.getContext('2d');
 
-                                context.beginPath();
-                                context.rect(0, 0, 200, 100);
-                                context.fillStyle = 'yellow';
-                                context.fill();
                             } else {
                                 $scope.showError = true;
                             }
@@ -77,6 +73,7 @@ angular.module('jRoomsApp')
                 }
             } else {
                 $scope.showError = true;
+                $scope.showRoomSelection = false;
             }
         });
 
