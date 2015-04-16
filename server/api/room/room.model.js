@@ -11,7 +11,7 @@ var RoomSchema = new Schema({
   type: String,
   rooms: Array,
   isAvailable: Boolean,
-  applicants: Number
+  applicants: Number,
   isDisabled: Boolean
 });
 
