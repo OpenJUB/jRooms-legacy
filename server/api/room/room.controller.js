@@ -2,7 +2,6 @@
 
 var _ = require('lodash');
 var Room = require('./room.model');
-var map = require('../../config/rooms/rooms.js');
 
 exports.getRoom = function(req, res) {
     var roomName = req.query.room;
@@ -19,25 +18,13 @@ exports.getRoom = function(req, res) {
 
 exports.getCollegeMap = function(req, res) {
     var college = req.query.college;
-    var retMap = map[0];
+    
 
-    if (college == "Krupp")
-        return res.json(200, retMap);
+    Room.find({college: college}).exec(function(err, data) {
+        if(err || !data) {
+            return res.json(500, err);
+        }
 
-    if (college == "Mercator") {
-        retMap = map[3];
-        return res.json(200, retMap);
-    }
-
-    if (college == "C3") {
-        retMap = map[2];
-        return res.json(200, retMap);
-    }
-
-    if (college == "Nordmetall") {
-        retMap = map[1];
-        return res.json(200, retMap);
-    }
-
-    return res.json(500, "Bad");
+        return res.json(200, data);
+    });
 }
