@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var Room = require('./room.model');
+var Admin = require('./../admin/admin.model');
 
 exports.getRoom = function(req, res) {
     var roomName = req.query.room;
@@ -18,7 +19,7 @@ exports.getRoom = function(req, res) {
 
 exports.getCollegeMap = function(req, res) {
     var college = req.query.college;
-    
+
 
     Room.find({college: college}).exec(function(err, data) {
         if(err || !data) {
@@ -36,9 +37,9 @@ exports.getCollegeMap = function(req, res) {
             }
 
             for(var i = 0; i < data.length; ++i) {
-              data[i].isDisabled = settings.disabledRooms.indexOf(allRooms[i].blocks[j].floors[fl].rooms[ro].contains[room]) >= 0;
+              data[i].isDisabled = settings.disabledRooms.indexOf(data[i].name) >= 0;
             }
-            
+
             return res.json(200, data);
         });
     });
