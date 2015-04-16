@@ -100,7 +100,7 @@ exports.SetPhases = function(phases, callback) {
 			});
       if(item.from && item.to) {
         tmp.from.setHours(2, 15);
-        tmp.to.setHours(2, 15);
+        tmp.to.setHours(1, 34);
       }
 
 			tmp.isCurrent = (item.from <= (new Date()) && item.to >= (new Date()));
@@ -141,6 +141,7 @@ exports.updatePhases = function() {
 				}
 
 				var cur = false;
+        var newActive = null;
 				data.forEach(function(item) {
           //console.log("OMG");
           cur = Math.max(cur, item.to >= (new Date()));
@@ -152,6 +153,8 @@ exports.updatePhases = function() {
           //console.log(item);
 					if(phase && item.isCurrent && item.id !== phase.id) {
 
+            newActive = item;
+
 						phase.isCurrent = false;
 						phase.save();
 
@@ -162,13 +165,36 @@ exports.updatePhases = function() {
           else {
             console.log("Boop");
             item.save(function() {
-              exports.phaseResult(item, function(results) {
-                //item.results = results;
-                //item.save();
-              });
+              if(phase && item.id === phase.id && item.isCurrent === false) {
+                exports.generateResults(phase.id, true, function() {
+                  //phase.save();
+                });
+              }
+              else {
+                exports.phaseResult(item, function(results) {
+                  //item.results = results;
+                  //item.save();
+                });
+              }
             });
           }
+          //console.log(item);
 				});
+        //console.log(newActive);
+        //console.log(phase);
+
+        /*if(newActive == null) {
+          if(phase && !phase.isCurrent) {
+            phase.isCurrent = false;
+            phase.save();
+
+            exports.generateResults(phase.id, true, function() {
+              //phase.save();
+            });
+          }
+        }*/
+
+
 
 				if(!cur && !phase) {
           //console.log("How likely is this?");
@@ -825,9 +851,7 @@ var calculateColleges = function(phase, callback) {
         return;
       }
 
-      var users = _.shuffle(_.filter(u, function(item) {
-        return item.year > (new Date()).getFullYear() - 2000;
-      }));
+      var users = _.shuffle(u);
       console.log(users);
 
       var c3 = [];
