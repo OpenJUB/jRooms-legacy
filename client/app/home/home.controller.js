@@ -128,7 +128,6 @@ angular.module('jRoomsApp')
                         nmRooms.push(element);
                     }
                 });
-                console.log(nmRooms);
                 nmRooms.sort(function(a,b) {
                     return a.name.localeCompare(b.name);
                 });
@@ -142,7 +141,6 @@ angular.module('jRoomsApp')
                 $scope.map.forEach(function(element) {
                     if (element.block == $scope.currentBlock &&
                         element.floor == $scope.currentFloor) {
-
                         // center case
                         for (var i = 0; i < element.rooms.length; ++i) {
                             if (element.rooms[i].indexOf("02") != -1) {
@@ -159,6 +157,12 @@ angular.module('jRoomsApp')
                         else
                             $scope.mapRooms.right.push(element);
                     }
+                });
+                $scope.mapRooms.right.sort(function(a, b) {
+                    return a.name.localeCompare(b.name);
+                });
+                $scope.mapRooms.left.sort(function(a, b) {
+                    return -a.name.localeCompare(b.name);
                 });
             }
         }
