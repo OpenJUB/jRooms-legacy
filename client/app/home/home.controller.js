@@ -35,7 +35,7 @@ angular.module('jRoomsApp')
             },
             Nordmetall: {
                 blocks: ['A', 'B', 'C'],
-                floors: [2, 3, 4, 5]
+                floors: [1, 2, 3, 4, 5]
             }
         };
 
@@ -133,7 +133,7 @@ angular.module('jRoomsApp')
                     return a.name.localeCompare(b.name);
                 });
                 for(var i = 0; i < nmRooms.length; ++i) {
-                    if (i < nmRooms.length / 2)
+                    if (i <= nmRooms.length / 2)
                         $scope.mapRooms.left.push(nmRooms[i]);
                     else
                         $scope.mapRooms.right.push(nmRooms[i]);
