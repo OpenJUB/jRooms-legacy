@@ -369,7 +369,7 @@ exports.isEligible = function(token, round, callback) {
       	status = Math.min(status, user.roommates.length === 1);
       }
 
-      console.log(round.filters);
+      //console.log(round.filters);
       if(round.filters.enableWhitelist) {
         var whitelist = round.filters.whitelist.split(',');
         status = Math.min((whitelist.indexOf(user.username) >= 0), status);
@@ -427,7 +427,7 @@ exports.phaseResult = function(phase, callback) {
         //console.log(results);
         phase.results = results;
         return phase.save(function() {
-          console.log(phase);
+          //console.log(phase);
           return callback(phase);
         });
       });
