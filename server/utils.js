@@ -122,15 +122,22 @@ exports.updatePhases = function() {
 			return;
 		}
 
+    console.log("HERE");
+    console.log(settings);
+
     //console.log("Not kidding");
 
 		if(settings && settings.isDebug)
 			return;
 
+    console.log("HERE2");
+
     //console.log("Not kidding");
 
 		Phase.findOne({isCurrent: true}).exec(function(err, phase) {
+      console.log("HERE3");
 			if(err) {
+        console.log(err);
 				return;
 			}
 			Phase.find({}).exec(function(err2, data) {
@@ -144,39 +151,39 @@ exports.updatePhases = function() {
         var newActive = null;
 
 
-        var done = function(phase, data, i) {
+        var done = function(pphase, data, i) {
           if(i >= data.length - 1) {
             return;
           }
 
-          return savePhase(phase, data, i+1);
+          return savePhase(pphase, data, i+1);
         }
 
-        var savePhase = function(phase, data, i) {
+        var savePhase = function(pphase, data, i) {
           console.log(new Date());
           data[i].isCurrent = (data[i].from <= (new Date()) && data[i].to >= (new Date()));
-          if(phase && data[i].id !== phase.id && data[i].isCurrent) {
+          if(pphase && data[i].id !== pphase.id && data[i].isCurrent) {
             newActive = data[i];
 
-            phase.isCurrent = false;
-            phase.save(function() {
-              exports.generateResults(phase.id, true, function() {
+            pphase.isCurrent = false;
+            pphase.save(function() {
+              exports.generateResults(pphase.id, true, function() {
                 data[i].save(function() {
-                  done(phase, data, i);
+                  done(pphase, data, i);
                 });
               });
             });
           } else {
             console.log("Boop");
             data[i].save(function() {
-              if(phase && data[i].id === phase.id && data[i].isCurrent === false) {
-                exports.generateResults(phase.id, true, function() {
-                  done(phase, data, i);
+              if(pphase && data[i].id === pphase.id && data[i].isCurrent === false) {
+                exports.generateResults(pphase.id, true, function() {
+                  done(pphase, data, i);
                 });
               }
               else {
                 exports.phaseResult(data[i], function(results) {
-                  return done(phase, data, i);
+                  return done(pphase, data, i);
                 });
               }
             });
