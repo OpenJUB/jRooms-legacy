@@ -1,3 +1,16 @@
 body, html {
 	height: 100%;
 }
+
+.btn-room {
+	min-width: 120px;
+}
+
+.label-as-badge {
+    border-radius: 1em;
+}
+
+.btn-room-mini {
+	margin-top: 5px;
+	margin-left: 5px;
+}

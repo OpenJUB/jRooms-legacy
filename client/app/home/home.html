@@ -211,19 +211,57 @@
                 <h2>Room selection phase</h2>
                 <p>Please, select up to {{ maxRooms.length }} rooms, from most to least favorable.
                     <br/> Here will be an inspirational snippet about how does the housing system works and points and blablabla.</p>
+
+                <p ng-show="user.nextCollege === 'Nordmetall'" class="text-warning"><strong>Nordmetall users: </strong>Sorry, but your college is too fucked to display adequately :( Use jMap.tk to find the exact location of the desired room.</p>
                 <br/>
-                <div class="row">
-                    <!--  <div class="col-md-6">
-            <div class="form-group container" ng-repeat="index in maxRooms">
-              <div class="col-md-4">
-                <input type="text" class="form-control" placeholder="Room #" ng-model="rooms[index]" required></input>
-              </div>
-            </div>
-          </div> -->
-                    <canvas id="mapCanvas" class="container col-xs-12" style="height: 500px; background-color: white;border:1px solid #000000;" />
+                <div class="form-inline container">
+                    <div class="form-group">
+                        <select class="form-control" ng-model="currentBlock" ng-change="filterRooms();">
+                            <option ng-repeat="block in mapConfig[user.nextCollege].blocks">{{ block }}</option>
+                        </select>
+                        <select class="form-control" ng-model="currentFloor" ng-change="filterRooms();">
+                            <option ng-repeat="floor in mapConfig[user.nextCollege].floors">{{ floor }}</option>
+                        </select>
+                    </div>
                 </div>
                 <br/>
-                <a class="btn btn-default btn-info" ng-click="updateRooms();">Submit!</a>
+                <div class="row">
+                    <div class="col-xs-4">
+                        <div class="form-group" ng-repeat="item in mapRooms.left">
+                            <div class="btn btn-room" ng-class="{'btn-default': item.isAvailable, 'disabled': item.isDisabled || !item.isAvailable }" ng-click="selectRoom(item);">
+                              <p ng-repeat="room in item.rooms" class="text-muted">{{ room }}</p>
+                             <span ng-show="item.applicants > 0" class="label label-info label-as-badge pull-right">{{ item.applicants }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-4 col-xs-offset-4">
+                        <div class="form-group" ng-repeat="item in mapRooms.right">
+                            <div class="btn btn-room"  ng-class="{'btn-default': item.isAvailable, 'disabled': item.isDisabled || !item.isAvailable }" ng-click="selectRoom(item);">
+                              <p ng-repeat="room in item.rooms" class="text-muted">{{ room }}</p>
+                              <span ng-show="item.applicants > 0" class="label label-info label-as-badge pull-right">{{ item.applicants }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-xs-4 col-xs-offset-4">
+                    <div class="form-group" ng-repeat="item in mapRooms.center">
+                            <div class="btn btn-room" ng-class="{'btn-default': item.isAvailable, 'disabled': item.isDisabled || !item.isAvailable }" ng-click="selectRoom(item);">
+                              <p ng-repeat="room in item.rooms" class="text-muted">{{ room }}</p>
+                              <span ng-show="item.applicants > 0" class="label label-info label-as-badge pull-right">{{ item.applicants }}</span>
+                            </div>
+                        </div>
+                  </div>
+                </div>
+
+                <br/>
+                <div>
+                  <div class="btn btn-sm btn-room-mini btn-warning" ng-repeat="item in rooms"><strong>{{ $index+1 }})</strong> {{ item }} <i class="fa fa-close" ng-click="removeRoom($event,item);"></i></div>
+                </div>
+
+                <br/>
+                <a class="btn btn-default btn-info " ng-click="updateRooms();">Submit!</a>
             </div>
         </div>
     </div>

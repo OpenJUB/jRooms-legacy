@@ -3,15 +3,41 @@
 angular.module('jRoomsApp')
     .controller('HomeCtrl', function($rootScope, $scope, $modal, $timeout, $location, State, Communicator) {
         var collegeClicks = 0;
+        var mapCanvas = null;
 
         $scope.user = {};
         $scope.requestUsername = '';
         $scope.colleges = ['Krupp', 'Nordmetall', 'Mercator', 'C3'];
         $scope.rooms = [];
-        $scope.maxRooms = [];
+        $scope.maxRooms = 0;
         $scope.futureRoom = {};
         $scope.roomToSwap = null;
         $scope.map = null;
+        $scope.currentBlock = 'A';
+        $scope.currentFloor = 1;
+        $scope.mapRooms = {
+            left: [],
+            right: [],
+            center: []
+        };
+        $scope.mapConfig = {
+            Krupp: {
+                blocks: ['A', 'B', 'C'],
+                floors: [1, 2, 3]
+            },
+            Mercator: {
+                blocks: ['A', 'B', 'C'],
+                floors: [1, 2, 3]
+            },
+            C3: {
+                blocks: ['A', 'B', 'C', 'D'],
+                floors: [1, 2, 3]
+            },
+            Nordmetall: {
+                blocks: ['A', 'B', 'C'],
+                floors: [1, 2, 3, 4, 5]
+            }
+        };
 
         $scope.currentPhase = {};
         $scope.showNotEligible = false;
@@ -56,17 +82,28 @@ angular.module('jRoomsApp')
                         $scope.showCollegeSelection = true;
                     } else {
                         $scope.rooms = $scope.user.rooms;
-                        $scope.maxRooms = _.range(0, phase.maxRooms);
+                        $scope.maxRooms = phase.maxRooms;
 
                         $scope.showRoomSelection = true;
                         Communicator.getCurrentMap($scope.user.nextCollege, function(err, data) {
                             if (!err && data) {
                                 $scope.map = data;
-                                var canvas = document.getElementById('mapCanvas');
-                                var context = canvas.getContext('2d');
+                                var removeValue = function(array, id) {
+                                    return _.reject(array, function(item) {
+                                        return item.name === id; // or some complex logic
+                                    });
+                                };
 
+                                data.forEach(function(element) {
+                                    for (var i = 1; i < element.rooms.length; ++i) {
+                                        $scope.map = removeValue($scope.map, element.rooms[i]);
+                                    }
+                                });
+
+                                $scope.filterRooms();
                             } else {
                                 $scope.showError = true;
+                                $scope.showRoomSelection = false;
                             }
                         });
                     }
@@ -76,6 +113,40 @@ angular.module('jRoomsApp')
                 $scope.showRoomSelection = false;
             }
         });
+
+        $scope.filterRooms = function() {
+            $scope.mapRooms = {
+                left: [],
+                right: [],
+                center: []
+            };
+            if ($scope.user.nextCollege == "Nordmetall") {
+
+            } else {
+                $scope.map.forEach(function(element) {
+                    if (element.block == $scope.currentBlock &&
+                        element.floor == $scope.currentFloor) {
+
+                        // center case
+                        for (var i = 0; i < element.rooms.length; ++i) {
+                            if (element.rooms[i].indexOf("02") != -1) {
+                                $scope.mapRooms.center.push(element);
+                                return;
+                            }
+                        }
+
+                        var checked = parseInt(element.name.substr(4, 2));
+
+                        // left case
+                        if (checked <= 21)
+                            $scope.mapRooms.left.push(element);
+                        else
+                            $scope.mapRooms.right.push(element);
+                    }
+                });
+            }
+            console.log($scope.mapRooms);
+        }
 
         $scope.requestRoommate = function() {
             //console.log("Sending request to " + $scope.requestUsername);
@@ -216,7 +287,6 @@ angular.module('jRoomsApp')
                     return;
                 }
             });
-
         }
 
         $scope.updateRooms = function() {
@@ -279,6 +349,21 @@ angular.module('jRoomsApp')
                     });
                 }
             });
+        }
+
+        $scope.selectRoom = function(room) {
+            if ($scope.rooms.length + 1 > $scope.maxRooms)
+                return; //!
+            var str = room.rooms.join(',');
+            if (_.contains($scope.rooms, str))
+                return; //!
+            $scope.rooms.push(str);
+        }
+
+        $scope.removeRoom = function(e, room) {
+            e.preventDefault();
+            e.stopPropagation();
+            $scope.rooms = _.without($scope.rooms, room);
         }
 
 
