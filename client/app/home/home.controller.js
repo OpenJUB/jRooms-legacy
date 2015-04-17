@@ -12,6 +12,7 @@ angular.module('jRoomsApp')
         $scope.futureRoom = {};
         $scope.roomToSwap = null;
 
+        $scope.allRooms = [];
         $scope.currentBlock = 'A';
         $scope.currentFloor = 1;
         $scope.mapRooms = {
@@ -94,7 +95,8 @@ angular.module('jRoomsApp')
                                   }
                                 });
 
-                                $scope.filterRooms(uniqueRooms);
+                                $scope.allRooms = uniqueRooms;
+                                $scope.filterRooms();
                             } else {
                                 $scope.showError = true;
                                 $scope.showRoomSelection = false;
@@ -108,7 +110,7 @@ angular.module('jRoomsApp')
             }
         });
 
-        $scope.filterRooms = function(rooms) {
+        $scope.filterRooms = function() {
             $scope.mapRooms = {
                 left: [],
                 right: [],
@@ -116,7 +118,7 @@ angular.module('jRoomsApp')
             };
             if ($scope.user.nextCollege == "Nordmetall") {
                 var nmRooms = [];
-                rooms.forEach(function(element) {
+                $scope.allRooms.forEach(function(element) {
                     if (element.block == $scope.currentBlock &&
                         element.floor == $scope.currentFloor) {
                         nmRooms.push(element);
@@ -132,7 +134,7 @@ angular.module('jRoomsApp')
                         $scope.mapRooms.right.push(nmRooms[i]);
                 }
             } else {
-                rooms.forEach(function(element) {
+                $scope.allRooms.forEach(function(element) {
 
                     if (element.block == $scope.currentBlock &&
                         element.floor == $scope.currentFloor) {
