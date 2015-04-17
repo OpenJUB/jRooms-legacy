@@ -24,6 +24,18 @@ exports.currentPhase = function(req, res) {
         return res.json(200, {next: 'none'})
       }
 
+      if(!data) {
+        return User.findOne({token: req.cookies.token}).exec(function(err, user) {
+          var nextText = "";
+          if(user.phaseId && user.nextRoom) {
+            nextText = "none";
+          } else {
+            nextText = "your earliest convenience to check again.";
+          }
+          return res.json(200, {next: nextText, isEligible: false});
+        });
+      }
+
       //console.log("AAAA");
 
       utils.isEligible(req.cookies.token, data, function(new_data) {

@@ -386,7 +386,7 @@ exports.phaseResult = function(phase, callback) {
   if(phase.isCollegePhase) {
     User.find({$where: 'this.nextCollege != null'}).exec(function(err, users) {
       //console.log(users);
-      var results = {krupp: [], c3: [], nordmetall: [], mercator: []};
+      var results = {krupp: [], c3: [], nordmetall: [], mercator: [], unallocated: []};
       if(err || !users) {
         console.log(err);
         return {};
@@ -408,15 +408,32 @@ exports.phaseResult = function(phase, callback) {
             break;
         }
       }
-      //console.log(results);
-      phase.results = results;
-      return phase.save(function() {
-        return callback(phase);
+      User.find({}, 'name nextCollege description').exec(function(err, u) {
+        if(err || !u) {
+          return;
+        }
+
+        var tmp = _.filter(u, function(item) {
+          return (!item.nextCollege && item.description.substr(0, 2) === "ug");
+        });
+
+        //tmp = _.pluck(tmp, 'name');
+
+        results.unallocated = tmp;
+
+        //console.log(results);
+
+        //console.log(results);
+        phase.results = results;
+        return phase.save(function() {
+          console.log(phase);
+          return callback(phase);
+        });
       });
     });
   } else {
     User.find({phaseId: phase.id}).exec(function(err, users) {
-      var results = {krupp: [], c3: [], nordmetall: [], mercator: []};
+      var results = {krupp: [], c3: [], nordmetall: [], mercator: [], unallocated: []};
       if(err || !users) {
       	//console.log("Scaramoosh");
         return results;
@@ -424,6 +441,10 @@ exports.phaseResult = function(phase, callback) {
       //console.log(users);
 
       for(var i = 0; i < users.length; i++) {
+        if(!users[i].nextRoom) {
+          results.unallocated.push({name: users[i].name, room: users[i].nextRoom});
+          continue;
+        }
       	//console.log(users[i].username, users[i].nextRoom);
         switch(users[i].nextCollege) {
           case 'Krupp':
@@ -454,13 +475,15 @@ exports.phaseResult = function(phase, callback) {
 exports.populateRoomInfo = function() {
 	Room.remove({}).exec();
 
+  var all = [];
+
   for(var i = 0; i < allRooms.length; ++i) {
     for(var j = 0; j < allRooms[i].blocks.length; ++j) {
       for(var fl = 0; fl < allRooms[i].blocks[j].floors.length; ++fl) {
         for(var ro = 0; ro < allRooms[i].blocks[j].floors[fl].rooms.length; ++ro) {
           for(var room = 0; room < allRooms[i].blocks[j].floors[fl].rooms[ro].contains.length; ++room) {
 
-            var result = new Room({
+            var result = {
               college : allRooms[i].name,
               block : allRooms[i].blocks[j].name,
               floor : allRooms[i].blocks[j].floors[fl].number,
@@ -470,14 +493,31 @@ exports.populateRoomInfo = function() {
               isAvailable : true,
               applicants : 0,
               isDisabled : false
-            });
+            };
 
-            result.save();
+            all.push(result);
+            //result.save();
           }
         }
       }
     }
   }
+
+  var callback = function(all, i) {
+    if(i >= all.length)
+      return;
+
+    saveFunction(all, i+1);
+  }
+
+  var saveFunction = function(all, i) {
+    var tmp = new Room(all[i]);
+    tmp.save(function() {
+      callback(all, i);
+    });
+  }
+
+  saveFunction(all, 0);
 }
 
 exports.generateResults = function(phaseId, save, callback) {
@@ -602,7 +642,8 @@ var calculatePhase = function(phase, callback) {
           console.log(data);
           //console.log(item.username);
           //console.log(data[item.username]);
-          Room.findOne({name: data[item.username]}).exec(function(err, room) {
+          var newTemp = data[item.username].split(',');
+          Room.findOne({name: newTemp[0]}).exec(function(err, room) {
             if(err) {
               return callB(data, nUsers, null);
             }
@@ -610,33 +651,60 @@ var calculatePhase = function(phase, callback) {
             console.log(room);
 
             if(!room) { // Unallocated this round
-              item.phaseId = null;
-              item.save();
-
-              item.roommates.forEach(function(tmp) {
-                var usernames = _.pluck(item.roommates, 'username');
-                User.update({username: {$in:usernames}}, {phaseId: null}).exec();
-              });
+              return callB(data, nUsers, i);
             } else {
               item.nextRoom = room.rooms[0];
               item.save(function() {
-                //console.log(i);
-                var counter = 1;
-                item.roommates.forEach(function(tmp) {
-                  User.findOne({username: tmp.username}).exec(function(err, use) {
-                    if(err || !use) {
+                Room.findOne({name: room.rooms[0]}).exec(function(err, dbRoom) {
+                  if(err || !dbRoom) {
+                    return;
+                  }
+
+                  dbRoom.isAvailable = false;
+                  dbRoom.assignedTo = item.name;
+                  dbRoom.save();
+
+                  //console.log(i);
+                  var counter = 0;
+
+                  var first = function(roomm, ct) {
+                    if(ct >= roomm.length - 1)
+                      return callB(data, nUsers, i);
+
+                    return second(roomm, i+1);
+                  }
+
+                  var second = function(roomm, ct) {
+                    console.log(roomm);
+                    console.log(ct);
+                    User.findOne({username: roomm[ct].username}).exec(function(err, use) {
                       ++counter;
-                    } else {
+
+                      if(err || !use) {
+                        return first(roomm, ct);
+                      }
+
                       use.nextRoom = room.rooms[counter];
-                      ++counter;
-                      use.save();
-                    }
-                  });
+                      use.save(function() {
+                        Room.findOne({name: use.nextRoom}).exec(function(err, dbRoom2) {
+                          if(dbRoom2) {
+                            dbRoom2.isAvailable = false;
+                            dbRoom2.assignedTo = use.name;
+                            return dbRoom2.save(function() {
+                              return first(roomm, ct);
+                            })
+                          }
+                          return first(roomm, ct);
+                        });
+                      });
+
+                    });
+                  }
+                  //console.log(item.roommates);
+                  return second(item.roommates, 0);
                 });
               });
             }
-
-            return callB(data, nUsers, i);
           });
         });
       };

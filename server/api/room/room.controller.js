@@ -40,7 +40,27 @@ exports.getCollegeMap = function(req, res) {
               data[i].isDisabled = settings.disabledRooms.indexOf(data[i].name) >= 0;
             }
 
-            return res.json(200, data);
+            Phase.findOne({isCurrent: true}).exec(function(err, phase) {
+              if(phase.filters) {
+
+                for(var i = 0; i < data.length; ++i) {
+                  if(phase.filters.enableFilterTall) {
+                    data[i].isDisabled = Math.min(data[i].isDisabled, (tmp != "08" && tmp != "09" && tmp != "36" && tmp != "37"));
+                  }
+
+                  if(phase.filters.enableFilterQuiet) {
+                    data[i].isDisabled = Math.min(data[i].isDisabled, !((item.college === 'C3' && item.block === 'D') || (item.college === 'Krupp' && item.block === 'A')));
+                  }
+
+                  if(phase.filters.enableFilterRooms) {
+                    data[i].isDisabled = Math.min(data[i].isDisabled,
+                      !((phase.filters.rooms.single && item.type === 'single') && (phase.filters.rooms.double && item.type === 'double') && (phase.filters.rooms.triple && item.type === 'triple'))
+                    );
+                  }
+                }
+              }
+              return res.json(200, data);
+            });
         });
     });
 }
