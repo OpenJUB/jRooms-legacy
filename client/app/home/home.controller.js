@@ -87,18 +87,15 @@ angular.module('jRoomsApp')
                         $scope.showRoomSelection = true;
                         Communicator.getCurrentMap($scope.user.nextCollege, function(err, data) {
                             if (!err && data) {
-                                $scope.map = data;
-                                var removeValue = function(array, id) {
-                                    return _.reject(array, function(item) {
-                                        return item.name === id; // or some complex logic
-                                    });
-                                };
-
-                                data.forEach(function(element) {
-                                    for (var i = 1; i < element.rooms.length; ++i) {
-                                        $scope.map = removeValue($scope.map, element.rooms[i]);
-                                    }
+                                var uniqueRooms = [];
+                                data.forEach(function(item) {
+                                  var tmp = _.pluck(uniqueRooms, 'rooms');
+                                  if(_.findIndex(tmp, item.rooms) < 0) {
+                                    uniqueRooms.push(item);
+                                  }
                                 });
+
+                                $scope.map = uniqueRooms;
 
                                 $scope.filterRooms();
                             } else {
@@ -139,6 +136,7 @@ angular.module('jRoomsApp')
                 }
             } else {
                 $scope.map.forEach(function(element) {
+
                     if (element.block == $scope.currentBlock &&
                         element.floor == $scope.currentFloor) {
                         // center case
