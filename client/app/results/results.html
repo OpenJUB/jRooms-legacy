@@ -17,7 +17,7 @@
           <accordion-heading>
              <h3 class="panel-title">Krupp</h3>
           </accordion-heading>
-          <p class="text-muted" ng-repeat="result in item.results.krupp"><strong>{{ result.name }}</strong> {{ result.room ? (" (" + result.room + ") ") : "" }}</p>
+          <p class="text-danger" ng-repeat="result in item.results.krupp"><strong>{{ result.name }}</strong> {{ result.room ? (" (" + result.room + ") ") : "" }}</p>
         </accordion-group>
       </accordion>
 
@@ -26,7 +26,7 @@
           <accordion-heading>
             <h3 class="panel-title">Mercator</h3>
           </accordion-heading>
-          <p class="text-muted" ng-repeat="result in item.results.mercator"><strong>{{ result.name }}</strong> {{ result.room ? (" (" + result.room + ") ") : "" }}</p>
+          <p class="text-primary" ng-repeat="result in item.results.mercator"><strong>{{ result.name }}</strong> {{ result.room ? (" (" + result.room + ") ") : "" }}</p>
         </accordion-group>
       </accordion>
 
@@ -35,7 +35,7 @@
           <accordion-heading>
             <h3 class="panel-title">C3</h3>
           </accordion-heading>
-          <p class="text-muted" ng-repeat="result in item.results.c3"><strong>{{ result.name }}</strong> {{ result.room ? (" (" + result.room + ") ") : "" }}</p>
+          <p class="text-success" ng-repeat="result in item.results.c3"><strong>{{ result.name }}</strong> {{ result.room ? (" (" + result.room + ") ") : "" }}</p>
         </accordion-group>
       </accordion>
 
@@ -44,10 +44,18 @@
           <accordion-heading>
             <h3 class="panel-title">Nordmetall</h3>
           </accordion-heading>
-          <p class="text-muted" ng-repeat="result in item.results.nordmetall"><strong>{{ result.name }}</strong> {{ result.room ? (" (" + result.room + ") ") : "" }}</p>
+          <p class="text-warning" ng-repeat="result in item.results.nordmetall"><strong>{{ result.name }}</strong> {{ result.room ? (" (" + result.room + ") ") : "" }}</p>
         </accordion-group>
       </accordion>
 
+      <accordion>
+        <accordion-group>
+          <accordion-heading>
+            <h3 class="panel-title">Unallocated</h3>
+          </accordion-heading>
+          <p class="text-muted" ng-repeat="result in item.results.unallocated"><strong>{{ result.name }}</strong></p>
+        </accordion-group>
+      </accordion>
    </accordion-group>
   </accordion>
 </div>
