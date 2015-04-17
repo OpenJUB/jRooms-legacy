@@ -121,7 +121,23 @@ angular.module('jRoomsApp')
                 center: []
             };
             if ($scope.user.nextCollege == "Nordmetall") {
-
+                var nmRooms = [];
+                $scope.map.forEach(function(element) {
+                    if (element.block == $scope.currentBlock &&
+                        element.floor == $scope.currentFloor) {
+                        nmRooms.push(element);
+                    }
+                });
+                console.log(nmRooms);
+                nmRooms.sort(function(a,b) {
+                    return a.name.localeCompare(b.name);
+                });
+                for(var i = 0; i < nmRooms.length; ++i) {
+                    if (i <= nmRooms.length / 2)
+                        $scope.mapRooms.left.push(nmRooms[i]);
+                    else
+                        $scope.mapRooms.right.push(nmRooms[i]);
+                }
             } else {
                 $scope.map.forEach(function(element) {
                     if (element.block == $scope.currentBlock &&
@@ -145,7 +161,6 @@ angular.module('jRoomsApp')
                     }
                 });
             }
-            console.log($scope.mapRooms);
         }
 
         $scope.requestRoommate = function() {
