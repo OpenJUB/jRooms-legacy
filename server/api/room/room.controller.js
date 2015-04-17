@@ -50,6 +50,10 @@ exports.getCollegeMap = function(req, res) {
               if(phase && phase.filters) {
 
                 for(var i = 0; i < data.length; ++i) {
+
+                  if(data[i].college === 'Nordmetall' && data[i].block === 'A') {
+                    data[i].isDisabled = true;
+                  }
                   if(phase.filters.enableFilterTall) {
                     var tmp = data[i].name.substring(4, 2);
                     data[i].isDisabled = Math.max(data[i].isDisabled, (tmp != "08" && tmp != "09" && tmp != "36" && tmp != "37"));
@@ -75,6 +79,7 @@ exports.getCollegeMap = function(req, res) {
                   }
                 }
               }
+
               return res.json(200, data);
             });
         });
