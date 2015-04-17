@@ -29,6 +29,9 @@ angular.module('jRoomsApp').service('Communicator', function ($http) {
   this.getCurrentRoom = function(room, fn) {
     this.sendGET('/api/room/get', { room : room }, fn);
   }
+  this.getCurrentMap = function(college, fn) {
+    this.sendGET('/api/room/getCollegeMap', {college : college}, fn);
+  }
 
   // /user
   this.getCurrentUser = function(fn) {

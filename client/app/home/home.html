@@ -1,256 +1,269 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
-
 <script type="text/ng-template" id="pointsModal.html">
-  <div class="modal-header">
-      <h4 class="modal-title">Points breakdown</h4>
-  </div>
-  <div class="modal-body">
-    <table class="table table-bordered">
-      <tr class="active">
-        <td>Criteria</td>
-        <td>Your points</td>
-        <td>Max points</td>
-      </tr>
-
-      <tr>
-        <td>College spirit</td>
-        <td>{{ points.collegeSpiritPoints }}</td>
-        <td>1</td>
-      </tr>
-
-      <tr>
-        <td>Countries</td>
-        <td>{{ points.countryPoints }}</td>
-        <td>2</td>
-      </tr>
-
-      <tr>
-        <td>Majors</td>
-        <td>{{ points.majorPoints }}</td>
-        <td>1</td>
-      </tr>
-
-      <tr>
-        <td>World regions</td>
-        <td>{{ points.regionPoints }}</td>
-        <td>1</td>
-      </tr>
-
-      <tr class="success">
-        <td>You</td>
-        <td>{{ points.userPoints }}</td>
-        <td>2</td>
-      </tr>
-
-      <tr class="warning">
-        <td>Roommate(s)</td>
-        <td>{{ points.roommatePoints }}</td>
-        <td>2</td>
-      </tr>
-
-      <tr class="info">
-        <td><strong>Total points</strong></td>
-        <td>{{ points.totalPoints }}</td>
-        <td>9</td>
-      </tr>
-    </table>
-
-    <button class="btn btn-default" ng-click="close()">Close</button>
-  </div>
+    <div class="modal-header">
+        <h4 class="modal-title">Points breakdown</h4>
+    </div>
+    <div class="modal-body">
+        <table class="table table-bordered">
+            <tr class="active">
+                <td>Criteria</td>
+                <td>Your points</td>
+                <td>Max points</td>
+            </tr>
+            <tr>
+                <td>College spirit</td>
+                <td>{{ points.collegeSpiritPoints }}</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>Countries</td>
+                <td>{{ points.countryPoints }}</td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td>Majors</td>
+                <td>{{ points.majorPoints }}</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>World regions</td>
+                <td>{{ points.regionPoints }}</td>
+                <td>1</td>
+            </tr>
+            <tr class="success">
+                <td>You</td>
+                <td>{{ points.userPoints }}</td>
+                <td>2</td>
+            </tr>
+            <tr class="warning">
+                <td>Roommate(s)</td>
+                <td>{{ points.roommatePoints }}</td>
+                <td>2</td>
+            </tr>
+            <tr class="info">
+                <td><strong>Total points</strong></td>
+                <td>{{ points.totalPoints }}</td>
+                <td>9</td>
+            </tr>
+        </table>
+        <button class="btn btn-default" ng-click="close()">Close</button>
+    </div>
 </script>
-
 <div class="container full-height">
-  <div class="row">
-    <!-- //////////////// -->
-    <!-- Profile -->
-    <div class="col-md-3">
-      <div class="well text-center">
-        <img class="img-rounded center-block" height="150" ng-src="{{ user.imageURL }}"/>
-
-        <h3>{{ user.name }}</h3>
-        <p>{{ user.country }}</p>
-        <p>{{ user.description }}</p>
-
-        <div ng-show="user.nextCollege && !showDone">
-          <div class="btn" ng-click="collegeButton(user.nextCollege);"
-            ng-class="{ 'btn-danger' : user.nextCollege === 'Krupp', 
-                        'btn-primary' : user.nextCollege === 'Mercator', 
-                        'btn-success' : user.nextCollege === 'C3', 
+    <div class="row">
+        <!-- //////////////// -->
+        <!-- Profile -->
+        <div class="col-md-3">
+            <div class="well text-center">
+                <img class="img-rounded center-block" height="150" ng-src="{{ user.imageURL }}" />
+                <h3>{{ user.name }}</h3>
+                <p>{{ user.country }}</p>
+                <p>{{ user.description }}</p>
+                <div ng-show="user.nextCollege && !showDone">
+                    <div class="btn" ng-click="collegeButton(user.nextCollege);" ng-class="{ 'btn-danger' : user.nextCollege === 'Krupp',
+                        'btn-primary' : user.nextCollege === 'Mercator',
+                        'btn-success' : user.nextCollege === 'C3',
                         'btn-warning' : user.nextCollege === 'Nordmetall' }">
-            Will be in {{ user.nextCollege }} next year!
-          </div>
-        </div>
-
-        <div ng-show="user.roommates.length > 0 && !showDone">
-          <br/>
-          <br/>
-          <div class="row">
-              <div class="col-xs-7">
-                <h4 style="text-align:right;">Roommates:</h4>
-              </div>
-              <div class="col-xs-5">
-                 <div class="btn btn-sm btn-info" ng-click="openPointsModal('sm');">Points: <strong>{{ user.points.totalPoints }}</strong></div>
-              </div>
-          </div>
-
-          <div class="row well well-sm text-center" ng-repeat="item in user.roommates">
-            <div class="col-xs-3">
-              <img class="img-rounded center-block" height="60" ng-click="roommateSelected(item);" ng-src="{{ item.imageURL }}"/>
+                        Will be in {{ user.nextCollege }} next year!
+                    </div>
+                </div>
+                <div ng-show="user.roommates.length > 0 && !showDone">
+                    <br/>
+                    <br/>
+                    <div class="row">
+                        <div class="col-xs-7">
+                            <h4 style="text-align:right;">Roommates:</h4>
+                        </div>
+                        <div class="col-xs-5">
+                            <div class="btn btn-sm btn-info" ng-click="openPointsModal('sm');">Points: <strong>{{ user.points.totalPoints }}</strong></div>
+                        </div>
+                    </div>
+                    <div class="row well well-sm text-center" ng-repeat="item in user.roommates">
+                        <div class="col-xs-3">
+                            <img class="img-rounded center-block" height="60" ng-click="roommateSelected(item);" ng-src="{{ item.imageURL }}" />
+                        </div>
+                        <div class="col-xs-9">
+                            <p>{{ item.name }}</p>
+                            <a class="btn btn-sm btn-danger" ng-show="!showDone" ng-click="removeRoommate(item.username);">Remove</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-xs-9">
-              <p>{{ item.name }}</p>
-              <a class="btn btn-sm btn-danger" ng-show="!showDone" ng-click="removeRoommate(item.username);">Remove</a>
+            <div class="well" id="roommateRequests" ng-show="!showDone">
+                <h3>Inbox</h3>
+                <p ng-show="user.inbox.length == 0" class="text-info">No new requests!</p>
+                <div ng-repeat="req in user.inbox" class="well">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <img class="img-rounded center-block" height="70" ng-src="{{ req.imageURL }}" />
+                        </div>
+                        <div class="col-md-8 col-md-offset-1">
+                            <p class="text-success"><strong>{{ req.name }}</strong> wants to be your roommate!</p>
+                        </div>
+                    </div>
+                    <br/>
+                    <a class="btn btn-default btn-success" ng-click="acceptRoommate(req.username);">Accept</a>
+                    <a class="btn btn-default btn-danger" ng-click="denyRoommate(req.username);">Deny</a>
+                </div>
+                <br/>
+                <h4>Send a request</h4>
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="CampusNet username" ng-model="requestUsername"></input>
+                    <a class="btn btn-default" ng-click="requestRoommate();">Request!</a>
+                </div>
+                <div class="form-group">
+                    <a class="btn btn-warning" ng-click="requestFreshman();">Room with a freshie!</a>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-
-      <div class="well" id="roommateRequests" ng-show="!showDone">
-        <h3>Inbox</h3>
-        <p ng-show="user.inbox.length == 0" class="text-info">No new requests!</p>
-
-        <div ng-repeat="req in user.inbox" class="well">
-          <div class="row text-center">
-            <div class="col-md-3">
-              <img class="img-rounded center-block" height="70" ng-src="{{ req.imageURL }}"/>
+        <!-- //////////////// -->
+        <!-- Phase -->
+        <div class="container col-md-9">
+            <div class="well well-lg" ng-show="showError">
+                <p class="text-danger"><i class="fa fa-thumbs-down bigicon"></i></p>
+                <h2 class="text-danger">Oh oh!</h2>
+                <p>It seems like no phases are enabled at the moment. Please, come back later?
+                    <br/>
+                    <br/>If you feel like this is a mistake, would you care to <a href="mailto:f.stankovski@jacobs-university.de">report it</a>?
+                    <br/> Thanks!
+                </p>
             </div>
-            <div class="col-md-8 col-md-offset-1">
-              <p class="text-success"><strong>{{ req.name }}</strong> wants to be your roommate!</p>
+            <div class="well well-lg" ng-show="showNotEligible">
+                <p class="text-danger"><i class="fa fa-thumbs-down bigicon"></i></p>
+                <h2 class="text-danger">Sorry!</h2>
+                <p>It doesn't seem like you are eligible for this phase.
+                    <br/>
+                    <br/> To continue with allocation process, please, come back at {{ currentPhase.next }}.</p>
             </div>
-          </div>
-          <br/>
-          <a class="btn btn-default btn-success" ng-click="acceptRoommate(req.username);">Accept</a>
-          <a class="btn btn-default btn-danger" ng-click="denyRoommate(req.username);">Deny</a>
-        </div>
-
-        <br/>
-
-        <h4>Send a request</h4>
-        <div class="form-group">
-          <input type="text" class="form-control" placeholder="CampusNet username" ng-model="requestUsername"></input>
-          <a class="btn btn-default" ng-click="requestRoommate();">Request!</a>
-        </div>
-        <div class="form-group">
-          <a class="btn btn-warning" ng-click="requestFreshman();">Room with a freshie!</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- //////////////// -->
-    <!-- Phase -->
-    <div class="container col-md-9">
-      <div class="well well-lg" ng-show="showError">
-        <p class="text-danger"><i class="fa fa-alert bigicon"></i></p>
-        <h2 class="text-danger">Oh oh!</h2>
-        <p>It seems like there was an error while receiving the current phase. <br/><br/>
-        Totally our fault, would you care to <a href="mailto:fi.stankovski@gmail.com">report it</a>?<br/>
-        Thanks!</p>
-      </div>
-
-      <div class="well well-lg" ng-show="showNotEligible">
-        <p class="text-danger"><i class="fa fa-thumbs-down bigicon"></i></p>
-        <h2 class="text-danger">Sorry!</h2>
-        <p>It doesn't seem like you are eligible for this phase. <br/><br/>
-        To continue with allocation process, please, come back at {{ currentPhase.next }}.</p>
-      </div>
-
-      <div class="jumbotron" ng-show="showDone">
-        <div class="container">
-          <p class="text-info"><i class="fa fa-thumbs-up bigicon"></i></p>
-
-          <h1 class="text-success">Congratulations!</h1>
-          <p class="lead text-success">You are all set and ready for the next year!</p>
-          <br/><br/>
-
-          <div class="container btn btn-lg dropdown-toggle" dropdown-toggle ng-click="collegeButton(user.nextCollege);"
-            ng-class="{ 'btn-danger' : user.nextCollege === 'Krupp', 
-                        'btn-primary' : user.nextCollege === 'Mercator', 
-                        'btn-success' : user.nextCollege === 'C3', 
+            <div class="jumbotron" ng-show="showDone">
+                <div class="container">
+                    <p class="text-info"><i class="fa fa-thumbs-up bigicon"></i></p>
+                    <h1 class="text-success">Congratulations!</h1>
+                    <p class="lead text-success">You are all set and ready for the next year!</p>
+                    <br/>
+                    <br/>
+                    <div class="container btn btn-lg dropdown-toggle" dropdown-toggle ng-click="collegeButton(user.nextCollege);" ng-class="{ 'btn-danger' : user.nextCollege === 'Krupp',
+                        'btn-primary' : user.nextCollege === 'Mercator',
+                        'btn-success' : user.nextCollege === 'C3',
                         'btn-warning' : user.nextCollege === 'Nordmetall' }">
-            Living in {{ user.nextCollege }}, {{ user.nextRoom }}
-          </div>
-          <br/>
-
-          <div class="container btn btn-lg btn-default" ng-repeat="item in user.roommates">
-            <div class="row">
-              <div class="col-md-8">
-                <p>with {{ item.name }}</p>
-              </div>
-              <div class="col-md-4">
-                <img class="img-rounded center-block" height="60" ng-src="{{ item.imageURL }}"/>
-              </div>
+                        Living in {{ user.nextCollege }}, {{ user.nextRoom }}
+                    </div>
+                    <br/>
+                    <div class="container btn btn-lg btn-default" ng-repeat="item in user.roommates">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <p>with {{ item.name }}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <img class="img-rounded center-block" height="60" ng-src="{{ item.imageURL }}" />
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <div class="form-inline" ng-show="futureRoom.rooms.length > 1">
+                        <select class="form-control" ng-model="roomToSwap">
+                            <option ng-repeat="room in futureRoom.rooms">{{ room }}</option>
+                        </select>
+                        <div class="btn btn-info" ng-click="switchRoom();">Switch room!</div>
+                    </div>Made by Dmitrii and Filip. This footer kind of sucks...
+                </div>
             </div>
-          </div>
-
-          <br/><br/><br/>
-          <div class="form-inline" ng-show="futureRoom.rooms.length > 1">
-          <select class="form-control" ng-model="roomToSwap">
-            <option ng-repeat="room in futureRoom.rooms">{{ room }}</option>
-          </select>
-          <div class="btn btn-info" ng-click="switchRoom();">Switch room!</div>
-          </div>
+            <div class="well well-lg" ng-show="showCollegeSelection">
+                <p class="text-success"><i class="fa fa-graduation-cap bigicon"></i></p>
+                <h2>College selection phase</h2>
+                <p>Please, order the colleges by your housing preference. Your favorite college should be on top.
+                    <br/> In an unfortunate case, where demand for a college doesn't allow more places, alternative option will be selected, following down the list.</p>
+                <br/>
+                <div class="form-group">
+                    <select class="form-control" ng-model="colleges[0]">
+                        <option>Krupp</option>
+                        <option>Nordmetall</option>
+                        <option>Mercator</option>
+                        <option>C3</option>
+                    </select>
+                    <select class="form-control" ng-model="colleges[1]">
+                        <option>Nordmetall</option>
+                        <option>Krupp</option>
+                        <option>Mercator</option>
+                        <option>C3</option>
+                    </select>
+                    <select class="form-control" ng-model="colleges[2]">
+                        <option>Mercator</option>
+                        <option>Krupp</option>
+                        <option>Nordmetall</option>
+                        <option>C3</option>
+                    </select>
+                    <select class="form-control" ng-model="colleges[3]">
+                        <option>C3</option>
+                        <option>Krupp</option>
+                        <option>Nordmetall</option>
+                        <option>Mercator</option>
+                    </select>
+                    <br/>
+                    <br/>
+                    <a class="btn btn-default btn-info" ng-click="updateColleges();">Submit!</a>
+                </div>
+            </div>
+            <div class="well well-lg" ng-show="showRoomSelection">
+                <p class="text-success"><i class="fa fa-bed bigicon"></i></p>
+                <h2>Room selection phase</h2>
+                <p>Please, select up to {{ maxRooms.length }} rooms, from most to least favorable.
+                    <br/> Here will be an inspirational snippet about how does the housing system works and points and blablabla.</p>
+                <p ng-show="user.nextCollege === 'Nordmetall'" class="text-warning"><strong>Nordmetall users: </strong>Sorry, but your college is too fucked to display adequately :( Use jMap.tk to find the exact location of the desired room.</p>
+                <br/>
+                <div class="form-inline container">
+                    <div class="form-group">
+                        <select class="form-control" ng-model="currentBlock" ng-change="filterRooms();">
+                            <option ng-repeat="block in mapConfig[user.nextCollege].blocks">{{ block }}</option>
+                        </select>
+                        <select class="form-control" ng-model="currentFloor" ng-change="filterRooms();">
+                            <option ng-repeat="floor in mapConfig[user.nextCollege].floors">{{ floor }}</option>
+                        </select>
+                    </div>
+                </div>
+                <br/>
+                <div ng-show="mapRooms.left.length === 0 && mapRooms.right.length === 0 && mapRooms.center.length === 0">
+                    <p class="text-muted text-center"><i>Sorry, there are no rooms on this floor...</i></p>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3 col-xs-offset-2">
+                        <div class="form-group" ng-repeat="item in mapRooms.left">
+                            <div class="btn btn-room" ng-class="{'btn-default': item.isAvailable, 'disabled': item.isDisabled || !item.isAvailable }" ng-click="selectRoom(item);">
+                                <p ng-repeat="room in item.rooms" class="text-muted">{{ room }}</p>
+                                <span ng-show="item.applicants > 0" class="label label-info label-as-badge pull-right">{{ item.applicants }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-3 col-xs-offset-1">
+                        <div class="form-group" ng-repeat="item in mapRooms.right">
+                            <div class="btn btn-room" ng-class="{'btn-default': item.isAvailable, 'disabled': item.isDisabled || !item.isAvailable }" ng-click="selectRoom(item);">
+                                <p ng-repeat="room in item.rooms" class="text-muted">{{ room }}</p>
+                                <span ng-show="item.applicants > 0" class="label label-info label-as-badge pull-right">{{ item.applicants }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3 col-xs-offset-4">
+                        <div class="form-group" ng-repeat="item in mapRooms.center">
+                            <div class="btn btn-room" ng-class="{'btn-default': item.isAvailable, 'disabled': item.isDisabled || !item.isAvailable }" ng-click="selectRoom(item);">
+                                <p ng-repeat="room in item.rooms" class="text-muted">{{ room }}</p>
+                                <span ng-show="item.applicants > 0" class="label label-info label-as-badge pull-right">{{ item.applicants }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div>
+                    <div class="btn btn-sm btn-room-mini btn-warning" ng-repeat="item in rooms"><strong>{{ $index+1 }})</strong> {{ item }} <i class="fa fa-close" ng-click="removeRoom($event,item);"></i></div>
+                </div>
+                <br/>
+                <a class="btn btn-default btn-info " ng-click="updateRooms();">Submit!</a>
+            </div>
         </div>
-      </div>
-
-      <div class="well well-lg" ng-show="showCollegeSelection">
-        <p class="text-success"><i class="fa fa-graduation-cap bigicon"></i></p>
-        <h2>College selection phase</h2>
-        <p>Please, order the colleges by your housing preference. Your favorite college should be on top. <br/>
-        In an unfortunate case, where demand for a college doesn't allow more places, alternative option will be selected, following down the list.</p>
-        <br/>
-        <div class="form-group">
-          <select class="form-control" ng-model="colleges[0]">
-            <option>Krupp</option>
-            <option>Nordmetall</option>
-            <option>Mercator</option>
-            <option>C3</option>
-          </select>
-
-          <select class="form-control" ng-model="colleges[1]">
-          <option>Nordmetall</option>
-            <option>Krupp</option>
-            <option>Mercator</option>
-            <option>C3</option>
-          </select>
-
-            <select class="form-control" ng-model="colleges[2]">
-            <option>Mercator</option>
-            <option>Krupp</option>
-            <option>Nordmetall</option>
-            <option>C3</option>
-          </select>
-
-          <select class="form-control" ng-model="colleges[3]">
-            <option>C3</option>
-            <option>Krupp</option>
-            <option>Nordmetall</option>
-            <option>Mercator</option>
-          </select>
-
-          <br/>
-          <br/>
-          <a class="btn btn-default btn-info" ng-click="updateColleges();">Submit!</a>
-        </div>
-      </div>
-
-      <div class="well well-lg" ng-show="showRoomSelection">
-      <p class="text-success"><i class="fa fa-bed bigicon"></i></p>
-        <h2>Room selection phase</h2>
-        <p>Please, select up to {{ maxRooms.length }} rooms, from most to least favorable.<br/>
-        Here will be an inspirational snippet about how does the housing system works and points and blablabla.</p>
-        <br/>
-
-        <div class="form-group container" ng-repeat="index in maxRooms">
-          <div class="col-md-4">
-            <input type="text" class="form-control" placeholder="Room #" ng-model="rooms[index]" required></input>
-          </div>
-        </div>
-
-        <br/>
-        <a class="btn btn-default btn-info" ng-click="updateRooms();">Submit!</a>     
-      </div>
     </div>
-  </div>
 </div>
-
 <div ng-include="'components/footer/footer.html'"></div>
+1

@@ -9,7 +9,10 @@ var RoomSchema = new Schema({
   block: String,
   floor: Number,
   type: String,
-  rooms: Array
+  rooms: Array,
+  isAvailable: Boolean,
+  applicants: Number,
+  isDisabled: Boolean
 });
 
 module.exports = mongoose.model('Room', RoomSchema);
