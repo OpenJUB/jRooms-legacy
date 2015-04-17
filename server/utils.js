@@ -170,13 +170,12 @@ exports.updatePhases = function() {
             data[i].save(function() {
               if(phase && data[i].id === phase.id && data[i].isCurrent === false) {
                 exports.generateResults(phase.id, true, function() {
-                  //phase.save();
+                  done(phase, data, i);
                 });
               }
               else {
                 exports.phaseResult(data[i], function(results) {
-                  //data[i].results = results;
-                  //data[i].save();
+                  done(phase, data, i);
                 });
               }
             });
