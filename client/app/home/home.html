@@ -210,8 +210,16 @@
                 <p class="text-success"><i class="fa fa-bed bigicon"></i></p>
                 <h2>Room selection phase</h2>
                 <p>Please, select up to {{ maxRooms.length }} rooms, from most to least favorable.
-                    <br/> Here will be an inspirational snippet about how does the housing system works and points and blablabla.</p>
-                <p ng-show="user.nextCollege === 'Nordmetall'" class="text-warning"><strong>Nordmetall users: </strong>Sorry, but your college is too fucked to display adequately :( Use jMap.tk to find the exact location of the desired room.</p>
+                    <br/>Use the dropdowns below to select the desired block and floor. Map will display the rooms, color-coded as follows:
+                        <ul>
+                            <li>Green - available</li>
+                            <li>Gray - disabled (no one can apply)</li>
+                            <li>Yellow - available, but already has applicants (indicated by a small badge at the bottom). This can be useful to plan your competition in advance to ensure the best chances of getting the desired room</li>
+                            <li>Red - already allocated (names will be displayed)</li>
+                        </ul>
+                        You can see your selection on the bottom of the form (sorted by preference). When you are ready, press Submit button. The choices will update for both you and your roommate.
+                    </p>
+                <p ng-show="user.nextCollege === 'Nordmetall'" class="text-warning"><strong>Dear fellow Nordie: </strong>Sorry, but the geometrical shape of your college proved pretty challenging to render accurately. The map below will not display the rooms accurately with respect to their actual position in the college. We suggest using <a href="http://jmap.tk/#nordmetall">jMap</a> for reference while selecting rooms. Sorry for the inconvenience!</p>
                 <br/>
                 <div class="form-inline container">
                     <div class="form-group">
