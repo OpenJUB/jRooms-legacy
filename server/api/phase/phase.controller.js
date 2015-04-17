@@ -177,11 +177,13 @@ exports.allResults = function(req, res) {
 
 
 exports.unallocated = function(req, res) {
-  User.find({$where: "this.nextCollege === '' && this.college !== ''" }).exec(function(err, u) {
+  User.find({}).exec(function(err, u) {
     if(err) {
       return res.json(500, err);
     }
 
-    return res.json(200, u);
+    return res.json(200, _.filter(u, function(item) {
+      return (!item.nextCollege && item.description.substr(0, 2) === "ug");
+    }));
   });
 }
