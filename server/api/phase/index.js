@@ -10,5 +10,6 @@ router.get('/current', controller.currentPhase);
 router.get('/result', controller.result);
 router.get('/allResults', controller.allResults);
 router.get('/csv', controller.csv);
+router.get('/unallocated', controller.unallocated);
 
 module.exports = router;

@@ -175,3 +175,13 @@ exports.allResults = function(req, res) {
   });
 }
 
+
+exports.unallocated = function(req, res) {
+  User.find({$where: "this.college_preference.length === 0" }).exec(function(err, u) {
+    if(err) {
+      return res.json(500, err);
+    }
+
+    return res.json(200, u);
+  });
+}
