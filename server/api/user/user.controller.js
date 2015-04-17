@@ -414,7 +414,7 @@ exports.updateRooms = function(req, res) {
                   }
 
                   for(var i = 0; i < data.length; ++i) {
-                    data[i].applications += 1;
+                    data[i].applicants += 1;
                     data[i].save();
                   }
                 });
@@ -428,7 +428,7 @@ exports.updateRooms = function(req, res) {
                   }
 
                   for(var i = 0; i < data.length; ++i) {
-                    data[i].applications -= 1;
+                    data[i].applicants -= 1;
                     data[i].save();
                   }
                 });

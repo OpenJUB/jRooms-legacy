@@ -22,7 +22,7 @@ angular.module('jRoomsApp', [
       $rootScope.alerts.push(alert);
 
       // Potentially dangerous
-      $timeout(function() { $rootScope.alerts = _.without($rootScope.alerts, alert) }, 1500);
+      $timeout(function() { $rootScope.alerts = _.without($rootScope.alerts, alert) }, 2500);
     }
 
     // First get the actual user's status
