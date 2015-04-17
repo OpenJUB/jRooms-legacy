@@ -152,7 +152,7 @@ exports.updatePhases = function() {
           return savePhase(phase, data, i+1);
         }
 
-        var saveData = function(phase, data, i) {
+        var savePhase = function(phase, data, i) {
           data[i].isCurrent = (data[i].from <= (new Date()) && data[i].to >= (new Date()));
           if(phase && data[i].id !== phase.id && data[i].isCurrent) {
             newActive = data[i];
@@ -175,14 +175,14 @@ exports.updatePhases = function() {
               }
               else {
                 exports.phaseResult(data[i], function(results) {
-                  done(phase, data, i);
+                  return done(phase, data, i);
                 });
               }
             });
           }
         }
-        
-        return saveData(phase, data, 0);
+
+        return savePhase(phase, data, 0);
       });
 		});
 	});
