@@ -153,6 +153,7 @@ exports.updatePhases = function() {
         }
 
         var savePhase = function(phase, data, i) {
+          console.log(new Date());
           data[i].isCurrent = (data[i].from <= (new Date()) && data[i].to >= (new Date()));
           if(phase && data[i].id !== phase.id && data[i].isCurrent) {
             newActive = data[i];
