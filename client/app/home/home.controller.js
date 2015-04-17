@@ -3,7 +3,6 @@
 angular.module('jRoomsApp')
     .controller('HomeCtrl', function($rootScope, $scope, $modal, $timeout, $location, State, Communicator) {
         var collegeClicks = 0;
-        var mapCanvas = null;
 
         $scope.user = {};
         $scope.requestUsername = '';
@@ -12,7 +11,7 @@ angular.module('jRoomsApp')
         $scope.maxRooms = 0;
         $scope.futureRoom = {};
         $scope.roomToSwap = null;
-        $scope.map = null;
+
         $scope.currentBlock = 'A';
         $scope.currentFloor = 1;
         $scope.mapRooms = {
@@ -95,9 +94,7 @@ angular.module('jRoomsApp')
                                   }
                                 });
 
-                                $scope.map = uniqueRooms;
-
-                                $scope.filterRooms();
+                                $scope.filterRooms(uniqueRooms);
                             } else {
                                 $scope.showError = true;
                                 $scope.showRoomSelection = false;
@@ -111,7 +108,7 @@ angular.module('jRoomsApp')
             }
         });
 
-        $scope.filterRooms = function() {
+        $scope.filterRooms = function(rooms) {
             $scope.mapRooms = {
                 left: [],
                 right: [],
@@ -119,7 +116,7 @@ angular.module('jRoomsApp')
             };
             if ($scope.user.nextCollege == "Nordmetall") {
                 var nmRooms = [];
-                $scope.map.forEach(function(element) {
+                rooms.forEach(function(element) {
                     if (element.block == $scope.currentBlock &&
                         element.floor == $scope.currentFloor) {
                         nmRooms.push(element);
@@ -135,7 +132,7 @@ angular.module('jRoomsApp')
                         $scope.mapRooms.right.push(nmRooms[i]);
                 }
             } else {
-                $scope.map.forEach(function(element) {
+                rooms.forEach(function(element) {
 
                     if (element.block == $scope.currentBlock &&
                         element.floor == $scope.currentFloor) {
@@ -359,10 +356,10 @@ angular.module('jRoomsApp')
                         type: 'warning',
                         msg: 'Okay, whatever. Continue clicking, if you fancy. Finals are coming, you know?'
                     });
-                } else if (collegeClicks > 1000) {
+                } else if (collegeClicks > 200) {
                     $rootScope.showAlert({
                         type: 'warning',
-                        msg: 'Good job, Mr.Potter! ' + collegeClicks + ' points to Griffyndor!'
+                        msg: 'Excellent, Mr.Potter! ' + collegeClicks + ' points to Griffyndor!'
                     });
                 }
             });
