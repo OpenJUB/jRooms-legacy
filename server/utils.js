@@ -142,71 +142,49 @@ exports.updatePhases = function() {
 
 				var cur = false;
         var newActive = null;
-				data.forEach(function(item) {
-          //console.log("OMG");
-          cur = Math.max(cur, item.to >= (new Date()));
-          //console.log(cur);
-          //console.log(item.to);
-          console.log(new Date());
 
-					item.isCurrent = (item.from <= (new Date()) && item.to >= (new Date()));
-          //console.log(item);
-					if(phase && item.isCurrent && item.id !== phase.id) {
 
-            newActive = item;
+        var done = function(phase, data, i) {
+          if(i >= data.length - 1) {
+            return;
+          }
 
-						phase.isCurrent = false;
-						phase.save();
+          savePhase(phase, data, i+1);
+        }
 
-						exports.generateResults(phase.id, true, function() {
-              item.save();
+        var saveData = function(phase, data, i) {
+          data[i].isCurrent = (data[i].from <= (new Date()) && data[i].to >= (new Date()));
+          if(phase && data[i].id !== phase.id && data[i].isCurrent) {
+            newActive = data[i];
+
+            phase.isCurrent = false;
+            phase.save(function() {
+              exports.generateResults(phase.id, true, function() {
+                data[i].save(function() {
+                  done(phase, data, i);
+                });
+              });
             });
-					}
-          else {
+          } else {
             console.log("Boop");
-            item.save(function() {
-              if(phase && item.id === phase.id && item.isCurrent === false) {
+            data[i].save(function() {
+              if(phase && data[i].id === phase.id && data[i].isCurrent === false) {
                 exports.generateResults(phase.id, true, function() {
                   //phase.save();
                 });
               }
               else {
-                exports.phaseResult(item, function(results) {
-                  //item.results = results;
-                  //item.save();
+                exports.phaseResult(data[i], function(results) {
+                  //data[i].results = results;
+                  //data[i].save();
                 });
               }
             });
           }
-          //console.log(item);
-				});
-        //console.log(newActive);
-        //console.log(phase);
 
-        /*if(newActive == null) {
-          if(phase && !phase.isCurrent) {
-            phase.isCurrent = false;
-            phase.save();
-
-            exports.generateResults(phase.id, true, function() {
-              //phase.save();
-            });
-          }
-        }*/
-
-
-
-				if(!cur && !phase) {
-          //console.log("How likely is this?");
-          //console.log(phase);
-
-					settings.isDone = true;
-					settings.save();
-				} else {
-          settings.isDone = false;
-          settings.save();
+          return saveData(phase, data, 0);
         }
-			});
+      });
 		});
 	});
 	//Add if statement for limiting it to certain hours if necessary
