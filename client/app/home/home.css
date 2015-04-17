@@ -3,7 +3,7 @@ body, html {
 }
 
 .btn-room {
-	min-width: 120px;
+	min-width: 150px;
 }
 
 .label-as-badge {
@@ -11,6 +11,6 @@ body, html {
 }
 
 .btn-room-mini {
-	margin-top: 5px;
-	margin-left: 5px;
+	margin-top: 10px;
+	margin-left: 10px;
 }

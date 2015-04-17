@@ -226,7 +226,7 @@
                 </div>
                 <br/>
                 <div class="row">
-                    <div class="col-xs-4">
+                    <div class="col-xs-3 col-xs-offset-2">
                         <div class="form-group" ng-repeat="item in mapRooms.left">
                             <div class="btn btn-room" ng-class="{'btn-default': item.isAvailable, 'disabled': item.isDisabled || !item.isAvailable }" ng-click="selectRoom(item);">
                               <p ng-repeat="room in item.rooms" class="text-muted">{{ room }}</p>
@@ -234,7 +234,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-4 col-xs-offset-4">
+                    <div class="col-xs-3 col-xs-offset-1">
                         <div class="form-group" ng-repeat="item in mapRooms.right">
                             <div class="btn btn-room"  ng-class="{'btn-default': item.isAvailable, 'disabled': item.isDisabled || !item.isAvailable }" ng-click="selectRoom(item);">
                               <p ng-repeat="room in item.rooms" class="text-muted">{{ room }}</p>
@@ -245,7 +245,7 @@
                 </div>
 
                 <div class="row">
-                  <div class="col-xs-4 col-xs-offset-4">
+                  <div class="col-xs-3 col-xs-offset-4">
                     <div class="form-group" ng-repeat="item in mapRooms.center">
                             <div class="btn btn-room" ng-class="{'btn-default': item.isAvailable, 'disabled': item.isDisabled || !item.isAvailable }" ng-click="selectRoom(item);">
                               <p ng-repeat="room in item.rooms" class="text-muted">{{ room }}</p>
@@ -267,3 +267,4 @@
     </div>
 </div>
 <div ng-include="'components/footer/footer.html'"></div>
+1
