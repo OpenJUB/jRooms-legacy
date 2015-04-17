@@ -336,11 +336,19 @@ exports.updateRooms = function(req, res) {
         if(!phase.isEligible || phase.isCollegePhase) {
           return res.json(400, "Not eligible for the current round");
         }
-        var appliedRooms = _.filter(rooms, function(r) {
+        var uniqueRooms = _.filter(rooms, function(r) {
             if(r) 
                 return true;
             return false;
         });
+
+        var appliedRooms = [];
+        for(var i = 0; i < uniqueRooms.length; ++i) {
+          var r = uniqueRooms[i].split(',');
+          appliedRooms = _.union(appliedRooms, r);
+        }
+
+        console.log(appliedRooms);
 
         Room.find({name: {$in: appliedRooms}}).exec(function(err, rooms) {
           if(err) {
@@ -348,28 +356,37 @@ exports.updateRooms = function(req, res) {
           }
 
           if(phase.filters) {
-            if(phase.filters.enableFilterQuiet) {
-              for(var i = 0; i < rooms.length; ++i) {
+            for(var i = 0; i < rooms.length; ++i) {
+              if(!rooms[i].isAvailable) {
+                return res.json(400, "Sorry, there is someone already living in " + rooms[i].name);
+              }
+
+              if(phase.filters.enableFilterQuiet) {
                 if(!(rooms[i].college === "Krupp" && rooms[i].block === "A") && !(rooms[i].college === "C3" && rooms[i].block === "D")) {
                   return res.json(400, rooms[i].name + " is not a quiet block room.");
                 }
-
-                if(phase.filters.enableFilterRooms && phase.filters.rooms.triple && rooms[i].type !== 'triple') {
-                  return res.json(400, rooms[i].name + " is a triple room. Please choose an appropriate room");
+              }
+              if(phase.filters.enableFilterRooms) {
+                if(phase.filters.rooms.triple && rooms[i].type !== 'triple') {
+                  return res.json(400, rooms[i].name + " is not a triple room. Please choose an appropriate room");
+                }
+                if(phase.filters.rooms.double && rooms[i].type !== 'double') {
+                  return res.json(400, rooms[i].name + " is not a double room. Please choose an appropriate room");
+                }
+                if(phase.filters.rooms.single && rooms[i].type !== 'single') {
+                  return res.json(400, rooms[i].name + " is not a single room. Please choose an appropriate room");
                 }
 
-                if(phase.filters.enableFilterRooms && phase.filters.rooms.double && rooms[i].type !== 'double') {
-                  return res.json(400, rooms[i].name + " is a double room. Please choose an appropriate room");
-                }
-
-                if(phase.filters.enableFilterRooms && phase.filters.rooms.single && rooms[i].type !== 'single') {
-                  return res.json(400, rooms[i].name + " is a single room. Please choose an appropriate room");
+                if(!phase.filters.rooms.triple && uniqueRooms.length < 4) {
+                  return res.json(400, "Please select at least 4 rooms");
                 }
               }
             }
-
-            if(!(phase.filters.rooms && phase.filters.rooms.triple) && appliedRooms.length < 4) {
-              return res.json(400, "Please select at least 4 rooms");
+            if(phase.filters.enableFilterTall) {
+              var number = rooms[i].name.substring(4, 2);
+              if(number != "08" && number != "09" && number != "36" && number != "37") {
+                return res.json(400, rooms[i].name + " is not a tall room. Please select an appropriate room");
+              }
             }
           }
 
@@ -389,7 +406,34 @@ exports.updateRooms = function(req, res) {
                 }
               }
 
-              user.rooms = appliedRooms;
+              if((user.rooms && user.rooms[0] !== uniqueRooms[0]) || !user.rooms) {
+                var upd = uniqueRooms[0].split(',');
+                Room.find({name: {$in: upd}}).exec(function(err, data) {
+                  if(err || !data) {
+                    return;
+                  }
+
+                  for(var i = 0; i < data.length; ++i) {
+                    data[i].applications += 1;
+                    data[i].save();
+                  }
+                });
+              }
+
+              if(user.rooms && user.rooms[0] !== uniqueRooms[0]) {
+                var upd = user.rooms[0].split(',');
+                Room.find({name: {$in: upd}}).exec(function(err, data) {
+                  if(err || !data) {
+                    return;
+                  }
+
+                  for(var i = 0; i < data.length; ++i) {
+                    data[i].applications -= 1;
+                    data[i].save();
+                  }
+                });
+              }
+              user.rooms = uniqueRooms;
               user.phaseId = phase.id;
               user.save();
 

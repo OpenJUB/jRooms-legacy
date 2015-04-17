@@ -12,7 +12,8 @@ var RoomSchema = new Schema({
   rooms: Array,
   isAvailable: Boolean,
   applicants: Number,
-  isDisabled: Boolean
+  isDisabled: Boolean,
+  assignedTo: Array
 });
 
 module.exports = mongoose.model('Room', RoomSchema);
