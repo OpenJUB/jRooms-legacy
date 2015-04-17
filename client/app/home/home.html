@@ -167,7 +167,7 @@
                             <option ng-repeat="room in futureRoom.rooms">{{ room }}</option>
                         </select>
                         <div class="btn btn-info" ng-click="switchRoom();">Switch room!</div>
-                    </div>
+                    </div>Made by Dmitrii and Filip. This footer kind of sucks...
                 </div>
             </div>
             <div class="well well-lg" ng-show="showCollegeSelection">
@@ -211,7 +211,6 @@
                 <h2>Room selection phase</h2>
                 <p>Please, select up to {{ maxRooms.length }} rooms, from most to least favorable.
                     <br/> Here will be an inspirational snippet about how does the housing system works and points and blablabla.</p>
-
                 <p ng-show="user.nextCollege === 'Nordmetall'" class="text-warning"><strong>Nordmetall users: </strong>Sorry, but your college is too fucked to display adequately :( Use jMap.tk to find the exact location of the desired room.</p>
                 <br/>
                 <div class="form-inline container">
@@ -225,41 +224,41 @@
                     </div>
                 </div>
                 <br/>
+                <div ng-show="mapRooms.left.length === 0 && mapRooms.right.length === 0 && mapRooms.center.length === 0">
+                    <p class="text-muted text-center"><i>Sorry, there are no rooms on this floor...</i></p>
+                </div>
                 <div class="row">
                     <div class="col-xs-3 col-xs-offset-2">
                         <div class="form-group" ng-repeat="item in mapRooms.left">
                             <div class="btn btn-room" ng-class="{'btn-default': item.isAvailable, 'disabled': item.isDisabled || !item.isAvailable }" ng-click="selectRoom(item);">
-                              <p ng-repeat="room in item.rooms" class="text-muted">{{ room }}</p>
-                             <span ng-show="item.applicants > 0" class="label label-info label-as-badge pull-right">{{ item.applicants }}</span>
+                                <p ng-repeat="room in item.rooms" class="text-muted">{{ room }}</p>
+                                <span ng-show="item.applicants > 0" class="label label-info label-as-badge pull-right">{{ item.applicants }}</span>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-3 col-xs-offset-1">
                         <div class="form-group" ng-repeat="item in mapRooms.right">
-                            <div class="btn btn-room"  ng-class="{'btn-default': item.isAvailable, 'disabled': item.isDisabled || !item.isAvailable }" ng-click="selectRoom(item);">
-                              <p ng-repeat="room in item.rooms" class="text-muted">{{ room }}</p>
-                              <span ng-show="item.applicants > 0" class="label label-info label-as-badge pull-right">{{ item.applicants }}</span>
+                            <div class="btn btn-room" ng-class="{'btn-default': item.isAvailable, 'disabled': item.isDisabled || !item.isAvailable }" ng-click="selectRoom(item);">
+                                <p ng-repeat="room in item.rooms" class="text-muted">{{ room }}</p>
+                                <span ng-show="item.applicants > 0" class="label label-info label-as-badge pull-right">{{ item.applicants }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
-                  <div class="col-xs-3 col-xs-offset-4">
-                    <div class="form-group" ng-repeat="item in mapRooms.center">
+                    <div class="col-xs-3 col-xs-offset-4">
+                        <div class="form-group" ng-repeat="item in mapRooms.center">
                             <div class="btn btn-room" ng-class="{'btn-default': item.isAvailable, 'disabled': item.isDisabled || !item.isAvailable }" ng-click="selectRoom(item);">
-                              <p ng-repeat="room in item.rooms" class="text-muted">{{ room }}</p>
-                              <span ng-show="item.applicants > 0" class="label label-info label-as-badge pull-right">{{ item.applicants }}</span>
+                                <p ng-repeat="room in item.rooms" class="text-muted">{{ room }}</p>
+                                <span ng-show="item.applicants > 0" class="label label-info label-as-badge pull-right">{{ item.applicants }}</span>
                             </div>
                         </div>
-                  </div>
+                    </div>
                 </div>
-
                 <br/>
                 <div>
-                  <div class="btn btn-sm btn-room-mini btn-warning" ng-repeat="item in rooms"><strong>{{ $index+1 }})</strong> {{ item }} <i class="fa fa-close" ng-click="removeRoom($event,item);"></i></div>
+                    <div class="btn btn-sm btn-room-mini btn-warning" ng-repeat="item in rooms"><strong>{{ $index+1 }})</strong> {{ item }} <i class="fa fa-close" ng-click="removeRoom($event,item);"></i></div>
                 </div>
-
                 <br/>
                 <a class="btn btn-default btn-info " ng-click="updateRooms();">Submit!</a>
             </div>
