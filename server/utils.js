@@ -149,7 +149,7 @@ exports.updatePhases = function() {
             return;
           }
 
-          savePhase(phase, data, i+1);
+          return savePhase(phase, data, i+1);
         }
 
         var saveData = function(phase, data, i) {
@@ -180,9 +180,9 @@ exports.updatePhases = function() {
               }
             });
           }
-
-          return saveData(phase, data, 0);
         }
+        
+        return saveData(phase, data, 0);
       });
 		});
 	});
