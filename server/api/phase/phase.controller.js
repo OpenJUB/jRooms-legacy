@@ -177,7 +177,7 @@ exports.allResults = function(req, res) {
 
 
 exports.unallocated = function(req, res) {
-  User.find({$where: "this.nextCollege !== null" }).exec(function(err, u) {
+  User.find({$where: "this.nextCollege !== '' && this.college !== ''" }).exec(function(err, u) {
     if(err) {
       return res.json(500, err);
     }
