@@ -369,13 +369,14 @@ exports.isEligible = function(token, round, callback) {
       	status = Math.min(status, user.roommates.length === 1);
       }
 
-      if(round.filters.enableFilterWhitelist) {
-        var whitelist = settings.whitelist.split(',');
+      console.log(round.filters);
+      if(round.filters.enableWhitelist) {
+        var whitelist = round.filters.whitelist.split(',');
         status = Math.min((whitelist.indexOf(user.username) >= 0), status);
       }
 
       round.isEligible = status;
-      console.log(status);
+      //console.log(status);
       return callback(round);
     });
   });
