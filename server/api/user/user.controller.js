@@ -406,7 +406,7 @@ exports.updateRooms = function(req, res) {
                 }
               }
 
-              if((user.rooms && user.rooms[0] !== uniqueRooms[0]) || !user.rooms) {
+              if(!user.rooms || (user.rooms.length === 0) || (user.rooms.length && user.rooms[0] !== uniqueRooms[0])) {
                 var upd = uniqueRooms[0].split(',');
                 Room.find({name: {$in: upd}}).exec(function(err, data) {
                   if(err || !data) {
@@ -420,7 +420,7 @@ exports.updateRooms = function(req, res) {
                 });
               }
 
-              if(user.rooms && user.rooms[0] !== uniqueRooms[0]) {
+              if(user.rooms && user.rooms.length && user.rooms[0] !== uniqueRooms[0]) {
                 var upd = user.rooms[0].split(',');
                 Room.find({name: {$in: upd}}).exec(function(err, data) {
                   if(err || !data) {
