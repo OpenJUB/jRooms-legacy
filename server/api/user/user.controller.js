@@ -350,6 +350,10 @@ exports.updateRooms = function(req, res) {
 
         console.log(appliedRooms);
 
+        if(appliedRooms.length < 4) { // NOTE: Different from the if check below. This accounts for triple apartments as well.
+          return res.json(400, "Please select at least 4 rooms");
+        }
+
         Room.find({name: {$in: appliedRooms}}).exec(function(err, rooms) {
           if(err) {
             return res.json(500, err);
@@ -377,11 +381,13 @@ exports.updateRooms = function(req, res) {
                   return res.json(400, rooms[i].name + " is not a single room. Please choose an appropriate room");
                 }
 
-                if(!phase.filters.rooms.triple && uniqueRooms.length < 4) {
+                if(!phase.filters.rooms.triple && uniqueRooms.length < 4) { // Don't remove this one. It's different from the one above.
                   return res.json(400, "Please select at least 4 rooms");
                 }
               }
             }
+
+
             if(phase.filters.enableFilterTall) {
               var number = rooms[i].name.substring(4, 2);
               if(number != "08" && number != "09" && number != "36" && number != "37") {
