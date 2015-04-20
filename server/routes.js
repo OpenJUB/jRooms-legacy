@@ -40,7 +40,9 @@ module.exports = function(app) {
       params : { 'openjub_session' : token },
       headers: {'Cookie' : 'openjub_session=' + token}
     }, function(err, response) {
-
+      if(!response) {
+        return res.json(500, "OpenJUB error. Please try again later.");
+      }
       var user = JSON.parse(response.body);
       var username = null;
       if(user) {
