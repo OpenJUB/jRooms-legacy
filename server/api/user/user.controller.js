@@ -136,9 +136,9 @@ exports.confirm_roommate = function(req, res) {
             }
 
             Phase.findOne({isCurrent: true}).exec(function(err, phase) {
-                if(fromUser.roommates.length >= phase.maxRoommates + 1 || toUser.roommates.length >= phase.maxRoommates + 1) {
+                /*if(fromUser.roommates.length >= phase.maxRoommates + 1 || toUser.roommates.length >= phase.maxRoommates + 1) {
                     return res.json(400, "One user has more roommates than allowed.");
-                }
+                }*/
                 var toIndex = _.findIndex(toUser.outbox, {username: fromUser.username});
 
                 fromUser.inbox.splice(fromIndex, 1);
@@ -294,6 +294,7 @@ exports.updateColleges = function(req, res) {
                 return res.json(400, "Hack much?");
             }
 
+            user.phaseId = item.id;
             user.college_preference = new_preference;
             user.save(function() {
                 return res.json(200, {status: 'success'});
