@@ -261,9 +261,11 @@ exports.addFoundationYears = function(req, res) {
 
     users.forEach(function(user) {
       //console.log(user.description, "fy " + user.year);
-      if(user.year !== (new Date().getFullYear() - 2000) || user.description !== ("fy " + user.year)) {
+      if(user.year !== ((new Date()).getFullYear() - 2000) || user.description !== ("fy " + user.year)) {
         return;
       }
+
+      console.log(user);
 
       User.findOne({username: user.username}, function(err, data) {
         if(err || data) { //This check is correct, I know what I'm doing
