@@ -159,8 +159,11 @@ exports.updatePhases = function() {
           return savePhase(pphase, data, i+1);
         }
 
+	console.log("After Done");
         var savePhase = function(pphase, data, i) {
           console.log(new Date());
+//	  console.log(data[i]);
+	  console.log(pphase);
           data[i].isCurrent = (data[i].from <= (new Date()) && data[i].to >= (new Date()));
           if(pphase && data[i].id !== pphase.id && data[i].isCurrent) {
             newActive = data[i];
@@ -175,7 +178,8 @@ exports.updatePhases = function() {
             });
           } else {
             console.log("Boop");
-            data[i].save(function() {
+            data[i].save(function(err) {
+              console.log(err);
               if(pphase && data[i].id === pphase.id && data[i].isCurrent === false) {
                 exports.generateResults(pphase.id, true, function() {
                   done(pphase, data, i);
@@ -663,6 +667,9 @@ var calculatePhase = function(phase, callback) {
                   var second = function(roomm, ct) {
                     console.log(roomm);
                     console.log(ct);
+		    if(roomm.length <= ct) {
+ 			return first(roomm, ct);
+		    }
                     User.findOne({username: roomm[ct].username}).exec(function(err, use) {
                       ++counter;
 
