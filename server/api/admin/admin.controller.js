@@ -234,7 +234,49 @@ exports.resetSystem = function(req, res) {
   return res.json(200, settings);
 }
 
+exports.addFoundationYears = function(req, res) {
 
+  var token = req.cookies.token;
+  var url = config.openJUB.url + "query/?limit=10000&token=" + token;
+  request({
+    method: 'GET',
+    uri: url,
+    params: {'openjub_session' : token},
+    headers: {'Cookie' : 'openjub_session=' + token}
+  }, function(err, response) {
+    if(err || !response) {
+      return res.json(500, err);
+    }
+
+    if(!response.body) {
+      return res.json(500, "OpenJUB Error");
+    }
+
+    var usersJson = JSON.parse(response.body);
+    if(!usersJson) {
+      return res.json(500, "Parsing error");
+    }
+
+    var users = usersJson.data;
+
+    users.forEach(function(user) {
+      //console.log(user.description, "fy " + user.year);
+      if(user.year !== (new Date().getFullYear() - 2000) || user.description !== ("fy " + user.year)) {
+        return;
+      }
+
+      User.findOne({username: user.username}, function(err, data) {
+        if(err || data) { //This check is correct, I know what I'm doing
+          return;
+        }
+
+        utils.AddOpenJubUser(user, null, function() {});
+      });
+    });
+
+    return res.json(200, "Success");
+  });
+}
 exports.importUsers = function(req, res) {
   settings.isDatabaseReady = true;
   settings.save();

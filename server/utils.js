@@ -10,7 +10,6 @@ var allRooms = require('./config/rooms/rooms');
 var email = require('emailjs');
 var request = require('request');
 
-
 exports.AddUser = function(username, token, callback) {
   var url = config.openJUB.url + "user/name/" + username + "?token=" + token;
   request.cookie('openjub_session=' + token);
@@ -159,11 +158,8 @@ exports.updatePhases = function() {
           return savePhase(pphase, data, i+1);
         }
 
-	console.log("After Done");
         var savePhase = function(pphase, data, i) {
           console.log(new Date());
-//	  console.log(data[i]);
-	  console.log(pphase);
           data[i].isCurrent = (data[i].from <= (new Date()) && data[i].to >= (new Date()));
           if(pphase && data[i].id !== pphase.id && data[i].isCurrent) {
             newActive = data[i];
@@ -178,8 +174,7 @@ exports.updatePhases = function() {
             });
           } else {
             console.log("Boop");
-            data[i].save(function(err) {
-              console.log(err);
+            data[i].save(function() {
               if(pphase && data[i].id === pphase.id && data[i].isCurrent === false) {
                 exports.generateResults(pphase.id, true, function() {
                   done(pphase, data, i);
@@ -667,9 +662,6 @@ var calculatePhase = function(phase, callback) {
                   var second = function(roomm, ct) {
                     console.log(roomm);
                     console.log(ct);
-		    if(roomm.length <= ct) {
- 			return first(roomm, ct);
-		    }
                     User.findOne({username: roomm[ct].username}).exec(function(err, use) {
                       ++counter;
 
@@ -910,7 +902,7 @@ var shuffle = function (o){ //v1.0
 };
 
 var calculateColleges = function(phase, callback) {
-  User.find({$where: "this.college_preference.length > 0" }).exec(function(err, u) {
+  User.find({phaseId: phase.id}).exec(function(err, u) {
       if(err || !u) {
         return;
       }

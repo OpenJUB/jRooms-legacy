@@ -7,6 +7,7 @@ var router = express.Router();
 
 router.get('/importUsers', controller.importUsers);
 router.get('/currentSettings', controller.currentSettings);
+router.post('/addFoundationYears', controller.addFoundationYears);
 router.post('/updateSettings', controller.updateSettings);
 router.get('/getUser', controller.getUser);
 router.post('/setUser', controller.setUser);

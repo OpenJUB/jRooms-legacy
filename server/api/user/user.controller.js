@@ -71,9 +71,9 @@ exports.add_roommate = function(req, res) {
                 return res.json(500, err);
             }
 
-            if(fromUser.roommates.length >= phase.maxRoommates) {
+            /*if(fromUser.roommates.length >= phase.maxRoommates) {
                 return res.json(400, "There is a limit on the number of roommates, you know...");
-            }
+            }*/
 
             User.findOne({username: roommate}).exec(function(err, toUser) {
                 if(err || !toUser) {
