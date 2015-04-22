@@ -40,8 +40,17 @@ module.exports = function(app) {
       params : { 'openjub_session' : token },
       headers: {'Cookie' : 'openjub_session=' + token}
     }, function(err, response) {
-
-      var username = JSON.parse(response.body).username;
+      if(err) {
+        return res.json(500, err);
+      }
+      if(!response) {
+        return res.json(500, "OpenJUB error. Please try again later.");
+      }
+      var user = JSON.parse(response.body);
+      var username = null;
+      if(user) {
+        username = JSON.parse(response.body).username;
+      } 
       // console.log(JSON.parse(response.body));
       if(!username) {
         return res.json(401, "Unauthorized. Invalid user returned by OpenJUB");

@@ -122,15 +122,22 @@ exports.updatePhases = function() {
 			return;
 		}
 
+    console.log("HERE");
+    console.log(settings);
+
     //console.log("Not kidding");
 
 		if(settings && settings.isDebug)
 			return;
 
+    console.log("HERE2");
+
     //console.log("Not kidding");
 
 		Phase.findOne({isCurrent: true}).exec(function(err, phase) {
+      console.log("HERE3");
 			if(err) {
+        console.log(err);
 				return;
 			}
 			Phase.find({}).exec(function(err2, data) {
@@ -142,71 +149,53 @@ exports.updatePhases = function() {
 
 				var cur = false;
         var newActive = null;
-				data.forEach(function(item) {
-          //console.log("OMG");
-          cur = Math.max(cur, item.to >= (new Date()));
-          //console.log(cur);
-          //console.log(item.to);
+
+
+        var done = function(pphase, data, i) {
+          if(i >= data.length - 1) {
+            return;
+          }
+
+          return savePhase(pphase, data, i+1);
+        }
+
+	console.log("After Done");
+        var savePhase = function(pphase, data, i) {
           console.log(new Date());
+//	  console.log(data[i]);
+	  console.log(pphase);
+          data[i].isCurrent = (data[i].from <= (new Date()) && data[i].to >= (new Date()));
+          if(pphase && data[i].id !== pphase.id && data[i].isCurrent) {
+            newActive = data[i];
 
-					item.isCurrent = (item.from <= (new Date()) && item.to >= (new Date()));
-          //console.log(item);
-					if(phase && item.isCurrent && item.id !== phase.id) {
-
-            newActive = item;
-
-						phase.isCurrent = false;
-						phase.save();
-
-						exports.generateResults(phase.id, true, function() {
-              item.save();
+            pphase.isCurrent = false;
+            pphase.save(function() {
+              exports.generateResults(pphase.id, true, function() {
+                data[i].save(function() {
+                  done(pphase, data, i);
+                });
+              });
             });
-					}
-          else {
+          } else {
             console.log("Boop");
-            item.save(function() {
-              if(phase && item.id === phase.id && item.isCurrent === false) {
-                exports.generateResults(phase.id, true, function() {
-                  //phase.save();
+            data[i].save(function(err) {
+              console.log(err);
+              if(pphase && data[i].id === pphase.id && data[i].isCurrent === false) {
+                exports.generateResults(pphase.id, true, function() {
+                  done(pphase, data, i);
                 });
               }
               else {
-                exports.phaseResult(item, function(results) {
-                  //item.results = results;
-                  //item.save();
+                exports.phaseResult(data[i], function(results) {
+                  return done(pphase, data, i);
                 });
               }
             });
           }
-          //console.log(item);
-				});
-        //console.log(newActive);
-        //console.log(phase);
-
-        /*if(newActive == null) {
-          if(phase && !phase.isCurrent) {
-            phase.isCurrent = false;
-            phase.save();
-
-            exports.generateResults(phase.id, true, function() {
-              //phase.save();
-            });
-          }
-        }*/
-
-
-
-				if(!cur && !phase) {
-          //console.log("How likely is this?");
-          //console.log(phase);
-
-					settings.isDone = true;
-					settings.save();
-				} else {
-          settings.isDone = false;
-          settings.save();
         }
-			});
+
+        return savePhase(phase, data, 0);
+      });
 		});
 	});
 	//Add if statement for limiting it to certain hours if necessary
@@ -369,13 +358,14 @@ exports.isEligible = function(token, round, callback) {
       	status = Math.min(status, user.roommates.length === 1);
       }
 
-      if(round.filters.enableFilterWhitelist) {
-        var whitelist = settings.whitelist.split(',');
+      //console.log(round.filters);
+      if(round.filters.enableWhitelist) {
+        var whitelist = round.filters.whitelist.split(',');
         status = Math.min((whitelist.indexOf(user.username) >= 0), status);
       }
 
       round.isEligible = status;
-      console.log(status);
+      //console.log(status);
       return callback(round);
     });
   });
@@ -426,7 +416,7 @@ exports.phaseResult = function(phase, callback) {
         //console.log(results);
         phase.results = results;
         return phase.save(function() {
-          console.log(phase);
+          //console.log(phase);
           return callback(phase);
         });
       });
@@ -677,6 +667,9 @@ var calculatePhase = function(phase, callback) {
                   var second = function(roomm, ct) {
                     console.log(roomm);
                     console.log(ct);
+		    if(roomm.length <= ct) {
+ 			return first(roomm, ct);
+		    }
                     User.findOne({username: roomm[ct].username}).exec(function(err, use) {
                       ++counter;
 

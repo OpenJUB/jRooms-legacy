@@ -3,6 +3,7 @@
 var _ = require('lodash');
 var Room = require('./room.model');
 var Admin = require('./../admin/admin.model');
+var Phase = require('./../phase/phase.model');
 
 exports.getRoom = function(req, res) {
     var roomName = req.query.room;
@@ -41,24 +42,44 @@ exports.getCollegeMap = function(req, res) {
             }
 
             Phase.findOne({isCurrent: true}).exec(function(err, phase) {
-              if(phase.filters) {
+              if(err) {
+                return res.json(500, err);
+              }
+
+              //console.log(phase);
+              if(phase && phase.filters) {
 
                 for(var i = 0; i < data.length; ++i) {
+
+                  if(data[i].college === 'Nordmetall' && data[i].block === 'A') {
+                    data[i].isDisabled = true;
+                  }
                   if(phase.filters.enableFilterTall) {
-                    data[i].isDisabled = Math.min(data[i].isDisabled, (tmp != "08" && tmp != "09" && tmp != "36" && tmp != "37"));
+                    var tmp = data[i].name.substring(4, 2);
+                    data[i].isDisabled = Math.max(data[i].isDisabled, (tmp != "08" && tmp != "09" && tmp != "36" && tmp != "37"));
                   }
 
                   if(phase.filters.enableFilterQuiet) {
-                    data[i].isDisabled = Math.min(data[i].isDisabled, !((item.college === 'C3' && item.block === 'D') || (item.college === 'Krupp' && item.block === 'A')));
+                    data[i].isDisabled = Math.max(data[i].isDisabled, !((data[i].college === 'C3' && data[i].block === 'D') || (data[i].college === 'Krupp' && data[i].block === 'A')));
                   }
 
                   if(phase.filters.enableFilterRooms) {
-                    data[i].isDisabled = Math.min(data[i].isDisabled,
-                      !((phase.filters.rooms.single && item.type === 'single') && (phase.filters.rooms.double && item.type === 'double') && (phase.filters.rooms.triple && item.type === 'triple'))
-                    );
+                    //console.log(data[i].type, phase.filters.rooms.single, phase.filters.rooms.double);
+                    if(phase.filters.rooms.single && data[i].type !== 'single') {
+                      data[i].isDisabled = true;
+                    }
+
+                    if(phase.filters.rooms.double && data[i].type !== 'double') {
+                      data[i].isDisabled = true;
+                    }
+
+                    if(phase.filters.rooms.triple && data[i].type !== 'triple') {
+                      data[i].isDisabled = true;
+                    }
                   }
                 }
               }
+
               return res.json(200, data);
             });
         });

@@ -1885,6 +1885,20 @@ module.exports = [
               {
                 "enabled": true,
                 "contains": [
+                  "NB-324"
+                ],
+                "type": "single"
+              },
+              {
+                "enabled": true,
+                "contains": [
+                  "NB-322"
+                ],
+                "type": "single"
+              },
+              {
+                "enabled": true,
+                "contains": [
                   "NB-360"
                 ],
                 "type": "single"
