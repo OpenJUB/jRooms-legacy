@@ -126,12 +126,12 @@ exports.confirm_roommate = function(req, res) {
             }
 
             var fromFresh = _.intersection(freshieTemplate, fromUser.roommates);
-            if(fromFresh) {
+            if(fromFresh.length > 0) {
               fromUser.roommates = [];
             }
 
             var toFresh = _.intersection(freshieTemplate, toUser.roommates);
-            if(toFresh) {
+            if(toFresh.length > 0) {
               toUser.roommates = [];
             }
 
