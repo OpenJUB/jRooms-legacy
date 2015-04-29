@@ -366,6 +366,26 @@ exports.updateRooms = function(req, res) {
                 return res.json(400, "Sorry, there is someone already living in " + rooms[i].name);
               }
 
+              if(phase.filters.enableFilterTall) {
+                var number = rooms[i].name.substring(4, 6);
+                if(rooms[i].college === "C3") {
+                  if(number !== "08" && number !== "09") {
+                    return res.json(400, rooms[i].name + " is not a tall room. Please select an appropriate room");
+                  }
+                }
+                else if(rooms[i].college === "Nordmetall") {
+                  if(number <= "78" && rooms[i].block != "B") {
+                    return res.json(400, rooms[i].name + " is not a tall room. Please select an appropriate room");
+                  }
+                }
+                else
+                {
+                  if(number !== "08" && number !== "09" && number !== "36" && number !== "37") {
+                    return res.json(400, rooms[i].name + " is not a tall room. Please select an appropriate room");
+                  }
+                }
+              }
+
               if(phase.filters.enableFilterQuiet) {
                 if(!(rooms[i].college === "Krupp" && rooms[i].block === "A") && !(rooms[i].college === "C3" && rooms[i].block === "D")) {
                   return res.json(400, rooms[i].name + " is not a quiet block room.");
@@ -385,14 +405,6 @@ exports.updateRooms = function(req, res) {
                 if(!phase.filters.rooms.triple && uniqueRooms.length < 4) { // Don't remove this one. It's different from the one above.
                   return res.json(400, "Please select at least 4 rooms");
                 }
-              }
-            }
-
-
-            if(phase.filters.enableFilterTall) {
-              var number = rooms[i].name.substring(4, 2);
-              if(number != "08" && number != "09" && number != "36" && number != "37") {
-                return res.json(400, rooms[i].name + " is not a tall room. Please select an appropriate room");
               }
             }
           }
